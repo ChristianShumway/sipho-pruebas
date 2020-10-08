@@ -1,17 +1,40 @@
+<div class="wrap-buttons">
+  <!-- <button  mat-raised-button color="primary" [routerLink]= "['/catalogos/gafete', idEmpleado]"  >
+    Regresar
+  </button> -->
+  <button mat-icon-button [routerLink]= "['/catalogos/gafete', idEmpleado]" matTooltip="Regresar" matTooltipPosition="left">
+    <mat-icon>keyboard_backspace</mat-icon>
+  </button>
+</div>
+
 <div id="app">
-  <div class="wrap-video">
+  <div class="wrap-video" *ngIf="!pictureCapture">
     <video #video id="video" width="640" height="480" autoplay></video>
     <!-- <button id="snap" (click)="capture()">Snap Photo</!--> 
     <div class="wrap-button">
-      <button id="snap" (click)="capture()" mat-fab color="warn">
+      <button id="snap" (click)="capture()" mat-fab color="warn" matTooltip="Tomar Foto" matTooltipPosition="below">
         <mat-icon>camera_alt</mat-icon>
       </button>
     </div>
   </div>
   <canvas #canvas id="canvas" width="640" height="480"></canvas>
-  <ul>
+
+  <div class="wrap-picture" *ngIf="pictureCapture">
+    <img [src]="pictureCapture" alt="picture">
+    <div class="wrap-button">
+      <button (click)="otherPicture()" mat-fab color="warn" matTooltip="Eliminar" matTooltipPosition="below">
+        <mat-icon>delete</mat-icon>
+      </button>
+      <button  (click)="savePicture()" mat-fab color="primary" matTooltip="Guardar" matTooltipPosition="below">
+        <mat-icon>save</mat-icon>
+      </button>
+      <button [routerLink]= "['/catalogos/gafete', idEmpleado]"  mat-fab  matTooltip="Regresar" matTooltipPosition="below">
+        <mat-icon>keyboard_backspace</mat-icon>
+      </button>
+  </div>
+  <!-- <ul>
     <li *ngFor="let c of captures">
       <img src="{{ c }}" />
     </li>
-  </ul>
+  </ul> -->
 </div>

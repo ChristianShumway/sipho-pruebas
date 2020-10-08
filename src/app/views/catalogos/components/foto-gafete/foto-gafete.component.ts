@@ -1,4 +1,7 @@
 import { Component, OnInit, Inject, AfterViewInit, ElementRef, ViewChild } from '@angular/core';
+import { ActivatedRoute, Params } from '@angular/router';
+import { AutenticacionService } from 'app/shared/services/autenticacion.service';
+import { EmpleadoService } from 'app/shared/services/empleado.service';
 // import { MatBottomSheetRef, MAT_BOTTOM_SHEET_DATA } from '@angular/material/bottom-sheet';
 
 @Component({
@@ -6,24 +9,37 @@ import { Component, OnInit, Inject, AfterViewInit, ElementRef, ViewChild } from 
   templateUrl: './foto-gafete.component.html',
   styleUrls: ['./foto-gafete.component.scss']
 })
-// const $video = this.document.querySelector('#video');
 export class FotoGafeteComponent implements OnInit, AfterViewInit {
 
   @ViewChild("video", {static: false}) public video: ElementRef;
   @ViewChild("canvas", {static: false}) public canvas: ElementRef;
-  public captures: Array<any>;
+  idEmpleado;
+  idUsuarioLogeado;
+  public captures: Array<any> = [];
+  public pictureCapture;
  
   constructor(
     // private bottomSheetRef: MatBottomSheetRef<FotoGafeteComponent>,
     // @Inject(MAT_BOTTOM_SHEET_DATA) public data: any,
-  ) {
-    // this.captures = ['./../../../../../assets/images/faces/12.jpg', './../../../../../assets/images/faces/10.jpg'];
-  }
+    private route: ActivatedRoute,
+    private autenticacionService: AutenticacionService,
+    private empleadoService: EmpleadoService
+  ) {}
 
   ngOnInit() {
+    this.idUsuarioLogeado = this.autenticacionService.currentUserValue;
+    console.log(this.idUsuarioLogeado);
+    this.route.params.subscribe( (data:Params) => {
+      console.log(data.idEmpleado);
+      this.idEmpleado = data.idEmpleado;
+    });
   }
 
   ngAfterViewInit() {
+    this.showCamera();
+  }
+
+  public showCamera() {
     if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
       navigator.mediaDevices.getUserMedia({ video: true })
       .then( stream => {
@@ -40,8 +56,30 @@ export class FotoGafeteComponent implements OnInit, AfterViewInit {
   public capture() {
     var context = this.canvas.nativeElement.getContext("2d").drawImage(this.video.nativeElement, 0, 0, 640, 480);
     this.captures.push(this.canvas.nativeElement.toDataURL("image/png"));
+    this.pictureCapture = this.canvas.nativeElement.toDataURL("image/png");
     console.log(this.captures);
+    console.log(this.pictureCapture);
     // this.bottomSheetRef.dismiss();
+  }
+
+  public savePicture() {
+    const dataPhoto = {
+      data: this.pictureCapture,
+      idEmploye: parseInt(this.idEmpleado),
+      idEmployeModified: this.idUsuarioLogeado
+    };
+
+    console.log(dataPhoto);
+
+    // this.empleadoService.uploadFotoEmpleado(dataPhoto).subscribe(
+    //   result => console.log(result),
+    //   error => console.log(error)
+    // );
+  }
+
+  public otherPicture() {
+    this.pictureCapture = "";
+    this.showCamera();
   }
 
 

@@ -44,5 +44,10 @@ export class EmpleadoService {
     return this.http.get<any>(`catalog/getGafete/${idEmpleado}`);
   }
 
+  uploadFotoEmpleado(data: any): Observable<any>{
+    const headerss = new HttpHeaders({'Content-Type': 'application/json'});
+    return this.http.post<any>(`catalog/uploadPhotoEmploye`, JSON.stringify(data), { headers: headerss});
+  }
+
 
 }

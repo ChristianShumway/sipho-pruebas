@@ -50,7 +50,7 @@ export class VerGafeteComponent implements OnInit {
   getEmploye(idEmpleado){
     this.empleatoService.getEmpleado(idEmpleado).subscribe(
       (empleado: Empleado) => {
-        console.log(empleado)
+        console.log(empleado);
         this.empleado = empleado;
       },
       error => console.log(error)
