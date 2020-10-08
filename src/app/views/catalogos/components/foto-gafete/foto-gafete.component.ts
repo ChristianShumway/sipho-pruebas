@@ -1,7 +1,8 @@
 import { Component, OnInit, Inject, AfterViewInit, ElementRef, ViewChild } from '@angular/core';
-import { ActivatedRoute, Params } from '@angular/router';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import { AutenticacionService } from 'app/shared/services/autenticacion.service';
 import { EmpleadoService } from 'app/shared/services/empleado.service';
+import { MatSnackBar } from '@angular/material';
 // import { MatBottomSheetRef, MAT_BOTTOM_SHEET_DATA } from '@angular/material/bottom-sheet';
 
 @Component({
@@ -23,14 +24,14 @@ export class FotoGafeteComponent implements OnInit, AfterViewInit {
     // @Inject(MAT_BOTTOM_SHEET_DATA) public data: any,
     private route: ActivatedRoute,
     private autenticacionService: AutenticacionService,
-    private empleadoService: EmpleadoService
+    private empleadoService: EmpleadoService,
+    private snackBar: MatSnackBar,
+    private router: Router
   ) {}
 
   ngOnInit() {
     this.idUsuarioLogeado = this.autenticacionService.currentUserValue;
-    console.log(this.idUsuarioLogeado);
     this.route.params.subscribe( (data:Params) => {
-      console.log(data.idEmpleado);
       this.idEmpleado = data.idEmpleado;
     });
   }
@@ -57,29 +58,49 @@ export class FotoGafeteComponent implements OnInit, AfterViewInit {
     var context = this.canvas.nativeElement.getContext("2d").drawImage(this.video.nativeElement, 0, 0, 640, 480);
     this.captures.push(this.canvas.nativeElement.toDataURL("image/png"));
     this.pictureCapture = this.canvas.nativeElement.toDataURL("image/png");
-    console.log(this.captures);
-    console.log(this.pictureCapture);
+    // console.log(this.captures);
+    // console.log(this.pictureCapture);
     // this.bottomSheetRef.dismiss();
   }
 
   public savePicture() {
     const dataPhoto = {
       data: this.pictureCapture,
-      idEmploye: parseInt(this.idEmpleado),
-      idEmployeModified: this.idUsuarioLogeado
+      idEmpleado: parseInt(this.idEmpleado),
+      idEmpleadoModifico: this.idUsuarioLogeado
     };
 
     console.log(dataPhoto);
 
-    // this.empleadoService.uploadFotoEmpleado(dataPhoto).subscribe(
-    //   result => console.log(result),
-    //   error => console.log(error)
-    // );
+    this.empleadoService.uploadFotoEmpleado(dataPhoto).subscribe(
+      response =>  {
+        console.log(response);
+        if (response.estatus === '05') {
+          this.router.navigate(['/catalogos/gafete', this.idEmpleado]);
+          this.useAlerts(response.mensaje, ' ', 'success-dialog');
+        } else {
+          this.useAlerts(response.mensaje, ' ', 'error-dialog');
+        }
+      },
+      error => {
+        console.log(error);
+        this.useAlerts(error.message, ' ', 'error-dialog');
+      }
+    );
   }
 
   public otherPicture() {
     this.pictureCapture = "";
     this.showCamera();
+  }
+
+  useAlerts(message, action, className) {
+    this.snackBar.open(message, action, {
+      duration: 4000,
+      verticalPosition: 'bottom',
+      horizontalPosition: 'right',
+      panelClass: [className]
+    });
   }
 
 

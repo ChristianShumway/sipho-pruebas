@@ -1,5 +1,5 @@
 
-<mat-card *ngIf="empleado; else loading">
+<mat-card *ngIf="empleado && fotoEmpleado; else loading">
   <div class="container-gafete">
     <div class="wrap-gafete"  #printme id="printme" >
       <div class="front" #downloadFront>
@@ -12,7 +12,7 @@
           </a>
         </div>
         <div class="wrap-data-employe">
-          <h1 class="nombre">{{empleado.nombre}} {{empleado.apellidoPaterno}} {{empleado.apellidoMaterno}}</h1>
+          <h2 class="nombre">{{empleado.nombre}} {{empleado.apellidoPaterno}} {{empleado.apellidoMaterno}}</h2>
           <p class="puesto">{{empleado.perfil.descripcion}}</p>
         </div>
         <div class="wrap-cb">
