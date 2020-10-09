@@ -8,6 +8,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { EmpleadoService } from 'app/shared/services/empleado.service';
 import { AutenticacionService } from './../../../../shared/services/autenticacion.service';
 import { ModalEliminarComponent } from '../../../../shared/components/modal-eliminar/modal-eliminar.component';
+import { environment } from './../../../../../environments/environment';
+
 
 @Component({
   selector: 'app-empleados',
@@ -22,6 +24,9 @@ export class EmpleadosComponent implements OnInit {
   paginaActual = 0;
   estatusData = 1;
   dataSerach;
+  urlImagen = environment.urlImages;
+  pathImagenEmpleado = 'employe/photo';
+
 
   @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
   obs$: Observable<any>;
@@ -54,6 +59,7 @@ export class EmpleadosComponent implements OnInit {
     this.empleadoService.getEmpleados(idPaginator).subscribe(
       ((empleados: EmpleadoContent) => {
         this.empleados = empleados.content;
+        console.log(this.empleados);
         this.paginator.length = empleados.totalItems;
         this.empleadosTemp = this.empleados;
         this.dataSource.data = this.empleados;

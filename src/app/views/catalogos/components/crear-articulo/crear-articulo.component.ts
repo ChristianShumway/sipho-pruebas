@@ -87,21 +87,21 @@ export class CrearArticuloComponent implements OnInit {
 
       console.log(articulo);
 
-      // this.articuloService.updateArticulo(articulo).subscribe(
-      //   ((response: any) => {
-      //     console.log(response);
-      //     if (response.estatus === '05') {
-      //       this.router.navigate(['/catalogos/articulos']);
-      //       this.useAlerts(response.mensaje, ' ', 'success-dialog');
-      //     } else {
-      //       this.useAlerts(response.mensaje, ' ', 'error-dialog');
-      //     }
-      //   }),
-      //   (error => {
-      //     console.log(error);
-      //     this.useAlerts(error.message, ' ', 'error-dialog');
-      //   })
-      // );
+      this.articuloService.updateArticulo(articulo).subscribe(
+        ((response: any) => {
+          console.log(response);
+          if (response.estatus === '05') {
+            this.router.navigate(['/catalogos/articulos']);
+            this.useAlerts(response.mensaje, ' ', 'success-dialog');
+          } else {
+            this.useAlerts(response.mensaje, ' ', 'error-dialog');
+          }
+        }),
+        (error => {
+          console.log(error);
+          this.useAlerts(error.message, ' ', 'error-dialog');
+        })
+      );
     }
   }
 

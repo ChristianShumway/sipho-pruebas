@@ -79,7 +79,7 @@ export class ModificarFamiliaComponent implements OnInit {
         (response => {
           // console.log(response);
           if(response.estatus === '05'){
-            this.router.navigate(['/catalogos/familia']);
+            this.router.navigate(['/catalogos/familias']);
             this.useAlerts(response.mensaje, ' ', 'success-dialog');
           } else {
             this.useAlerts(response.mensaje, ' ', 'error-dialog');

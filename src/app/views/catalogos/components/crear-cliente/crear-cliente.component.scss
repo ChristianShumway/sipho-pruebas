@@ -12,10 +12,10 @@
   text-align: right;
 }
 
-.cont-btns button {
+.cont-btns button, .cont-btns a {
   margin-right: 10px;
 }
 
-.cont-btns button:last-child{
+.cont-btns a:last-child{
   margin-right: 0px;
 }

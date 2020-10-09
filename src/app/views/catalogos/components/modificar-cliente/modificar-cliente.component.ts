@@ -1,13 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Router, ActivatedRoute, Params } from '@angular/router';
-import { Empleado } from 'app/shared/models/empleado';
+import { Cliente } from 'app/shared/models/cliente';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { EmpleadoService } from 'app/shared/services/empleado.service';
+import { ClienteService } from 'app/shared/services/cliente.service';
 import { AutenticacionService } from 'app/shared/services/autenticacion.service';
 import { DatePipe } from '@angular/common';
-import { PerfilesService } from 'app/shared/services/perfiles.service';
-import { Perfil } from 'app/shared/models/perfil';
+import { MatBottomSheet } from '@angular/material';
+import { VerMapaComponent } from '../ver-mapa/ver-mapa.component';
 
 @Component({
   selector: 'app-modificar-cliente',
@@ -16,40 +16,37 @@ import { Perfil } from 'app/shared/models/perfil';
 })
 export class ModificarClienteComponent implements OnInit {
 
-  empleadoForm: FormGroup;
-  idEmpleado;
+  clienteForm: FormGroup;
+  idCliente;
   idUsuarioLogeado;
-  empleado: Empleado;
+  cliente: Cliente;
   hoy = new Date();
   pipe = new DatePipe('en-US');
-  perfiles: Perfil[] = [];
 
   constructor(
     private router: Router,
     private snackBar: MatSnackBar,
-    private empleadoService: EmpleadoService,
+    private clienteService: ClienteService,
     private autenticacionService: AutenticacionService,
-    private perfilesService: PerfilesService,
     private activatedRoute: ActivatedRoute,
+    private bottomSheet: MatBottomSheet,
   ) { }
 
   ngOnInit() {
     this.getValidations();
-    this.getEmpleado();
-    this.getCatalogs();
+    this.getCliente();
     this.idUsuarioLogeado = this.autenticacionService.currentUserValue;
   }
 
-  getEmpleado() {
+  getCliente() {
     this.activatedRoute.params.subscribe((data: Params) => {
-      this.idEmpleado = data.idEmpleado;
-      if (this.idEmpleado) {
-        this.empleadoService.getEmpleado(this.idEmpleado).subscribe(
-          (empleado: Empleado) => {
-            console.log(empleado);
-            this.empleado = empleado;
-            this.empleadoForm.patchValue(empleado);
-            this.empleadoForm.get('perfil').setValue(empleado.perfil.idPerfil);
+      this.idCliente = data.idCliente;
+      if (this.idCliente) {
+        this.clienteService.getCliente(this.idCliente).subscribe(
+          (cliente: Cliente) => {
+            console.log(cliente);
+            this.cliente = cliente;
+            this.clienteForm.patchValue(cliente);
           },
           error => console.log(error)
         );
@@ -57,74 +54,68 @@ export class ModificarClienteComponent implements OnInit {
     });
   }
 
-  getCatalogs() {
-    this.perfilesService.getSelectPerfil().subscribe(
-      (perfiles) => {
-        console.log(perfiles);
-        this.perfiles = perfiles;
-      },
-      error => console.log(error)
-    );
-  }
-
   getValidations() {
-    // let contrasena = new FormControl('', [Validators.required,  Validators.minLength(8),]);
-    this.empleadoForm = new FormGroup({
-      nombre: new FormControl('', [
+    this.clienteForm = new FormGroup({
+      razonSocial: new FormControl('', [
         Validators.required,
       ]),
-      apellidoPaterno: new FormControl('', [
+      rfc: new FormControl('', [
         Validators.required,
       ]),
-      apellidoMaterno: new FormControl('', [
+      propietario: new FormControl('', [
         Validators.required,
       ]),
-      direccion: new FormControl('', [
+      calle: new FormControl('', [
+        Validators.required,
+      ]),
+      numero: new FormControl('', [
+        Validators.required,
+      ]),
+      colonia: new FormControl('', [
+        Validators.required,
+      ]),
+      codigoPostal: new FormControl('', [
         Validators.required,
       ]),
       telefono: new FormControl('', [
-        Validators.required,
-      ]),
-      nss: new FormControl('', [
-        Validators.required,
-      ]),
-      gafete: new FormControl('', [
-        Validators.required,
-      ]),
-      perfil: new FormControl('', [
         Validators.required,
       ]),
       email: new FormControl('', [
         Validators.required,
         Validators.email
       ]),
-      // contrasena: contrasena,
-
-    })
+      ciudad: new FormControl('', [
+        Validators.required,
+      ]),
+      latitud: new FormControl('', [
+        Validators.required,
+      ]),
+      longitud: new FormControl('', [
+        Validators.required,
+      ]),
+      observacion: new FormControl('', [
+        Validators.required,
+      ]),
+    });
   }
 
 
-  updateEmploye() {
-    if (this.empleadoForm.valid) {
+  updateCustomer() {
+    if (this.clienteForm.valid) {
       const format = 'yyyy/MM/dd';
       const myFormatedDate = this.pipe.transform(this.hoy, format);
 
-      const refreshProfile: Perfil = this.perfiles.find( (perfil: Perfil) => perfil.idPerfil === this.empleadoForm.value.perfil );
-      // console.log(refreshProfile);
-
-      const empleado: Empleado = {
-        idEmpleado: parseInt(this.idEmpleado),
-        idEmpleadoModifico: this.idUsuarioLogeado,
-        ...this.empleadoForm.value,
-        perfil: refreshProfile
+      const cliente: Cliente = {
+        idCliente: parseInt(this.idCliente),
+        idEmpleadoModificacion: this.idUsuarioLogeado,
+        ...this.clienteForm.value,
       };
-      console.log(empleado);
+      console.log(cliente);
 
-      this.empleadoService.updateEmpleado(empleado).subscribe(
+      this.clienteService.updateCliente(cliente).subscribe(
         (response => {
-          // console.log(response);
           if (response.estatus === '05') {
-            this.router.navigate(['/catalogos/empleados']);
+            this.router.navigate(['/catalogos/clientes']);
             this.useAlerts(response.mensaje, ' ', 'success-dialog');
           } else {
             this.useAlerts(response.mensaje, ' ', 'error-dialog');
@@ -136,6 +127,30 @@ export class ModificarClienteComponent implements OnInit {
         })
       );
     }
+  }
+
+  viewMap(): void {
+    const lat = this.clienteForm.get('latitud').value;
+    const lon = this.clienteForm.get('longitud').value;
+    let sheet = this.bottomSheet.open(VerMapaComponent, {
+      data: {
+        latitude: parseFloat(lat),
+        longitude: parseFloat(lon)
+      }
+    });
+
+    sheet.backdropClick().subscribe( () => {
+      console.log('clicked');
+    });  
+
+    sheet.afterDismissed().subscribe(
+      data => {
+        if(data) {
+          this.clienteForm.get('latitud').setValue(data.latitude);
+          this.clienteForm.get('longitud').setValue(data.longitude);
+        }
+      }
+    )
   }
 
   useAlerts(message, action, className) {

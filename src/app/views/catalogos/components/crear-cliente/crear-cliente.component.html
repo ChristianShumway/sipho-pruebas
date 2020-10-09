@@ -111,9 +111,9 @@
               </small>
             </div>
           </div>
-          <div class="pb-1">
+          <!-- <div class="pb-1">
             <mat-form-field class="full-width">
-              <input matInput name="latitud" formControlName="latitud" placeholder="Latitud">
+              <input matInput name="latitud" formControlName="latitud" placeholder="Latitud" [readonly]="true" />
             </mat-form-field>
             <div class="validaciones">
               <small *ngIf="clienteForm.controls['latitud'].hasError('required') && clienteForm.controls['latitud'].touched" class="form-error-msg">
@@ -123,14 +123,14 @@
           </div>
           <div class="pb-1">
             <mat-form-field class="full-width">
-              <input matInput name="longitud" formControlName="longitud" placeholder="Longitud">
+              <input matInput name="longitud" formControlName="longitud" placeholder="Longitud" [readonly]="true" />
             </mat-form-field>
             <div class="validaciones">
               <small *ngIf="clienteForm.controls['longitud'].hasError('required') && clienteForm.controls['longitud'].touched" class="form-error-msg">
                 Longitud es un campo requerido
               </small>
             </div>
-          </div>
+          </div> -->
           <div class="pb-1">
             <mat-form-field class="full-width">
               <input matInput name="observacion" formControlName="observacion" placeholder="Observación">
@@ -148,8 +148,8 @@
 
       <div class="cont-btns">
         <button mat-raised-button color="primary" [disabled]="clienteForm.invalid" type="submit">Agregar</button>
-        <button mat-raised-button [routerLink]="'/catalogos/clientes'">Cancelar</button>
-        <button mat-raised-button color="primary" (click)="viewMap()">Mapa</button>
+        <a mat-raised-button [routerLink]="'/catalogos/clientes'">Cancelar</a>
+        <a mat-raised-button color="primary" (click)="viewMap()">Mapa</a>
       </div>
     </form>
   </mat-card-content>

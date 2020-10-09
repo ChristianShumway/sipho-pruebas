@@ -74,6 +74,7 @@
     "@angular/cli": "8.0.2",
     "@angular/compiler-cli": "8.0.0",
     "@angular/language-service": "8.0.0",
+    "@types/googlemaps": "3.39.1",
     "@types/hopscotch": "0.2.30",
     "@types/jasmine": "2.5.38",
     "@types/node": "6.0.60",

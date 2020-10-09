@@ -41,9 +41,9 @@ export const rootRouterConfig: Routes = [
         data: { title: 'Catálogos', breadcrumb: 'Catálogos'}
       },
       {
-        path: 'profile', 
+        path: 'perfil', 
         loadChildren: () => import('./views/profile/profile.module').then(m => m.ProfileModule), 
-        data: { title: 'Profile', breadcrumb: 'PROFILE'}
+        data: { title: 'Perfil', breadcrumb: 'Perfil'}
       },
       {
         path: 'others', 

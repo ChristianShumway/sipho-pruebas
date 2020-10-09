@@ -1,0 +1,88 @@
+<div class="wrap-buttons">
+  <a mat-raised-button matTooltip="Creación de un nuevo vehículo" matTooltipPosition="left" color="primary" [routerLink]="'/catalogos/crear-vehiculo'">Crear Vehículo</a>
+</div>
+
+<mat-form-field class="margin-333" style="width: 98%">
+  <input matInput placeholder="Filtrar Vehículos" value="" (keyup)='updateFilter($event)'>
+</mat-form-field>
+
+
+<div fxLayout="row wrap" *ngIf="obs$ | async as empleados; else noVehiculos">
+  <ng-container *ngIf="empleados.length; else loading">
+    <div *ngFor="let empleado of empleados" fxFlex="100" fxFlex.gt-sm="100" fxFlex.sm="100">
+
+      <mat-card class="user-card p-0">
+        <mat-card-title class="">
+          <div class="card-title-text">
+            <a class="toolbar-avatar md mr-1">
+              <img *ngIf="empleado.imagen" src="{{urlImagen}}/{{pathImagenEmpleado}}/{{empleado.imagen}}" alt="empleado" />
+            </a>
+            <span class="title-card-catalogs">{{empleado.nombre}} {{empleado.apellidoPaterno}} {{empleado.ApellidoMaterno}}</span>
+            <span fxFlex></span>
+            <button mat-icon-button [matMenuTriggerFor]="empleadoMenu" class="">
+              <mat-icon class="">more_vert</mat-icon>
+            </button>
+            <mat-menu #empleadoMenu="matMenu">
+              <button mat-menu-item [routerLink]="['/catalogos/modificar-empleado', empleado.idEmpleado]">Editar</button>
+              <button mat-menu-item [routerLink]="['/catalogos/gafete', empleado.idEmpleado]">Gafete</button>
+              <!-- <button mat-menu-item (click)="openDialoAlertDelete(empleado.idEmpleado)">Eliminar</button> -->
+            </mat-menu>
+          </div>
+          <mat-divider></mat-divider>
+        </mat-card-title>
+
+        <mat-card-content>
+          <div class="wrap-details">
+            <p class="p-info-catalogss" matTooltip="Perfil" matTooltipPosition="below">
+              <mat-icon class="text-muted">account_tree</mat-icon>
+              <span>{{empleado.perfil.descripcion}}</span>
+            </p>
+            <p class="p-info-catalogss" matTooltip="Dirección" matTooltipPosition="below">
+              <mat-icon class="text-muted">home</mat-icon>
+              <span>{{empleado.direccion}}</span>
+            </p>
+            <p class="p-info-catalogss" matTooltip="Teléfono" matTooltipPosition="below">
+              <mat-icon class="text-muted">phone</mat-icon>
+              <span>{{empleado.telefono}}</span>
+            </p>
+            <p class="p-info-catalogss" matTooltip="Número de seguro social" matTooltipPosition="below">
+              <mat-icon class="text-muted">local_hospital</mat-icon>
+              <span>{{empleado.nss}}</span>
+            </p>
+            <p class="p-info-catalogss" matTooltip="No. gafete" matTooltipPosition="below">
+              <mat-icon class="text-muted">assignment_ind</mat-icon>
+              <span>{{empleado.gafete}}</span>
+            </p>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </ng-container>
+
+  <ng-template #noVehiculos>
+    <div fxFlex="100" fxFlex.gt-sm="33" fxFlex.sm="50">
+      <mat-card class="user-card p-0">
+        <mat-card-content>
+          <!-- <img src="assets/images/icons/no-close.png" alt="no found"> -->
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </ng-template>
+</div>
+
+<ng-template #loading>
+  <div class="wrap-loading-catalog">
+    <mat-spinner [diameter]="60"></mat-spinner>
+  </div>
+</ng-template>
+
+<div *ngIf="estatusData === 0">
+  <div class="wrap-loading-catalog">
+    <h2>No se encontró información referente a
+      <b style="color:red">{{dataSerach}}</b>
+    </h2>
+  </div>
+</div>
+
+<!-- <mat-paginator [pageSizeOptions]="[6, 12, 24, 100]"></mat-paginator> -->
+<mat-paginator [pageSizeOptions]="[10]" (page)="pageEvent($event)"></mat-paginator>

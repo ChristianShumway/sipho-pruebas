@@ -23,11 +23,15 @@ import { ClientesComponent } from './components/clientes/clientes.component';
 import { CrearClienteComponent } from './components/crear-cliente/crear-cliente.component';
 import { ModificarClienteComponent } from './components/modificar-cliente/modificar-cliente.component';
 import { VerGafeteComponent } from './components/ver-gafete/ver-gafete.component';
+import { VerCodigoQrComponent } from './components/ver-codigo-qr/ver-codigo-qr.component';
+import { VehiculosComponent } from './components/vehiculos/vehiculos.component';
+import { CrearVehiculoComponent } from './components/crear-vehiculo/crear-vehiculo.component';
+import { ModificarVehiculoComponent } from './components/modificar-vehiculo/modificar-vehiculo.component';
 
 const routes: Routes = [
   {
     component: FamiliaComponent,
-    path: 'familia',
+    path: 'familias',
     data: { title: 'Familia', breadcrumb: 'Familia'}
   },
   {
@@ -139,6 +143,26 @@ const routes: Routes = [
     component: ModificarClienteComponent,
     path: 'modificar-cliente/:idCliente',
     data: { title: 'Modificar Cliente', breadcrumb: 'Modificar Cliente'}
+  },
+  {
+    component: VerCodigoQrComponent,
+    path: 'qr/:idCliente',
+    data: { title: 'Código QR', breadcrumb: 'Código QR'}
+  },
+  {
+    component: VehiculosComponent,
+    path: 'vehiculos',
+    data: { title: 'Vehículos', breadcrumb: 'Vehículos'}
+  },
+  {
+    component: CrearVehiculoComponent,
+    path: 'crear-vehiculo',
+    data: { title: 'Crear Vehículo', breadcrumb: 'Crear Vehículo'}
+  },
+  {
+    component: ModificarVehiculoComponent,
+    path: 'modificar-vehiculo/:idVehiculo',
+    data: { title: 'Modificar Vehículo', breadcrumb: 'Modificar Vehículo'}
   },
 ];
 

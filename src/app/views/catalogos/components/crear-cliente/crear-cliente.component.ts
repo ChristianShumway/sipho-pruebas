@@ -67,10 +67,10 @@ export class CrearClienteComponent implements OnInit {
       ciudad: new FormControl('', [
         Validators.required,
       ]),
-      latitud: new FormControl('', [
+      latitud: new FormControl('21.862058500142656', [
         Validators.required,
       ]),
-      longitud: new FormControl('', [
+      longitud: new FormControl('-102.29690491288909', [
         Validators.required,
       ]),
       observacion: new FormControl('', [
@@ -121,13 +121,27 @@ export class CrearClienteComponent implements OnInit {
   }
 
   viewMap(): void {
+    const lat = this.clienteForm.get('latitud').value;
+    const lon = this.clienteForm.get('longitud').value;
     let sheet = this.bottomSheet.open(VerMapaComponent, {
-      data: {}
+      data: {
+        latitude: parseFloat(lat),
+        longitude: parseFloat(lon)
+      }
     });
 
     sheet.backdropClick().subscribe( () => {
       console.log('clicked');
     });  
+
+    sheet.afterDismissed().subscribe(
+      data => {
+        if(data) {
+          this.clienteForm.get('latitud').setValue(data.latitude);
+          this.clienteForm.get('longitud').setValue(data.longitude);
+        }
+      }
+    )
   }
 
 

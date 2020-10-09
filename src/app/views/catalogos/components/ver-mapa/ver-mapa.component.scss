@@ -1,25 +1,20 @@
+.wrap-address {
+  margin: 10px 0;
+}
 .map-container {
-  width: 85vw;
+  width: 75vw;
   position: relative;
-  height: 500px;
+  height: 600px;
+  margin-top: 10px;
 }
 
-.wrap-map {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  margin: 30px;
-  // height: 500px;
-  // width: 100%;
+agm-map {
+  height: 600px;
+  margin-bottom: 10px !important;
 }
 
-.map-frame {
-  border: 2px solid black;
-  height: 100%;
-}
-
-#map {
-  height: 100%;
+.wrap-button {
+  text-align: right;
+  margin-right: 15px;
+  margin-bottom: 10px;
 }

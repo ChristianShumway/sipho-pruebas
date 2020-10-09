@@ -1,0 +1,134 @@
+<mat-card class="p-0 container-create-user">
+  <mat-card-title class="">
+    <div class="card-title-text">Formulario para la modificación de un empleado</div>
+    <mat-divider></mat-divider>
+  </mat-card-title>
+
+  <mat-card-content>
+    <form [formGroup]="empleadoForm" (submit)="updateEmploye()">
+      <div fxLayout="row wrap">
+        <div fxFlex="100" fxFlex.gt-xs="100">
+          <div class="pb-1">
+            <mat-form-field class="full-width">
+              <input matInput name="nombre" formControlName="nombre" placeholder="Nombre">
+            </mat-form-field>
+            <div class="validaciones">
+              <small *ngIf="empleadoForm.controls['nombre'].hasError('required') && empleadoForm.controls['nombre'].touched" class="form-error-msg">
+                Nombre del empleado es un campo requerido
+              </small>
+            </div>
+          </div>
+          <div class="pb-1">
+            <mat-form-field class="full-width">
+              <input matInput name="apellidoPaterno" formControlName="apellidoPaterno" placeholder="Apellido Paterno">
+            </mat-form-field>
+            <div class="validaciones">
+              <small *ngIf="empleadoForm.controls['apellidoPaterno'].hasError('required') && empleadoForm.controls['apellidoPaterno'].touched"
+                class="form-error-msg">
+                Apellido paterno es un campo requerido
+              </small>
+            </div>
+          </div>
+          <div class="pb-1">
+            <mat-form-field class="full-width">
+              <input matInput name="apellidoMaterno" formControlName="apellidoMaterno" placeholder="Apellido Materno">
+            </mat-form-field>
+            <div class="validaciones">
+              <small *ngIf="empleadoForm.controls['apellidoMaterno'].hasError('required') && empleadoForm.controls['apellidoMaterno'].touched"
+                class="form-error-msg">
+                Apellido materno es un campo requerido
+              </small>
+            </div>
+          </div>
+          <div class="pb-1">
+            <mat-form-field class="full-width">
+              <input matInput name="direccion" formControlName="direccion" placeholder="Dirección">
+            </mat-form-field>
+            <div class="validaciones">
+              <small *ngIf="empleadoForm.controls['direccion'].hasError('required') && empleadoForm.controls['direccion'].touched" class="form-error-msg">
+                Dirección es un campo requerido
+              </small>
+            </div>
+          </div>
+          <div class="pb-1">
+            <mat-form-field class="full-width">
+              <input matInput name="telefono" formControlName="telefono" placeholder="Teléfono">
+            </mat-form-field>
+            <div class="validaciones">
+              <small *ngIf="empleadoForm.controls['telefono'].hasError('required') && empleadoForm.controls['telefono'].touched" class="form-error-msg">
+                Teléfono es un campo requerido
+              </small>
+            </div>
+          </div>
+          <div class="pb-1">
+            <mat-form-field class="full-width">
+              <input matInput name="nss" formControlName="nss" placeholder="Número Seguro Social">
+            </mat-form-field>
+            <div class="validaciones">
+              <small *ngIf="empleadoForm.controls['nss'].hasError('required') && empleadoForm.controls['nss'].touched" class="form-error-msg">
+                Número seguro social es un campo requerido
+              </small>
+            </div>
+          </div>
+          <div class="pb-1">
+            <mat-form-field class="full-width">
+              <input matInput name="gafete" formControlName="gafete" placeholder="Número Gafete">
+            </mat-form-field>
+            <div class="validaciones">
+              <small *ngIf="empleadoForm.controls['gafete'].hasError('required') && empleadoForm.controls['gafete'].touched" class="form-error-msg">
+                Número gafete es un campo requerido
+              </small>
+            </div>
+          </div>
+          <div class="pb-1">
+            <mat-form-field class="full-width">
+              <mat-label>Perfil</mat-label>
+              <mat-select formControlName="perfil" required>
+                <mat-option *ngFor="let perfil of perfiles" [value]="perfil.idPerfil">
+                  {{perfil.descripcion}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+            <div class="validaciones">
+              <small *ngIf="empleadoForm.controls['perfil'].hasError('required') && empleadoForm.controls['perfil'].touched" class="form-error-msg">
+                Perfil es un campo requerido
+              </small>
+            </div>
+          </div>
+
+          <div class="pb-1">
+            <mat-form-field class="full-width">
+              <input matInput type="email" name="email" formControlName="email" placeholder="Correo Electrónico">
+            </mat-form-field>
+            <div class="validaciones">
+              <small *ngIf="empleadoForm.controls['email'].hasError('required') && empleadoForm.controls['email'].touched" class="form-error-msg">
+                Correo electrónico es un campo requerido
+              </small>
+              <small *ngIf="empleadoForm.controls['email'].hasError('email') && empleadoForm.controls['email'].touched" class="form-error-msg">
+                Correo electrónico invalido
+              </small>
+            </div>
+          </div>
+          <!-- <div class="pb-1">
+              <mat-form-field class="full-width">
+                <input type="password" name="contrasena" matInput formControlName="contrasena" placeholder="Contraseña">
+              </mat-form-field>
+              <div class="validaciones">
+                <small *ngIf="empleadoForm.controls['contrasena'].hasError('required') && empleadoForm.controls['contrasena'].touched" class="form-error-msg">
+                  Contraseña es un campo requerido
+                </small>
+                <small *ngIf="empleadoForm.controls['contrasena'].hasError('minlength') && empleadoForm.controls['contrasena'].touched" class="form-error-msg">
+                  La contraseña debe ser de mayor a {{empleadoForm.controls['contrasena'].errors.minlength.requiredLength}} caracteres
+                </small>
+              </div>
+            </div> -->
+        </div>
+      </div>
+
+      <div class="cont-btns">
+        <button mat-raised-button color="primary" [disabled]="empleadoForm.invalid" type="submit">Modificar</button>
+        <button mat-raised-button [routerLink]="'/catalogos/empleados'">Cancelar</button>
+      </div>
+    </form>
+  </mat-card-content>
+</mat-card>

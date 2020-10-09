@@ -14,22 +14,8 @@ export interface Cliente {
   longitud: string;
   observacion: string;
   idEmpleadoModificacion?: number;
+  qr?: string;
 }
-
-// export interface Empleado {
-//   nombre: string;
-//   apellidoPaterno: string;
-//   apellidoMaterno: string;
-//   direccion: string;
-//   telefono: string;
-//   nss: string;
-//   perfil?: Perfil;
-//   gafete: string;
-//   email: string;
-//   contrasena?: string;
-//   cambiarContrasena?: number;
-//   imagen?: string;
-// }
 
 export interface ClienteContent {
   numberPage: number;

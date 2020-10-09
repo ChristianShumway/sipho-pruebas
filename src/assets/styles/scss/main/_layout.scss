@@ -269,6 +269,30 @@
   }
 }
 
+.title-card-catalogs {
+  width: 60%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.toolbar-avatar.md > img {
+  min-width: 48px !important;
+  // height: auto !important;
+  object-fit: contain !important;
+}
+
+p.p-info-catalogss {
+  overflow: hidden;
+}
+
+.p-info-catalogs, .p-info-catalogss span, p.p-info-catalogss {
+  // width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
 .wrap-loading-catalog{
   width: 100%;
   height: 200px;

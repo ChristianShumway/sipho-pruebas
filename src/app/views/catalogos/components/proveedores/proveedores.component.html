@@ -9,7 +9,7 @@
 
 <div fxLayout="row wrap" *ngIf="obs$ | async as proveedores; else noProveedores">
   <ng-container *ngIf="proveedores.length; else loading">
-    <div *ngFor="let proveedor of proveedores" fxFlex="100" fxFlex.gt-sm="33" fxFlex.sm="50">
+    <div *ngFor="let proveedor of proveedores" fxFlex="100" fxFlex.gt-sm="100" fxFlex.sm="100">
 
       <mat-card class="user-card p-0">
         <mat-card-title>
@@ -29,19 +29,31 @@
         </mat-card-title>
 
         <mat-card-content>
-          <div class="user-details">
-            <p class="p-info-catalogss">
-              <b>RFC:</b> {{proveedor.rfc}}</p>
-            <p class="p-info-catalogss">
-              <b>Teléfono:</b> {{proveedor.telefono}}</p>
-            <p class="p-info-catalogss">
-              <b>Dirección:</b> {{proveedor.direccion}}</p>
-            <p class="p-info-catalogss">
-              <b>Correo Electrónico:</b> {{proveedor.email}}</p>
-            <p class="p-info-catalogss">
-              <b>Tipo Proveedor:</b> {{proveedor.tipoProveedor.descripcion}}</p>
-            <p class="p-info-catalogss">
-              <b>Periodo de Compra:</b> {{proveedor.periodoCompra.descripcion}}</p>
+          <div class="wrap-details">
+            <p class="p-info-catalogss" matTooltip="RFC" matTooltipPosition="below">
+              <mat-icon class="text-muted">person</mat-icon>
+              <span>{{proveedor.rfc}}</span>
+            </p>
+            <p class="p-info-catalogss" matTooltip="Teléfono" matTooltipPosition="below">
+              <mat-icon class="text-muted">phone</mat-icon>
+              <span>{{proveedor.telefono}}</span>
+            </p>
+            <p class="p-info-catalogss" matTooltip="Dirección" matTooltipPosition="below">
+              <mat-icon class="text-muted">store</mat-icon>
+              <span>{{proveedor.direccion}}</span>
+            </p>
+            <p class="p-info-catalogss" matTooltip="Correo electrónico" matTooltipPosition="below">
+              <mat-icon class="text-muted">email</mat-icon>
+              <span>{{proveedor.email}}</span>
+            </p>
+            <p class="p-info-catalogss" matTooltip="Tipo de proveedor" matTooltipPosition="below">
+              <mat-icon class="text-muted">local_shipping</mat-icon>
+              <span>{{proveedor.tipoProveedor.descripcion}}</span>
+            </p>
+            <p class="p-info-catalogss" matTooltip="Periodo de compra" matTooltipPosition="below">
+              <mat-icon class="text-muted">departure_board</mat-icon>
+              <span>{{proveedor.periodoCompra.descripcion}}</span>
+            </p>
           </div>
         </mat-card-content>
       </mat-card>

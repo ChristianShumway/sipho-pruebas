@@ -4,6 +4,9 @@ import { Subscription } from 'rxjs';
 import { ThemeService } from '../../../shared/services/theme.service';
 import { TranslateService } from '@ngx-translate/core';
 import { LayoutService } from '../../services/layout.service';
+import { AutenticacionService } from 'app/shared/services/autenticacion.service';
+import { Router } from '@angular/router';
+import { MatSnackBar } from '@angular/material';
 
 @Component({
   selector: 'app-header-top',
@@ -28,7 +31,10 @@ export class HeaderTopComponent implements OnInit, OnDestroy {
     private navService: NavigationService,
     public themeService: ThemeService,
     public translate: TranslateService,
-    private renderer: Renderer2
+    private renderer: Renderer2,
+    private autenticacionService: AutenticacionService,
+    private router: Router,
+    private snackBar: MatSnackBar
   ) { }
 
   ngOnInit() {
@@ -74,5 +80,20 @@ export class HeaderTopComponent implements OnInit, OnDestroy {
     this.layout.publishLayoutChange({
       sidebarStyle: 'closed'
     })
+  }
+
+  logOut() {
+    this.autenticacionService.logout();
+    this.router.navigateByUrl('/login');
+    this.useAlerts('Se cerro sesión con exito', ' ', 'success-dialog');
+  }
+
+  useAlerts(message, action, className) {
+    this.snackBar.open(message, action, {
+      duration: 4000,
+      verticalPosition: 'bottom',
+      horizontalPosition: 'right',
+      panelClass: [className]
+    });
   }
 }

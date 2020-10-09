@@ -9,18 +9,19 @@
 
 <div fxLayout="row wrap" *ngIf="obs$ | async as clientes; else noClientes">
   <ng-container *ngIf="clientes.length; else loading">
-    <div *ngFor="let cliente of clientes" fxFlex="100" fxFlex.gt-sm="33" fxFlex.sm="50">
+    <div *ngFor="let cliente of clientes" fxFlex="100" fxFlex.gt-sm="100" fxFlex.sm="100">
 
       <mat-card class="user-card p-0">
         <mat-card-title>
           <div class="card-title-text">
-            <!-- <a class="toolbar-avatar md mr-1"><img [src]="user.imagen" alt=""></a> -->
+            <!-- <a class="toolbar-avatar md mr-1"><img src="./../../../../../assets/images/logo-panaderia.png" alt="logo"></a> -->
             <span class="title-card-catalogs">{{cliente.razonSocial}}</span>
             <span fxFlex></span>
             <button mat-icon-button [matMenuTriggerFor]="clienteMenu" class="">
               <mat-icon class="">more_vert</mat-icon>
             </button>
             <mat-menu #clienteMenu="matMenu">
+              <button mat-menu-item [routerLink]="['/catalogos/qr', cliente.idCliente]">Código QR</button>
               <button mat-menu-item [routerLink]="['/catalogos/modificar-cliente', cliente.idCliente]">Editar</button>
               <button mat-menu-item (click)="openDialoAlertDelete(cliente.idcliente)">Eliminar</button>
             </mat-menu>
@@ -29,23 +30,26 @@
         </mat-card-title>
 
         <mat-card-content>
-          <div class="user-details">
-            <p class="p-info-catalogss">
-              <b>Propietatio:</b> {{cliente.propietario}}</p>
-            <p class="p-info-catalogss">
-              <b>Dirección:</b> {{cliente.calle}} No. {{cliente.numero}}</p>
-            <p class="p-info-catalogss">
-              <b>Colonia:</b> {{cliente.colonia}}</p>
-            <p class="p-info-catalogss">
-              <b>Código Postal:</b> {{cliente.codigoPostal}}</p>
-            <p class="p-info-catalogss">
-              <b>Ciudad:</b> {{cliente.ciudad}}</p>
-            <p class="p-info-catalogss">
-              <b>Teléfono:</b> {{cliente.telefono}}</p>
-            <p class="p-info-catalogss">
-              <b>Correo Electrónico:</b> {{cliente.email}}</p>
-            <p class="p-info-catalogss">
-              <b>RFC:</b> {{cliente.rfc}}</p>
+          <div class="wrap-details">
+            <p class="p-info-catalogss" matTooltip="Propietario" matTooltipPosition="below">
+              <mat-icon class="text-muted">person</mat-icon>
+              <span>{{cliente.propietario}}</span>
+            </p>
+            <p class="p-info-catalogss" matTooltip="Teléfono" matTooltipPosition="below">
+              <mat-icon class="text-muted">phone</mat-icon> 
+              <span>{{cliente.telefono}}</span>
+            </p>
+            <p class="p-info-catalogss" matTooltip="Correo Electrónico" matTooltipPosition="below">
+              <mat-icon class="text-muted">email</mat-icon> 
+              <span>{{cliente.email}}</span>
+            </p>
+          </div>
+          <div class="wrap-detailss">
+            <p class="p-info-catalogss " matTooltip="Dirección" matTooltipPosition="below">
+              <mat-icon class="text-muted">store</mat-icon> 
+              <span>{{cliente.calle}} No. {{cliente.numero}}, Colonia {{cliente.colonia}}, {{cliente.codigoPostal}} {{cliente.ciudad}}, México.</span>
+              <!-- <span>{{cliente.calle}} No. {{cliente.numero}}, Colonia {{cliente.colonia}}</span> -->
+            </p>
           </div>
         </mat-card-content>
       </mat-card>

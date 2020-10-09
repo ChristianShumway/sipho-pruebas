@@ -54,6 +54,8 @@ export class ClientesComponent implements OnInit {
     this.clienteService.getClientes(idPaginator).subscribe(
       ((clientes: ClienteContent) => {
         this.clientes = clientes.content;
+        console.log(this.clientes);
+        
         this.paginator.length = clientes.totalItems;
         this.clientesTemp = this.clientes;
         this.dataSource.data = this.clientes;

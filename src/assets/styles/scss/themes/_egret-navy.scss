@@ -127,6 +127,13 @@ $primary-dark: darken( map-get($mat-primary, 500), 8% );
     .fill-color-warn {
         color: #f44336;
     }
+
+    .mat-bg-coffee {
+        background:  #C9543D !important;
+        background: white !important;
+    }
+
+    
     @media (max-width: 959px) {
       .default-bg-mobile {
         background: #ffffff;

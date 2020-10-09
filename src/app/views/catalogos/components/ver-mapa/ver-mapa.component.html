@@ -1,12 +1,25 @@
-<form>
-  <input type="text" placeholder="search">
-</form>
+
+
+<!-- <div class="form-group">
+  <label>Enter address</label>
+  <input type="text" class="form-control" (keydown.enter)="$event.preventDefault()" placeholder="Search Nearest Location" autocorrect="off"
+    autocapitalize="off" spellcheck="off" type="text" #search>
+</div> -->
 
 <div class="map-container">
-  <div class="wrap-map">
-
-    <div class="map-frame">
-      <div id="map"></div>
-    </div>
-  </div>
+  <agm-map [latitude]="latitude" [longitude]="longitude" [zoom]="zoom" [scrollwheel]="null" [gestureHandling]="'cooperative'"
+    [mapTypeControl]='true'>
+    <agm-marker [latitude]="latitude" [longitude]="longitude" [markerDraggable]="true" (dragEnd)="markerDragEnd($event)">
+    </agm-marker>
+  </agm-map>
 </div>
+
+
+<div class="wrap-address">
+  <h5><b>Dirección: </b> <span #direccion></span></h5>
+</div>
+
+<div class="wrap-button">
+  <button mat-raised-button color="primary" (click)="sendLatLon()">Aceptar</button>
+</div>
+

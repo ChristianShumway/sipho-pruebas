@@ -15,9 +15,9 @@ export const ProfileRoutes: Routes = [
       data: { title: 'Overview', breadcrumb: 'OVERVIEW' }
     }, 
     {
-      path: 'settings',
+      path: 'ajustes',
       component: ProfileSettingsComponent,
-      data: { title: 'Settings', breadcrumb: 'SETTINGS' }
+      data: { title: 'Ajustes', breadcrumb: 'Ajustes' }
     }, 
     {
       path: 'blank',

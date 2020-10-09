@@ -4,6 +4,8 @@ import { ThemeService } from "../../services/theme.service";
 import { Subscription } from "rxjs";
 import { ILayoutConf, LayoutService } from "app/shared/services/layout.service";
 import { AutenticacionService } from './../../services/autenticacion.service';
+import { Router } from "@angular/router";
+import { MatSnackBar } from "@angular/material";
 
 @Component({
   selector: "app-sidebar-side",
@@ -20,7 +22,9 @@ export class SidebarSideComponent implements OnInit, OnDestroy, AfterViewInit {
     private navService: NavigationService,
     public themeService: ThemeService,
     private layout: LayoutService,
-    private autenticacionService: AutenticacionService
+    private autenticacionService: AutenticacionService,
+    private router: Router,
+    private snackBar: MatSnackBar
   ) {}
 
   ngOnInit() {
@@ -50,6 +54,7 @@ export class SidebarSideComponent implements OnInit, OnDestroy, AfterViewInit {
       this.menuItemsSub.unsubscribe();
     }
   }
+
   toggleCollapse() {
     if (
       this.layoutConf.sidebarCompactToggle
@@ -63,5 +68,20 @@ export class SidebarSideComponent implements OnInit, OnDestroy, AfterViewInit {
             sidebarCompactToggle: true
           });
     }
+  }
+
+  logOut() {
+    this.autenticacionService.logout();
+    this.router.navigateByUrl('/login');
+    this.useAlerts('Se cerro sesión con exito', ' ', 'success-dialog');
+  }
+
+  useAlerts(message, action, className) {
+    this.snackBar.open(message, action, {
+      duration: 4000,
+      verticalPosition: 'bottom',
+      horizontalPosition: 'right',
+      panelClass: [className]
+    });
   }
 }

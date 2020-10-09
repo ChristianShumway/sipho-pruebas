@@ -46,12 +46,12 @@
                 mat-icon-button 
                 mat-xs-button
                 matTooltip="Cerrar Sesión"
-                routerLink="/sessions/signin">
+                (click)="logOut()">
                     <mat-icon>exit_to_app</mat-icon>
                 </button>
                 
                 <mat-menu #appUserMenu="matMenu">
-                    <button mat-menu-item routerLink="/profile/overview">
+                    <button mat-menu-item routerLink="/perfil/ajustes">
                         <mat-icon>account_box</mat-icon>
                         <span>Perfil</span>
                     </button>
@@ -63,7 +63,7 @@
                         <mat-icon>date_range</mat-icon>
                         <span>Calendar</span>
                     </button> -->
-                    <button mat-menu-item routerLink="/sessions/signin">
+                    <button mat-menu-item (click)="logOut()">
                         <mat-icon>exit_to_app</mat-icon>
                         <span>Cerrar Sesión</span>
                     </button>

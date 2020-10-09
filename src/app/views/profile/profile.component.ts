@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from "@angular/router";
+import { AutenticacionService } from '../../shared/services/autenticacion.service';
 
 @Component({
   selector: 'app-profile',
@@ -40,10 +41,13 @@ export class ProfileComponent implements OnInit {
     }
   };
 
-  constructor(private router: ActivatedRoute) { }
+  constructor(
+    private router: ActivatedRoute,
+    private autenticacionService: AutenticacionService
+  ) { }
 
   ngOnInit() {
-    this.activeView = this.router.snapshot.params['view']
+    this.activeView = this.router.snapshot.params['view'];
   }
 
 }

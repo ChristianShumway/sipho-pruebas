@@ -9,13 +9,13 @@
 
 <div fxLayout="row wrap" *ngIf="obs$ | async as grupos; else noGrupos">
   <ng-container *ngIf="grupos.length; else loading">
-    <div *ngFor="let grupo of grupos" fxFlex="100" fxFlex.gt-sm="33" fxFlex.sm="50">
+    <div *ngFor="let grupo of grupos" fxFlex="100" fxFlex.gt-sm="100" fxFlex.sm="100">
 
       <mat-card class="user-card p-0">
         <mat-card-title>
           <div class="card-title-text">
             <!-- <a class="toolbar-avatar md mr-1"><img [src]="user.imagen" alt=""></a> -->
-            <!-- <span class="title-card-catalogs">{{familia.descripcion}}</span> -->
+            <span class="title-card-catalogs">{{grupo.descripcion}}</span>
             <span fxFlex></span>
             <button mat-icon-button [matMenuTriggerFor]="grupoMenu" class="">
               <mat-icon class="">more_vert</mat-icon>
@@ -28,11 +28,11 @@
           <mat-divider></mat-divider>
         </mat-card-title>
 
-        <mat-card-content>
+        <!-- <mat-card-content>
           <div class="user-details">
             <p class="p-info-catalogss">{{grupo.descripcion}}</p>
           </div>
-        </mat-card-content>
+        </mat-card-content> -->
       </mat-card>
     </div>
   </ng-container>

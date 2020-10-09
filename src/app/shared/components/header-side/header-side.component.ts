@@ -2,6 +2,9 @@ import { Component, OnInit, EventEmitter, Input, Output, Renderer2 } from '@angu
 import { ThemeService } from '../../services/theme.service';
 import { LayoutService } from '../../services/layout.service';
 import { TranslateService } from '@ngx-translate/core';
+import { AutenticacionService } from '../../services/autenticacion.service';
+import { Router } from '@angular/router';
+import { MatSnackBar } from '@angular/material';
 
 @Component({
   selector: 'app-header-side',
@@ -26,7 +29,10 @@ export class HeaderSideComponent implements OnInit {
     private themeService: ThemeService,
     private layout: LayoutService,
     public translate: TranslateService,
-    private renderer: Renderer2
+    private renderer: Renderer2,
+    private autenticacionService: AutenticacionService,
+    private router: Router,
+    private snackBar: MatSnackBar
   ) {}
   ngOnInit() {
     this.egretThemes = this.themeService.egretThemes;
@@ -73,5 +79,20 @@ export class HeaderSideComponent implements OnInit {
 
   onSearch(e) {
     //   console.log(e)
+  }
+
+  logOut() {
+    this.autenticacionService.logout();
+    this.router.navigateByUrl('/login');
+    this.useAlerts('Se cerro sesión con exito', ' ', 'success-dialog');
+  }
+
+  useAlerts(message, action, className) {
+    this.snackBar.open(message, action, {
+      duration: 4000,
+      verticalPosition: 'bottom',
+      horizontalPosition: 'right',
+      panelClass: [className]
+    });
   }
 }

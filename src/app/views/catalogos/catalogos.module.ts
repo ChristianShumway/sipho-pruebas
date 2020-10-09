@@ -10,7 +10,8 @@ import { ChartsModule } from 'ng2-charts';
 import { FileUploadModule } from 'ng2-file-upload/ng2-file-upload';
 import { SharedModule } from './../../shared/shared.module';
 import { QuillModule } from 'ngx-quill';
-import { NgxMaskModule, IConfig } from 'ngx-mask'
+import { NgxMaskModule, IConfig } from 'ngx-mask';
+import { AgmCoreModule } from '@agm/core';
 
 import { CatalogosRoutingModule } from './catalogos-routing.module';
 import { FamiliaComponent } from './components/familia/familia.component';
@@ -38,6 +39,10 @@ import { ModificarClienteComponent } from './components/modificar-cliente/modifi
 import { VerMapaComponent } from './components/ver-mapa/ver-mapa.component';
 import { VerGafeteComponent } from './components/ver-gafete/ver-gafete.component';
 import { SubirImagenArticuloComponent } from './components/subir-imagen-articulo/subir-imagen-articulo.component';
+import { VerCodigoQrComponent } from './components/ver-codigo-qr/ver-codigo-qr.component';
+import { VehiculosComponent } from './components/vehiculos/vehiculos.component';
+import { CrearVehiculoComponent } from './components/crear-vehiculo/crear-vehiculo.component';
+import { ModificarVehiculoComponent } from './components/modificar-vehiculo/modificar-vehiculo.component';
 
 export let options: Partial<IConfig> | (() => Partial<IConfig>);
 
@@ -64,7 +69,7 @@ export let options: Partial<IConfig> | (() => Partial<IConfig>);
     ClientesComponent, 
     CrearClienteComponent, 
     ModificarClienteComponent, 
-    VerMapaComponent, VerGafeteComponent, SubirImagenArticuloComponent
+    VerMapaComponent, VerGafeteComponent, SubirImagenArticuloComponent, VerCodigoQrComponent, VehiculosComponent, CrearVehiculoComponent, ModificarVehiculoComponent
   ],
   imports: [
     CommonModule,
@@ -80,6 +85,7 @@ export let options: Partial<IConfig> | (() => Partial<IConfig>);
     SharedModule,
     QuillModule,
     NgxMaskModule.forRoot(options),
+    AgmCoreModule
   ],
   entryComponents: [
     VerMapaComponent,

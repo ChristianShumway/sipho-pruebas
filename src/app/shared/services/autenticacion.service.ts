@@ -10,7 +10,7 @@ import { Empleado } from '../models/empleado';
   providedIn: 'root'
 })
 export class AutenticacionService {
-
+  
   private currentUserSubject: BehaviorSubject<Empleado>;
   public currentUser: Observable<Empleado>;
   private currentProfileSubject: BehaviorSubject<Empleado>;
@@ -32,6 +32,7 @@ export class AutenticacionService {
   public get currentProfileValue(): Empleado {
     return this.currentProfileSubject.value;
   }
+
 
   getUser(idUser) {
     return this.http.get(`dashboard/getEmployeById/${idUser}`);
