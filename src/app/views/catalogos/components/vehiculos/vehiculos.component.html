@@ -7,32 +7,31 @@
 </mat-form-field>
 
 
-<div fxLayout="row wrap" *ngIf="obs$ | async as empleados; else noVehiculos">
-  <ng-container *ngIf="empleados.length; else loading">
-    <div *ngFor="let empleado of empleados" fxFlex="100" fxFlex.gt-sm="100" fxFlex.sm="100">
+<div fxLayout="row wrap" *ngIf="obs$ | async as vehiculos; else noVehiculos">
+  <ng-container *ngIf="vehiculos.length; else loading">
+    <div *ngFor="let vehiculo of vehiculos" fxFlex="100" fxFlex.gt-sm="100" fxFlex.sm="100">
 
       <mat-card class="user-card p-0">
         <mat-card-title class="">
           <div class="card-title-text">
             <a class="toolbar-avatar md mr-1">
-              <img *ngIf="empleado.imagen" src="{{urlImagen}}/{{pathImagenEmpleado}}/{{empleado.imagen}}" alt="empleado" />
+              <img *ngIf="vehiculo.imagen" src="{{urlImagen}}/{{pathImagenEmpleado}}/{{vehiculo.imagen}}" alt="vehiculo" />
             </a>
-            <span class="title-card-catalogs">{{empleado.nombre}} {{empleado.apellidoPaterno}} {{empleado.ApellidoMaterno}}</span>
+            <span class="title-card-catalogs">{{vehiculo.linea}} {{vehiculo.marca}} {{vehiculo.modelo}} - {{vehiculo.placa}}</span>
             <span fxFlex></span>
-            <button mat-icon-button [matMenuTriggerFor]="empleadoMenu" class="">
+            <button mat-icon-button [matMenuTriggerFor]="vehiculoMenu" class="">
               <mat-icon class="">more_vert</mat-icon>
             </button>
-            <mat-menu #empleadoMenu="matMenu">
-              <button mat-menu-item [routerLink]="['/catalogos/modificar-empleado', empleado.idEmpleado]">Editar</button>
-              <button mat-menu-item [routerLink]="['/catalogos/gafete', empleado.idEmpleado]">Gafete</button>
-              <!-- <button mat-menu-item (click)="openDialoAlertDelete(empleado.idEmpleado)">Eliminar</button> -->
+            <mat-menu #vehiculoMenu="matMenu">
+              <button mat-menu-item [routerLink]="['/catalogos/modificar-vehiculo', vehiculo.idVehiculo]">Editar</button>
+              <button mat-menu-item (click)="openDialoAlertDelete(vehiculo)">Eliminar</button>
             </mat-menu>
           </div>
           <mat-divider></mat-divider>
         </mat-card-title>
 
         <mat-card-content>
-          <div class="wrap-details">
+          <!-- <div class="wrap-details">
             <p class="p-info-catalogss" matTooltip="Perfil" matTooltipPosition="below">
               <mat-icon class="text-muted">account_tree</mat-icon>
               <span>{{empleado.perfil.descripcion}}</span>
@@ -53,7 +52,7 @@
               <mat-icon class="text-muted">assignment_ind</mat-icon>
               <span>{{empleado.gafete}}</span>
             </p>
-          </div>
+          </div> -->
         </mat-card-content>
       </mat-card>
     </div>

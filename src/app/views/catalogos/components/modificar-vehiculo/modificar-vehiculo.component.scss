@@ -1,3 +1,26 @@
+.wrap-image-article {
+  // border: 1px solid;
+  text-align: center;
+  margin-left: 20%;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  width: 80%;
+  // padding: 5px;
+  border-radius: 6px;
+  color: lightgray;
+  max-width: 80%;
+  display: grid;
+  justify-content: center;
+  grid-gap: 15px;
+  padding: 15px 0;
+  img {
+    vertical-align: bottom;
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
+  }
+}
+
 .validaciones{
   padding-bottom: 4px;
   // border: 1px solid red;
@@ -15,3 +38,36 @@
 .cont-btns button:first-child{
   margin-right: 10px;
 }
+
+
+.container {
+  margin: 20px 0;
+  width: 75%;
+  margin-left: 25%;
+}
+
+.wrap-title img{
+  max-width: 200px;
+}
+
+.fileupload-drop-zone-logo{
+  width: 100%;
+}
+
+.text {
+  margin: 0;
+  // font-weight: 500;
+  // font-size: 16px;
+}
+  
+.fileupload-drop-zone-logo-div{
+  text-align: center;
+  padding: 5%;
+  // padding-left: 5%;
+  // padding-right: 5%;
+  border: 1px dashed rgba(0, 0, 0, .15);
+  margin: 10px;
+  cursor: pointer;
+}
+
+

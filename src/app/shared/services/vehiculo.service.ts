@@ -18,7 +18,7 @@ export class VehiculoService {
   }
 
   getVehiculo(idVehiculo) {
-    return this.http.get<Vehiculo>(`dashboard/getVehicleById/${idVehiculo}`);
+    return this.http.get<Vehiculo>(`catalog/getVehicleById/${idVehiculo}`);
   }
 
   getVehiculosFiltro(texto: string): Observable<Vehiculo[]>  {
@@ -44,3 +44,4 @@ export class VehiculoService {
 }
 
 // post   uploadImageVehicle    > file   idVehicle        idEmploye
+// post    deleteImageVehicle    -> objetovehiculo

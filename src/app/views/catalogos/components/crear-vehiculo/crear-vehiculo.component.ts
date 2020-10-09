@@ -1,13 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Empleado } from 'app/shared/models/empleado';
+import { Vehiculo } from 'app/shared/models/vehiculo';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { EmpleadoService } from 'app/shared/services/empleado.service';
+import { VehiculoService } from 'app/shared/services/vehiculo.service';
 import { AutenticacionService } from 'app/shared/services/autenticacion.service';
 import { DatePipe } from '@angular/common';
-import { PerfilesService } from 'app/shared/services/perfiles.service';
-import { Perfil } from 'app/shared/models/perfil';
 
 @Component({
   selector: 'app-crear-vehiculo',
@@ -16,91 +14,59 @@ import { Perfil } from 'app/shared/models/perfil';
 })
 export class CrearVehiculoComponent implements OnInit {
 
-  empleadoForm: FormGroup;
+  vehiculoForm: FormGroup;
   idUsuarioLogeado;
   hoy = new Date();
   pipe = new DatePipe('en-US');
-  perfiles: Perfil[] = [];
 
   constructor(
     private router: Router,
     private snackBar: MatSnackBar,
-    private empleadoService: EmpleadoService,
+    private vehiculoService: VehiculoService,
     private autenticacionService: AutenticacionService,
-    private perfilesService: PerfilesService
   ) { }
 
   ngOnInit() {
     this.getValidations();
-    this.getCatalogs();
     this.idUsuarioLogeado = this.autenticacionService.currentUserValue;
   }
-
-  getCatalogs() {
-    this.perfilesService.getSelectPerfil().subscribe(
-      (perfiles) => {
-        console.log(perfiles);
-        this.perfiles = perfiles;
-      },
-      error => console.log(error)
-    );
-  }
-
+      
   getValidations() {
-    let contrasena = new FormControl('', [Validators.required,  Validators.minLength(8),]);
-    this.empleadoForm = new FormGroup({
-      nombre: new FormControl('', [
+    this.vehiculoForm = new FormGroup({
+      marca: new FormControl('', [
         Validators.required,
       ]),
-      apellidoPaterno: new FormControl('', [
+      linea: new FormControl('', [
         Validators.required,
       ]),
-      apellidoMaterno: new FormControl('', [
+      modelo: new FormControl('', [
         Validators.required,
       ]),
-      direccion: new FormControl('', [
+      placa: new FormControl('', [
         Validators.required,
-      ]),
-      telefono: new FormControl('', [
-        Validators.required,
-      ]),
-      nss: new FormControl('', [
-        Validators.required,
-      ]),
-      gafete: new FormControl('', [
-        Validators.required,
-      ]),
-      perfil: new FormControl('', [
-        Validators.required,
-      ]),
-      email: new FormControl('', [
-        Validators.required,
-        Validators.email
-      ]),
-      contrasena: contrasena,
-
+      ])
     })
   }
 
-  createEmploye() {
+  createVehicle() {
     const format = 'yyyy/MM/dd';
     const myFormatedDate = this.pipe.transform(this.hoy, format);
 
-    if (this.empleadoForm.valid) {
-      const empleado: Empleado = {
-        idEmpleado: 0,
+    if (this.vehiculoForm.valid) {
+      const vehiculo: Vehiculo = {
+        idVehiculo: 0,
         idEmpleadoModifico: this.idUsuarioLogeado,
-        // fechaCreacion: myFormatedDate,
-        ...this.empleadoForm.value,
+        activo: 1,
+        ...this.vehiculoForm.value,
       };
 
-      console.log(empleado);
+      console.log(vehiculo);
 
-      this.empleadoService.createEmpleado(empleado).subscribe(
+      this.vehiculoService.updateVehiculo(vehiculo).subscribe(
         ((response: any) => {
           console.log(response);
           if (response.estatus === '05') {
-            this.router.navigate(['/catalogos/empleados']);
+            this.router.navigate(['/catalogos/vehiculos']);
             this.useAlerts(response.mensaje, ' ', 'success-dialog');
           } else {
             this.useAlerts(response.mensaje, ' ', 'error-dialog');

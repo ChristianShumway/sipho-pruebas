@@ -1,13 +1,13 @@
 import { Component, OnInit, ViewChild, OnDestroy, ChangeDetectorRef } from '@angular/core';
-import { Empleado, EmpleadoContent } from '../../../../shared/models/empleado'
+import { Vehiculo, VehiculoContent } from '../../../../shared/models/vehiculo'
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource, MatPaginator, PageEvent } from '@angular/material';
 import { Observable } from 'rxjs';
 import { Router } from '@angular/router'
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { EmpleadoService } from 'app/shared/services/empleado.service';
-import { AutenticacionService } from './../../../../shared/services/autenticacion.service';
-import { ModalEliminarComponent } from '../../../../shared/components/modal-eliminar/modal-eliminar.component';
+import { VehiculoService } from 'app/shared/services/vehiculo.service';
+import { AutenticacionService } from 'app/shared/services/autenticacion.service';
+import { ModalEliminarComponent } from 'app/shared/components/modal-eliminar/modal-eliminar.component';
 import { environment } from './../../../../../environments/environment';
 
 @Component({
@@ -17,31 +17,30 @@ import { environment } from './../../../../../environments/environment';
 })
 export class VehiculosComponent implements OnInit {
 
-  empleados: Empleado[] = [];
-  empleadosTemp: Empleado[] = [];
+  vehiculos: Vehiculo[] = [];
   idUsuarioLogeado;
   paginaActual = 0;
   estatusData = 1;
   dataSerach;
   urlImagen = environment.urlImages;
-  pathImagenEmpleado = 'employe/photo';
+  pathImagenEmpleado = '';
 
 
   @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
   obs$: Observable<any>;
-  dataSource: MatTableDataSource<Empleado> = new MatTableDataSource<Empleado>();
+  dataSource: MatTableDataSource<Vehiculo> = new MatTableDataSource<Vehiculo>();
 
   constructor(
     public dialog: MatDialog,
     private changeDetectorRef: ChangeDetectorRef,
     private router: Router,
     private snackBar: MatSnackBar,
-    private empleadoService: EmpleadoService,
+    private vehiculoService: VehiculoService,
     private autenticacionService: AutenticacionService
   ) { }
 
   ngOnInit() {
-    this.getEmpleados(this.paginaActual);
+    this.getVehiculos(this.paginaActual);
     this.changeDetectorRef.detectChanges();
     // this.dataSource.paginator = this.paginator;
     this.obs$ = this.dataSource.connect();
@@ -50,18 +49,17 @@ export class VehiculosComponent implements OnInit {
   }
 
   public pageEvent(event?: PageEvent) {
-    this.getEmpleados(event.pageIndex);
+    this.getVehiculos(event.pageIndex);
     console.log(event.pageIndex);
   }
 
-  getEmpleados(idPaginator) {
-    this.empleadoService.getEmpleados(idPaginator).subscribe(
-      ((empleados: EmpleadoContent) => {
-        this.empleados = empleados.content;
-        console.log(this.empleados);
-        this.paginator.length = empleados.totalItems;
-        this.empleadosTemp = this.empleados;
-        this.dataSource.data = this.empleados;
+  getVehiculos(idPaginator) {
+    this.vehiculoService.getVehiculos(idPaginator).subscribe(
+      ((vehiculos: VehiculoContent) => {
+        this.vehiculos = vehiculos.content.filter((vehiculo: Vehiculo) => vehiculo.activo === 1);
+        console.log(this.vehiculos);
+        this.paginator.length = vehiculos.totalItems;
+        this.dataSource.data = this.vehiculos;
         this.estatusData = 1;
       }),
       error => console.log(error)
@@ -78,7 +76,7 @@ export class VehiculosComponent implements OnInit {
     const val = event.target.value.toLowerCase();
     this.dataSerach = val;
     if(val) {
-      this.empleadoService.getEmpleadososFiltro(val).subscribe(
+      this.vehiculoService.getVehiculosFiltro(val).subscribe(
         result => {
           if(result.length > 0) {
             console.log(result);
@@ -95,51 +93,35 @@ export class VehiculosComponent implements OnInit {
         error => console.log(error)
       );
     } else {
-      this.getEmpleados(this.paginaActual);
+      this.getVehiculos(this.paginaActual);
     }
-    // const val = event.target.value.toLowerCase();
-    // var columns = Object.keys(this.empleadosTemp[0]);
-    // columns.splice(columns.length - 1);
-
-    // if (!columns.length)
-    //   return;
-
-    // const rows = this.empleadosTemp.filter(function (d) {
-    //   for (let i = 0; i <= columns.length; i++) {
-    //     let column = columns[i];
-    //     if (d[column] && d[column].toString().toLowerCase().indexOf(val) > -1) {
-    //       return true;
-    //     }
-    //   }
-    // })
-
-    // this.dataSource.data = rows;
-    // // console.log(this.dataSource.data);
   }
 
-  openDialoAlertDelete(idEmpleado) {
+  openDialoAlertDelete(vehiculo: Vehiculo) {
     const dialogRef = this.dialog.open(ModalEliminarComponent, {
       width: '300px',
       panelClass: 'custom-dialog-container-delete',
-      data: idEmpleado
+      data: vehiculo
     });
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
 
-        const empleadoBaja: Partial<Empleado> = {
-          idEmpleado: idEmpleado,
-          // idEmpleadoModifico: this.idUsuarioLogeado
+        const vehiculoBaja: Partial<Vehiculo> = {
+          ...vehiculo,
+          idVehiculo: vehiculo.idVehiculo,
+          idEmpleadoModifico: this.idUsuarioLogeado,
+          activo: 0
         };
 
-        console.log(empleadoBaja)
+        console.log(vehiculoBaja);
 
-        this.empleadoService.deleteEmpleado(empleadoBaja).subscribe(
+        this.vehiculoService.updateVehiculo(vehiculoBaja).subscribe(
           response => {
             console.log(response);
             if (response.estatus === '05') {
               this.useAlerts(response.mensaje, ' ', 'success-dialog');
-              this.getEmpleados(this.paginaActual);
+              this.getVehiculos(this.paginaActual);
             } else {
               this.useAlerts(response.mensaje, ' ', 'error-dialog');
             }
