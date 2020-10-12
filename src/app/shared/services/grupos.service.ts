@@ -16,24 +16,24 @@ export class GruposService {
 
 
   getGrupos(paginator: number): Observable<GrupoContent>  {
-    return this.http.get<GrupoContent>(`catalog/getAllGrupo/${paginator}`); 
+    return this.http.get<GrupoContent>(`${environment.apiURL}/catalog/getAllGrupo/${paginator}`); 
   }
 
   getGrupo(idGrupo: number): Observable<Grupo>  {
-    return this.http.get<Grupo>(`catalog/getGrupoById/${idGrupo}`); 
+    return this.http.get<Grupo>(`${environment.apiURL}/catalog/getGrupoById/${idGrupo}`); 
   }
 
   getGruposFiltro(texto: string): Observable<Grupo[]>  {
-    return this.http.get<Grupo[]>(`catalog/getGrupoByFilter/${texto}`); 
+    return this.http.get<Grupo[]>(`${environment.apiURL}/catalog/getGrupoByFilter/${texto}`); 
   }
 
   updateGrupo(grupo: Partial<Grupo>): Observable<any>{
     const headerss = new HttpHeaders({'Content-Type': 'application/json'});
-    return this.http.post<any>(`catalog/updateGrupo`, JSON.stringify(grupo), { headers: headerss});
+    return this.http.post<any>(`${environment.apiURL}/catalog/updateGrupo`, JSON.stringify(grupo), { headers: headerss});
   }
 
   deleteGrupo(grupo:  Partial<Grupo>): Observable<any>{
     const headerss = new HttpHeaders({'Content-Type': 'application/json'});
-    return this.http.post<any>(`catalog/deleteGrupo`, JSON.stringify(grupo), { headers: headerss});
+    return this.http.post<any>(`${environment.apiURL}/catalog/deleteGrupo`, JSON.stringify(grupo), { headers: headerss});
   }
 }

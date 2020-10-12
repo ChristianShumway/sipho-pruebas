@@ -5,7 +5,7 @@
 
 export const environment = {
   production: false,
-  apiURL: 'developmentApi',
+  apiURL: '',
   urlImages: 'http://108.175.5.160:8080/Sipho/files',
   rutaServer: ''
 };

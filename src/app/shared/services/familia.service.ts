@@ -16,29 +16,29 @@ export class FamiliaService {
 
 
   getFamilias(paginator: number): Observable<FamiliaContent>  {
-    return this.http.get<FamiliaContent>(`catalog/getAllFamilia/${paginator}`); 
+    return this.http.get<FamiliaContent>(`${environment.apiURL}/catalog/getAllFamilia/${paginator}`); 
   }
 
   getFamilia(idFamilia: number): Observable<Familia>  {
-    return this.http.get<Familia>(`catalog/getFamiliaById/${idFamilia}`); 
+    return this.http.get<Familia>(`${environment.apiURL}/catalog/getFamiliaById/${idFamilia}`); 
   }
 
   getFamiliasFiltro(texto: string): Observable<Familia[]>  {
-    return this.http.get<Familia[]>(`catalog/getFamiliaByFilter/${texto}`); 
+    return this.http.get<Familia[]>(`${environment.apiURL}/catalog/getFamiliaByFilter/${texto}`); 
   }
   
   getSelectFamilia(): Observable<Familia[]>  {
-    return this.http.get<Familia[]>(`catalog/getSelectFamilia`); 
+    return this.http.get<Familia[]>(`${environment.apiURL}/catalog/getSelectFamilia`); 
   }
 
   updateFamilia(familia: Partial<Familia>): Observable<any>{
     const headerss = new HttpHeaders({'Content-Type': 'application/json'});
-    return this.http.post<any>(`catalog/updateFamilia`, JSON.stringify(familia), { headers: headerss});
+    return this.http.post<any>(`${environment.apiURL}/catalog/updateFamilia`, JSON.stringify(familia), { headers: headerss});
   }
 
   deleteFamilia(familia: Partial <Familia>): Observable<any>{
     const headerss = new HttpHeaders({'Content-Type': 'application/json'});
-    return this.http.post<any>(`catalog/deleteFamilia`, JSON.stringify(familia), { headers: headerss});
+    return this.http.post<any>(`${environment.apiURL}/catalog/deleteFamilia`, JSON.stringify(familia), { headers: headerss});
   }
   
 }

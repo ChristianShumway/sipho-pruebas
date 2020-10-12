@@ -3,6 +3,7 @@ import { ArticuloContent, Articulo, EstatusArticulo } from './../models/articulo
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { BehaviorSubject } from 'rxjs';
+import { environment } from './../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -16,30 +17,30 @@ export class ArticuloService {
   ) {}
 
   getArticulos(paginator: number): Observable<ArticuloContent>  {
-    return this.http.get<ArticuloContent>(`catalog/getAllArticle/${paginator}`); 
+    return this.http.get<ArticuloContent>(`${environment.apiURL}/catalog/getAllArticle/${paginator}`); 
   }
 
   getArticulo(idArticulo: number): Observable<Articulo>  {
-    return this.http.get<Articulo>(`catalog/getArticuloById/${idArticulo}`); 
+    return this.http.get<Articulo>(`${environment.apiURL}/catalog/getArticuloById/${idArticulo}`); 
   }
 
   getArticulosFiltro(texto: string): Observable<Articulo[]>  {
-    return this.http.get<Articulo[]>(`catalog/getArticleByFilter/${texto}`); 
+    return this.http.get<Articulo[]>(`${environment.apiURL}/catalog/getArticleByFilter/${texto}`); 
   }
 
   // getSelectEstatusArticulo
   getSelectEstatusArticulo(): Observable<EstatusArticulo[]>  {
-    return this.http.get<EstatusArticulo[]>(`catalog/getSelectEstatusArticulo`); 
+    return this.http.get<EstatusArticulo[]>(`${environment.apiURL}/catalog/getSelectEstatusArticulo`); 
   }
 
   updateArticulo(articulo: Partial<Articulo>): Observable<any>{
     const headerss = new HttpHeaders({'Content-Type': 'application/json'});
-    return this.http.post<any>(`catalog/updateArticle`, JSON.stringify(articulo), { headers: headerss});
+    return this.http.post<any>(`${environment.apiURL}/catalog/updateArticle`, JSON.stringify(articulo), { headers: headerss});
   }
 
   deleteImagenArticulo(img: any): Observable<any>{
     const headerss = new HttpHeaders({'Content-Type': 'application/json'});
-    return this.http.post<any>(`catalog/deleteImageArticle`, JSON.stringify(img), { headers: headerss});
+    return this.http.post<any>(`${environment.apiURL}/catalog/deleteImageArticle`, JSON.stringify(img), { headers: headerss});
   }
 
 

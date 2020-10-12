@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { BehaviorSubject } from 'rxjs';
 import { ProveedorContent, Proveedor, TipoProveedor, PeriodoCompraProveedor } from '../models/proveedor';
+import { environment } from './../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -15,33 +16,33 @@ export class ProveedorService {
 
 
   getProveedores(paginator: number): Observable<ProveedorContent>  {
-    return this.http.get<ProveedorContent>(`catalog/getAllWholeSale/${paginator}`); 
+    return this.http.get<ProveedorContent>(`${environment.apiURL}/catalog/getAllWholeSale/${paginator}`); 
   }
 
   getProveedor(idProveedor: number): Observable<Proveedor>  {
-    return this.http.get<Proveedor>(`catalog/getWholeSaleById/${idProveedor}`); 
+    return this.http.get<Proveedor>(`${environment.apiURL}/catalog/getWholeSaleById/${idProveedor}`); 
   }
 
   getProveedoresFiltro(texto: string): Observable<Proveedor[]>  {
-    return this.http.get<Proveedor[]>(`catalog/getWholeSalerByFilter/${texto}`); 
+    return this.http.get<Proveedor[]>(`${environment.apiURL}/catalog/getWholeSalerByFilter/${texto}`); 
   }
 
   updateProveedor(proveedor: Partial<Proveedor>): Observable<any>{
     const headerss = new HttpHeaders({'Content-Type': 'application/json'});
-    return this.http.post<any>(`catalog/updateWholeSale`, JSON.stringify(proveedor), { headers: headerss});
+    return this.http.post<any>(`${environment.apiURL}/catalog/updateWholeSale`, JSON.stringify(proveedor), { headers: headerss});
   }
 
   deleteProveedor(proveedor: Partial<Proveedor>): Observable<any>{
     const headerss = new HttpHeaders({'Content-Type': 'application/json'});
-    return this.http.post<any>(`catalog/deleteWholeSale`, JSON.stringify(proveedor), { headers: headerss});
+    return this.http.post<any>(`${environment.apiURL}/catalog/deleteWholeSale`, JSON.stringify(proveedor), { headers: headerss});
   }
 
   getTipoProveedor(): Observable<TipoProveedor[]>  {
-    return this.http.get<TipoProveedor[]>(`catalog/getTypeWholeSale`); 
+    return this.http.get<TipoProveedor[]>(`${environment.apiURL}/catalog/getTypeWholeSale`); 
   }
 
   getPeriodoCompraProveedor(): Observable<PeriodoCompraProveedor[]>  {
-    return this.http.get<PeriodoCompraProveedor[]>(`catalog/getAllPurchasePeriod`); 
+    return this.http.get<PeriodoCompraProveedor[]>(`${environment.apiURL}/catalog/getAllPurchasePeriod`); 
   }
 
 }

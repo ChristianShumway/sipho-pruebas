@@ -35,12 +35,12 @@ export class AutenticacionService {
 
 
   getUser(idUser) {
-    return this.http.get(`dashboard/getEmployeById/${idUser}`);
+    return this.http.get(`${environment.apiURL}/dashboard/getEmployeById/${idUser}`);
   }
 
   loginUser(user) {
     const headerss = new HttpHeaders({ 'Content-Type': 'application/json' });
-    return this.http.post<any>(`dashboard/autenticacion`, JSON.stringify(user), { headers: headerss })
+    return this.http.post<any>(`${environment.apiURL}/dashboard/autenticacion`, JSON.stringify(user), { headers: headerss })
       .pipe(map( user => {
         this.currentUserSubject.next(user.idEmpleado);
         this.currentProfileSubject.next(user.perfil);
@@ -50,12 +50,12 @@ export class AutenticacionService {
 
   restoreUser(user) {
     const headerss = new HttpHeaders({ 'Content-Type': 'application/json' });
-    return this.http.post<any>(`dashboard/restoreEmploye`, JSON.stringify(user), { headers: headerss })
+    return this.http.post<any>(`${environment.apiURL}/dashboard/restoreEmploye`, JSON.stringify(user), { headers: headerss })
   }
 
   updatePassword(user) {
     const headerss = new HttpHeaders({ 'Content-Type': 'application/json' });
-    return this.http.post<any>(`dashboard/changePassword`, JSON.stringify(user), { headers: headerss })
+    return this.http.post<any>(`${environment.apiURL}/dashboard/changePassword`, JSON.stringify(user), { headers: headerss })
   }
 
   logout() {
@@ -67,7 +67,7 @@ export class AutenticacionService {
   }
 
   userAuthenticated(idPerfil: number, idOpcion: number) {
-    return this.http.get(`config/isAuthenticated/${idPerfil}/${idOpcion}`);
+    return this.http.get(`${environment.apiURL}/config/isAuthenticated/${idPerfil}/${idOpcion}`);
   }
 
 }

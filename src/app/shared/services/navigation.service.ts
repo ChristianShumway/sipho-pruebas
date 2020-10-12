@@ -2,6 +2,7 @@ import { Injectable } from "@angular/core";
 import { BehaviorSubject } from "rxjs";
 import { HttpClient } from '@angular/common/http';
 import { AutenticacionService } from './autenticacion.service';
+import { environment } from 'environments/environment';
 
 interface IMenuItem {
   type: string; // Possible values: link/dropDown/icon/separator/extLink
@@ -52,7 +53,7 @@ export class NavigationService {
 
 
   getMenu(profile) {
-    return this.http.get<IMenuItem[]>(`dashboard/getMenu/${profile.idPerfil}`).subscribe(
+    return this.http.get<IMenuItem[]>(`${environment.apiURL}/dashboard/getMenu/${profile.idPerfil}`).subscribe(
       result => {
         // console.log(result);
         this.iconMenu = result;
