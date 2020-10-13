@@ -37,10 +37,10 @@ export class VerMapaComponent implements OnInit {
 
 
   constructor(
+    private mapsAPILoader: MapsAPILoader,
     private bottomSheetRef: MatBottomSheetRef<VerMapaComponent>,
     @Inject(MAT_BOTTOM_SHEET_DATA) public data: any,
     private snackBar: MatSnackBar,
-    private mapsAPILoader: MapsAPILoader,
     private ngZone: NgZone,
   ) { }
 
@@ -48,48 +48,7 @@ export class VerMapaComponent implements OnInit {
     // this.bottomSheetRef.dismiss();
      //load Places Autocomplete
 
-
-    //  this.mapsAPILoader.load().then(() => { 
-    //   this.geoCoder = new google.maps.Geocoder;
-    //   this.setCurrentLocation();
-
-    //   const autocomplete = new google.maps.places.Autocomplete(this.searchElementRef.nativeElement);
-    //   autocomplete.addListener("place_changed", () => {
-    //     this.ngZone.run(() => {
-    //       //get the place result
-    //       const place: google.maps.places.PlaceResult = autocomplete.getPlace();
-    //       console.log(place);
-    //       //verify result
-    //       if (place.geometry === undefined || place.geometry === null) {
-    //         return;
-    //       }
-
-    //       for (var i = 0; i < place.address_components.length; i++) {
-    //         let addressType = place.address_components[i].types[0];
-    //         //if (componentForm[addressType]) {
-    //         //  var val = place.address_components[i][componentForm[addressType]];
-    //         //  document.getElementById(addressType).value = val;
-    //         //}
-    //         // for the country, get the country code (the "short name") also
-    //         console.log(addressType);
-    //         if (addressType == "country") {
-    //           console.log(place.address_components[i].short_name);
-    //           console.log(place.address_components[i].long_name);
-    //         }
-    //         else{
-    //           console.log('---others---');
-    //           console.log(place.address_components[i].short_name);
-    //           console.log(place.address_components[i].long_name);
-    //         }
-    //       }
-
-    //       //set latitude, longitude and zoom
-    //       this.latitude = place.geometry.location.lat();
-    //       this.longitude = place.geometry.location.lng();
-    //       this.zoom = 12;
-    //     }); 
-    //   });
-    // });
+    this.defaultPos();
     this.mapsAPILoader.load().then(() => {
       this.setCurrentLocation();
     });
@@ -97,42 +56,43 @@ export class VerMapaComponent implements OnInit {
 
   // Get Current Location Coordinates
   private setCurrentLocation() {
-    if ('geolocation' in navigator) {
-      navigator.geolocation.getCurrentPosition((position) => {
-        console.log(position);
-        // this.latitude =position.coords.latitude;
-        // this.longitude =position.coords.longitude;
-        // this.defaultPos();
-        // this.getAddress(this.latitude, this.longitude);
-        // this.zoom = 20;
-      }, function(objPositionError){
-        switch (objPositionError.code){
+    // if ('geolocation' in navigator) {
+    //   navigator.geolocation.getCurrentPosition((position) => {
+    //     console.log(position);
+    //     // this.latitude =position.coords.latitude;
+    //     // this.longitude =position.coords.longitude;
+    //     // this.defaultPos();
+    //     // this.getAddress(this.latitude, this.longitude);
+    //     // this.zoom = 20;
+    //   }, function(objPositionError){
+    //     switch (objPositionError.code){
           
-          case objPositionError.PERMISSION_DENIED:
-            this.useAlerts('No se ha permitido el acceso a la posición del usuario', ' ', 'error-dialog');
-            break;
+    //       case objPositionError.PERMISSION_DENIED:
+    //         this.useAlerts('No se ha permitido el acceso a la posición del usuario', ' ', 'error-dialog');
+    //         break;
 
-          case objPositionError.POSITION_UNAVAILABLE:
-            this.useAlerts('No se ha podido acceder a la información de su posición', ' ', 'error-dialog');
-            break;
+    //       case objPositionError.POSITION_UNAVAILABLE:
+    //         this.useAlerts('No se ha podido acceder a la información de su posición', ' ', 'error-dialog');
+    //         break;
 
-          case objPositionError.TIMEOUT:
-            this.useAlerts('El servicio ha tardado demasiado tiempo en responder', ' ', 'error-dialog');
-            break;
+    //       case objPositionError.TIMEOUT:
+    //         this.useAlerts('El servicio ha tardado demasiado tiempo en responder', ' ', 'error-dialog');
+    //         break;
           
-          default:
-            this.useAlerts('Error desconocido', ' ', 'error-dialog');
-        }
-      }, {
-        timeout: 50000
-      });
+    //       default:
+    //         this.useAlerts('Error desconocido', ' ', 'error-dialog');
+    //     }
+    //   }, {
+    //     timeout: 50000
+    //   });
       
-    } else { 
-      this.defaultPos();
-      this.useAlerts('Su navegador no soporta la API de geolocalización', ' ', 'error-dialog');
-    }
+    // } else { 
+    //   this.defaultPos();
+    //   this.useAlerts('Su navegador no soporta la API de geolocalización', ' ', 'error-dialog');
+    // }
     
     this.defaultPos();
+    console.log('entra aqui'); 
     this.getAddress(this.latitude, this.longitude);
     this.zoom = 20;
   }
@@ -140,6 +100,8 @@ export class VerMapaComponent implements OnInit {
   private defaultPos(){
     this.latitude = this.data.latitude;
     this.longitude = this.data.longitude;
+    console.log(this.latitude);
+    console.log(this.longitude);
   }
 
   markerDragEnd($event: MouseEvent) {
@@ -153,7 +115,7 @@ export class VerMapaComponent implements OnInit {
   getAddress(latitude, longitude) {
     this.geoCoder = new google.maps.Geocoder();
     this.geoCoder.geocode({ 'location': { lat: latitude, lng: longitude } }, (results, status) => {
-      console.log(results);
+      // console.log(results);
       console.log(status);
       if (status === 'OK') {
         if (results[0]) {
