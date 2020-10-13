@@ -15,7 +15,7 @@
         <mat-card-title>
           <div class="card-title-text">
             <a class="toolbar-avatar md mr-1" >
-              <img *ngIf="!articulo.imagenes.length" src="./../../../../../assets/images/logo-panaderia.png" alt="logo">
+              <img *ngIf="!articulo.imagenes.length" src="assets/images/logo-panaderia.png" alt="logo">
               <img *ngIf="articulo.imagenes.length" src="{{urlImage}}{{articulo.imagenes[0].path}}" alt="">
             </a>
             <span class="title-card-catalogs">{{articulo.nombre}}</span>
