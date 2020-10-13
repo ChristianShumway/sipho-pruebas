@@ -168,6 +168,10 @@ export class NavigationService {
     return this.http.get<any[]>(`${environment.apiURL}/config/getAuthorizedProfiles/7`);
   }
 
+  getOptionsMenu(){
+    return this.http.get<any[]>(`${environment.apiURL}/config/getOptionsMenu/`);
+  }
+
   separatorMenu: IMenuItem[] = [
     {
       type: "separator",

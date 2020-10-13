@@ -28,12 +28,14 @@ import { VehiculosComponent } from './components/vehiculos/vehiculos.component';
 import { CrearVehiculoComponent } from './components/crear-vehiculo/crear-vehiculo.component';
 import { ModificarVehiculoComponent } from './components/modificar-vehiculo/modificar-vehiculo.component';
 import { PermisosComponent } from './components/permisos/permisos.component';
+import { AuthModuleGuard } from '../../shared/services/auth/auth-module.guard';
 
 const routes: Routes = [
   {
     component: FamiliaComponent,
     path: 'familias',
-    data: { title: 'Familia', breadcrumb: 'Familia'}
+    data: { title: 'Familia', breadcrumb: 'Familia'},
+    canActivate: [AuthModuleGuard],
   },
   {
     component: CrearFamiliaComponent,
@@ -48,7 +50,8 @@ const routes: Routes = [
   {
     component: GruposComponent,
     path: 'grupos',
-    data: { title: 'Grupos', breadcrumb: 'Grupos'}
+    data: { title: 'Grupos', breadcrumb: 'Grupos'},
+    canActivate: [AuthModuleGuard],
   },
   {
     component: CrearGrupoComponent,
@@ -63,7 +66,8 @@ const routes: Routes = [
   {
     component: PerfilesComponent,
     path: 'perfiles',
-    data: { title: 'Perfiles', breadcrumb: 'Perfiles'}
+    data: { title: 'Perfiles', breadcrumb: 'Perfiles'},
+    canActivate: [AuthModuleGuard],
   },
   {
     component: CrearPerfilComponent,
@@ -78,7 +82,9 @@ const routes: Routes = [
   {
     component: EmpleadosComponent,
     path: 'empleados',
-    data: { title: 'Empleados', breadcrumb: 'Empleados'}
+    data: { title: 'Empleados', breadcrumb: 'Empleados'},
+    canActivate: [AuthModuleGuard],
+
   },
   {
     component: CrearEmpleadoComponent,
@@ -103,7 +109,8 @@ const routes: Routes = [
   {
     component: ArticulosComponent,
     path: 'articulos',
-    data: { title: 'Articulos', breadcrumb: 'Articulos'}
+    data: { title: 'Articulos', breadcrumb: 'Articulos'},
+    canActivate: [AuthModuleGuard],
   },
   {
     component: CrearArticuloComponent,
@@ -118,7 +125,8 @@ const routes: Routes = [
   {
     component: ProveedoresComponent,
     path: 'proveedores',
-    data: { title: 'Proveedores', breadcrumb: 'Proveedores'}
+    data: { title: 'Proveedores', breadcrumb: 'Proveedores'},
+    canActivate: [AuthModuleGuard],
   },
   {
     component: CrearProveedorComponent,
@@ -133,7 +141,8 @@ const routes: Routes = [
   {
     component: ClientesComponent,
     path: 'clientes',
-    data: { title: 'Clientes', breadcrumb: 'Clientes'}
+    data: { title: 'Clientes', breadcrumb: 'Clientes'},
+    canActivate: [AuthModuleGuard],
   },
   {
     component: CrearClienteComponent,
@@ -153,7 +162,8 @@ const routes: Routes = [
   {
     component: VehiculosComponent,
     path: 'vehiculos',
-    data: { title: 'Vehículos', breadcrumb: 'Vehículos'}
+    data: { title: 'Vehículos', breadcrumb: 'Vehículos'},
+    canActivate: [AuthModuleGuard],
   },
   {
     component: CrearVehiculoComponent,
@@ -168,7 +178,8 @@ const routes: Routes = [
   {
     component: PermisosComponent,
     path: 'permisos',
-    data: { title: 'Permisos', breadcrumb: 'Permisos'}
+    data: { title: 'Permisos', breadcrumb: 'Permisos'},
+    canActivate: [AuthModuleGuard],
   },
 ];
 

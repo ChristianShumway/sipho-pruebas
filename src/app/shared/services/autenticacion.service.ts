@@ -76,7 +76,7 @@ export class AutenticacionService {
     this.currentProfileSubject.next(null);
   }
 
-  userAuthenticated(idPerfil: number, idOpcion: number) {
+  userAuthenticated(idPerfil: any, idOpcion: number) {
     return this.http.get(`${environment.apiURL}/config/isAuthenticated/${idPerfil}/${idOpcion}`);
   }
 
