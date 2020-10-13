@@ -46,15 +46,14 @@ export class NavigationService {
     private http: HttpClient,
     private autenticacionService: AutenticacionService
   ) {
-    const currentProfile =   this.autenticacionService.currentProfileValue;
-    console.log(currentProfile);
+    // const currentProfile =   this.autenticacionService.currentProfileValue;
     // this.getMenu(currentProfile);
   }
 
   getMenu(profile) {
     return this.http.get<IMenuItem[]>(`${environment.apiURL}/dashboard/getMenu/${profile.idPerfil}`).subscribe(
       result => {
-        console.log(result);
+        // console.log(result);
         this.iconMenu = result;
         this.menuItems.next(this.iconMenu);
       }

@@ -35,14 +35,15 @@ export class SidebarSideComponent implements OnInit, OnDestroy, AfterViewInit {
   ) {}
 
   ngOnInit() {
-    this.getMenu();
+    // this.getMenu();
     this.getEmpleadoLogeado();
 
     this.iconTypeMenuTitle = this.navService.iconTypeMenuTitle;
+    const currentProfile =   this.autenticacionService.currentProfileValue;
+    this.navService.getMenu(currentProfile);
     this.menuItemsSub = this.navService.menuItems$.subscribe(menuItem => {
-      console.log(menuItem);
       this.menuItems = menuItem;
-      console.log(this.menuItems);
+      // console.log(this.menuItems);
       //Checks item list has any icon type.
       this.hasIconTypeMenuItem = !!this.menuItems.filter(
         item => item.type === "icon"
@@ -61,11 +62,6 @@ export class SidebarSideComponent implements OnInit, OnDestroy, AfterViewInit {
     );
   }
 
-  // async getMenu(){
-  //   const currentProfile = await  this.autenticacionService.currentProfileValue;
-  //   // console.log(currentProfile);
-  // }
-
   getMenu() {
     const currentProfile =   this.autenticacionService.currentProfileValue;
     this.navService.getMenuLoad(currentProfile.idPerfil).subscribe(
@@ -81,12 +77,12 @@ export class SidebarSideComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.getMenu();
+    // this.getMenu();
   }
 
   ngOnChanges(){
     // console.log(this. usuarioLogeado.idPerfil);
-    this.getMenu();
+    // this.getMenu();
   }
   
   ngOnDestroy() {
