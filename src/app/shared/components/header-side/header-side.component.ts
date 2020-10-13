@@ -5,6 +5,10 @@ import { TranslateService } from '@ngx-translate/core';
 import { AutenticacionService } from '../../services/autenticacion.service';
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material';
+import { Observable } from 'rxjs';
+import { Empleado } from 'app/shared/models/empleado';
+import { environment } from './../../../../environments/environment';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-header-side',
@@ -25,6 +29,11 @@ export class HeaderSideComponent implements OnInit {
 
   public egretThemes;
   public layoutConf:any;
+
+  public empleadoLlamado;
+  public empleado$: Observable<Empleado>;
+  public urlImagen = environment.urlImages;
+
   constructor(
     private themeService: ThemeService,
     private layout: LayoutService,
@@ -38,6 +47,7 @@ export class HeaderSideComponent implements OnInit {
     this.egretThemes = this.themeService.egretThemes;
     this.layoutConf = this.layout.layoutConf;
     this.translate.use(this.currentLang.code);
+    this.getEmpleadoLogeado();
   }
   setLang(lng) {
     this.currentLang = lng;
@@ -79,6 +89,15 @@ export class HeaderSideComponent implements OnInit {
 
   onSearch(e) {
     //   console.log(e)
+  }
+
+  async getEmpleadoLogeado() {
+    const usuarioLogeado = await  this.autenticacionService.currentUserValue;
+    this.empleadoLlamado = await this.autenticacionService.getEmpleadoLogeado(usuarioLogeado);
+    this.empleado$ = await this.autenticacionService.empleadoLog$
+    .pipe(
+      map((empleado: Empleado) => empleado)
+    );
   }
 
   logOut() {

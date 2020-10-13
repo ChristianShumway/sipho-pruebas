@@ -43,6 +43,8 @@ import { VerCodigoQrComponent } from './components/ver-codigo-qr/ver-codigo-qr.c
 import { VehiculosComponent } from './components/vehiculos/vehiculos.component';
 import { CrearVehiculoComponent } from './components/crear-vehiculo/crear-vehiculo.component';
 import { ModificarVehiculoComponent } from './components/modificar-vehiculo/modificar-vehiculo.component';
+import { PermisosComponent } from './components/permisos/permisos.component';
+import { ModalPermisosComponent } from './components/modal-permisos/modal-permisos.component';
 
 export let options: Partial<IConfig> | (() => Partial<IConfig>);
 
@@ -69,7 +71,7 @@ export let options: Partial<IConfig> | (() => Partial<IConfig>);
     ClientesComponent, 
     CrearClienteComponent, 
     ModificarClienteComponent, 
-    VerMapaComponent, VerGafeteComponent, SubirImagenArticuloComponent, VerCodigoQrComponent, VehiculosComponent, CrearVehiculoComponent, ModificarVehiculoComponent
+    VerMapaComponent, VerGafeteComponent, SubirImagenArticuloComponent, VerCodigoQrComponent, VehiculosComponent, CrearVehiculoComponent, ModificarVehiculoComponent, PermisosComponent, ModalPermisosComponent
   ],
   imports: [
     CommonModule,
@@ -89,7 +91,8 @@ export let options: Partial<IConfig> | (() => Partial<IConfig>);
   ],
   entryComponents: [
     VerMapaComponent,
-    SubirImagenArticuloComponent
+    SubirImagenArticuloComponent,
+    ModalPermisosComponent
     // FotoGafeteComponent
   ]
 })

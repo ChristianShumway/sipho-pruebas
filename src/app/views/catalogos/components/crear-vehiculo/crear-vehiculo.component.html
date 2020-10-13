@@ -50,6 +50,16 @@
               </small>
             </div>
           </div>
+          <div class="pb-1">
+            <mat-form-field class="full-width">
+              <input matInput name="numeroEconomico" formControlName="numeroEconomico" placeholder="Número Económico">
+            </mat-form-field>
+            <div class="validaciones">
+              <small *ngIf="vehiculoForm.controls['numeroEconomico'].hasError('required') && vehiculoForm.controls['numeroEconomico'].touched" class="form-error-msg">
+              Número económico del vehículo es un campo requerido
+              </small>
+            </div>
+          </div>
         </div>
       </div>
 

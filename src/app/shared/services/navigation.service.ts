@@ -47,19 +47,22 @@ export class NavigationService {
     private autenticacionService: AutenticacionService
   ) {
     const currentProfile =   this.autenticacionService.currentProfileValue;
-    // console.log(currentProfile);
-    this.getMenu(currentProfile);
+    console.log(currentProfile);
+    // this.getMenu(currentProfile);
   }
-
 
   getMenu(profile) {
     return this.http.get<IMenuItem[]>(`${environment.apiURL}/dashboard/getMenu/${profile.idPerfil}`).subscribe(
       result => {
-        // console.log(result);
+        console.log(result);
         this.iconMenu = result;
         this.menuItems.next(this.iconMenu);
       }
     );
+  }
+
+  getMenuLoad(id) {
+    return this.http.get<IMenuItem[]>(`${environment.apiURL}/dashboard/getMenu/${id}`);
   }
 
   // iconMenu: IMenuItem[] = [
@@ -160,6 +163,10 @@ export class NavigationService {
   //     state: "http://demos.ui-lib.com/egret-doc/"
   //   }
   // ];
+
+  getPermisosMenu() {
+    return this.http.get<any[]>(`${environment.apiURL}/config/getAuthorizedProfiles/7`);
+  }
 
   separatorMenu: IMenuItem[] = [
     {

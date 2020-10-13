@@ -23,6 +23,7 @@ export class ModificarEmpleadoComponent implements OnInit {
   hoy = new Date();
   pipe = new DatePipe('en-US');
   perfiles: Perfil[] = [];
+  fechaIngreso;
 
   constructor(
     private router: Router,
@@ -48,6 +49,9 @@ export class ModificarEmpleadoComponent implements OnInit {
           (empleado: Empleado) => {
             console.log(empleado);
             this.empleado = empleado;
+            let fechaString = empleado.fechaIngreso;
+            this.fechaIngreso = new Date(fechaString);
+            this.fechaIngreso.setDate(this.fechaIngreso.getDate()+1);
             this.empleadoForm.patchValue(empleado);
             this.empleadoForm.get('perfil').setValue(empleado.perfil.idPerfil);
           },
@@ -88,9 +92,7 @@ export class ModificarEmpleadoComponent implements OnInit {
       nss: new FormControl('', [
         Validators.required,
       ]),
-      gafete: new FormControl('', [
-        Validators.required,
-      ]),
+      gafete: new FormControl(''),
       perfil: new FormControl('', [
         Validators.required,
       ]),
@@ -98,16 +100,21 @@ export class ModificarEmpleadoComponent implements OnInit {
         Validators.required,
         Validators.email
       ]),
+      fechaIngreso: new FormControl(this.fechaIngreso),
       // contrasena: contrasena,
 
     })
   }
 
+  public onFechaIngreso(event): void {
+    this.fechaIngreso = event.value;
+  }
+
 
   updateEmploye() {
     if (this.empleadoForm.valid) {
-      const format = 'yyyy/MM/dd';
-      const myFormatedDate = this.pipe.transform(this.hoy, format);
+      const format = 'yyyy-MM-dd';
+      const myFormatedFechaIngreso = this.pipe.transform(this.fechaIngreso, format);
 
       const refreshProfile: Perfil = this.perfiles.find( (perfil: Perfil) => perfil.idPerfil === this.empleadoForm.value.perfil );
       // console.log(refreshProfile);
@@ -116,7 +123,8 @@ export class ModificarEmpleadoComponent implements OnInit {
         idEmpleado: parseInt(this.idEmpleado),
         idEmpleadoModifico: this.idUsuarioLogeado,
         ...this.empleadoForm.value,
-        perfil: refreshProfile
+        perfil: refreshProfile,
+        fechaIngreso: myFormatedFechaIngreso
       };
       console.log(empleado);
 
@@ -126,6 +134,7 @@ export class ModificarEmpleadoComponent implements OnInit {
           if (response.estatus === '05') {
             this.router.navigate(['/catalogos/empleados']);
             this.useAlerts(response.mensaje, ' ', 'success-dialog');
+            this.autenticacionService.getEmpleadoLogeado(this.idUsuarioLogeado);
           } else {
             this.useAlerts(response.mensaje, ' ', 'error-dialog');
           }

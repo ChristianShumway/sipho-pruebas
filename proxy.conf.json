@@ -8,5 +8,10 @@
     "target": "http://108.175.5.160:8080/Sipho/",
     "secure": false,
     "logLevel": "debug"
+  },
+  "/config/*": {
+    "target": "http://108.175.5.160:8080/Sipho/",
+    "secure": false,
+    "logLevel": "debug"
   }
 }

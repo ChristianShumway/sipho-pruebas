@@ -7,9 +7,12 @@
   margin-bottom: 6px;
 }
 .profile-sidebar .propic img {
-  width: 50%;
+  width: 125px;
+  height: 125px !important;
+  object-fit: cover;
   height: auto;
   border-radius: 50%;
+  vertical-align: bottom;
 }
 .profile-sidebar .profile-title .main-title {
   font-size: 1.5rem;

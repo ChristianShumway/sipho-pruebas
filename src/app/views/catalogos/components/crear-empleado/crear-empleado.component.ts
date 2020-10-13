@@ -22,6 +22,7 @@ export class CrearEmpleadoComponent implements OnInit {
   hoy = new Date();
   pipe = new DatePipe('en-US');
   perfiles: Perfil[] = [];
+  fechaIngreso;
 
   constructor(
     private router: Router,
@@ -35,6 +36,8 @@ export class CrearEmpleadoComponent implements OnInit {
     this.getValidations();
     this.getCatalogs();
     this.idUsuarioLogeado = this.autenticacionService.currentUserValue;
+    this.fechaIngreso = new Date(this.empleadoForm.controls['fechaIngreso'].value);
+    this.fechaIngreso.setDate(this.fechaIngreso.getDate());
   }
 
   getCatalogs() {
@@ -68,9 +71,7 @@ export class CrearEmpleadoComponent implements OnInit {
       nss: new FormControl('', [
         Validators.required,
       ]),
-      gafete: new FormControl('', [
-        Validators.required,
-      ]),
+      gafete: new FormControl(''),
       perfil: new FormControl('', [
         Validators.required,
       ]),
@@ -79,20 +80,26 @@ export class CrearEmpleadoComponent implements OnInit {
         Validators.email
       ]),
       contrasena: contrasena,
-
+      fechaIngreso: new FormControl(new Date(), [
+        Validators.required,
+      ]),
     })
   }
 
+  public onFechaIngreso(event): void {
+    this.fechaIngreso = event.value;
+  }
+
   createEmploye() {
-    const format = 'yyyy/MM/dd';
-    const myFormatedDate = this.pipe.transform(this.hoy, format);
+    const format = 'yyyy-MM-dd';
+    const myFormatedDate = this.pipe.transform(this.fechaIngreso, format);
 
     if (this.empleadoForm.valid) {
       const empleado: Empleado = {
         idEmpleado: 0,
         idEmpleadoModifico: this.idUsuarioLogeado,
-        // fechaCreacion: myFormatedDate,
         ...this.empleadoForm.value,
+        fechaIngreso: myFormatedDate,
       };
 
       console.log(empleado);

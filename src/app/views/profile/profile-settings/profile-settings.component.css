@@ -1,0 +1,16 @@
+.validaciones{
+  padding-bottom: 4px;
+  height: 0px;
+}
+
+.validaciones small{
+  padding: 0 !important;
+}
+
+.cont-btns{
+  text-align: right;
+}
+
+.cont-btns button:first-child{
+  margin-right: 10px;
+}

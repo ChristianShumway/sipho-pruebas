@@ -15,13 +15,17 @@ export class AutenticacionService {
   public currentUser: Observable<Empleado>;
   private currentProfileSubject: BehaviorSubject<Empleado>;
   public currentProfile: Observable<Empleado>;
+  
+  private empleado: Empleado;
+  private empleadoLogeado = new BehaviorSubject<Empleado>(null);
+  empleadoLog$ = this.empleadoLogeado.asObservable()
 
   constructor(
     private http: HttpClient
   ) {
     this.currentUserSubject = new BehaviorSubject<Empleado>(JSON.parse(localStorage.getItem('currentUserSession')));
     this.currentUser = this.currentUserSubject.asObservable();
-    this.currentProfileSubject = new BehaviorSubject<Empleado>(JSON.parse(localStorage.getItem('perfilEmpleado')));
+    this.currentProfileSubject = new BehaviorSubject<any>(JSON.parse(localStorage.getItem('perfilEmpleado')));
     this.currentProfile = this.currentProfileSubject.asObservable();
   }
 
@@ -29,10 +33,16 @@ export class AutenticacionService {
     return this.currentUserSubject.value;
   }
 
-  public get currentProfileValue(): Empleado {
+  public get currentProfileValue(): any {
     return this.currentProfileSubject.value;
   }
 
+  getEmpleadoLogeado(idUser) {
+    return this.http.get(`${environment.apiURL}/dashboard/getEmployeById/${idUser}`).subscribe(
+      (empleado: Empleado) => this.empleadoLogeado.next(empleado), 
+      (error) => console.log(error) 
+    );
+  }
 
   getUser(idUser) {
     return this.http.get(`${environment.apiURL}/dashboard/getEmployeById/${idUser}`);

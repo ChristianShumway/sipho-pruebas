@@ -1,20 +1,22 @@
-<div fxLayout="row wrap">
+<div fxLayout="row wrap" *ngIf="empleado$ | async as empleado; else loading">
   <div fxFlex="100" fxFlex.gt-md="400px" fxFlex.gt-sm="50">
     <mat-card class="profile-sidebar mb-1 pb-0">
       <div class="propic text-center">
-        <img src="assets/images/sq-face-220.jpg" alt="">
+        <img src="{{urlImagen}}/employe/photo/{{empleado.imagen}}" alt="empleado">
       </div>
       <div class="profile-title text-center mb-1">
-        <div class="main-title">Nombre <b>Empleado</b></div>
-        <div class="subtitle mb-05">Puesto</div>
+        <div class="main-title"><b>{{empleado.nombre}}</b>  {{empleado.apellidoPaterno}} {{empleado.apellidoMaterno}}</div>
+        <div class="subtitle mb-05">{{empleado.perfil.descripcion}}</div>
         <!-- <div class="text-muted">Hi I'm Jhone, sit amet consectetur adipisicing elit. Aperiam repellendus nam perspiciatis.</div> -->
       </div>
 
       <mat-list>
-        <mat-list-item><mat-icon class="mr-1">public</mat-icon> www.mhrafi.com</mat-list-item>
-        <mat-list-item><mat-icon class="mr-1">email</mat-icon> example@gmail.com</mat-list-item>
-        <mat-list-item><mat-icon class="mr-1">phone</mat-icon> 8801822778800</mat-list-item>
-        <mat-list-item><mat-icon class="mr-1">add_location</mat-icon> SUST, Sylhet, BD</mat-list-item>
+        <mat-list-item><mat-icon class="mr-1">email</mat-icon> {{empleado.email}}</mat-list-item>
+        <mat-list-item><mat-icon class="mr-1">phone</mat-icon> {{empleado.telefono}}</mat-list-item>
+        <mat-list-item><mat-icon class="mr-1">add_location</mat-icon>{{empleado.direccion}}</mat-list-item>
+        <mat-list-item><mat-icon class="mr-1">assignment_ind</mat-icon>{{empleado.gafete}}</mat-list-item>
+        <mat-list-item><mat-icon class="mr-1">local_hospital</mat-icon>{{empleado.nss}}</mat-list-item>
+        <mat-list-item><mat-icon class="mr-1">date_range</mat-icon>{{empleado.fechaIngreso | date}}</mat-list-item>
       </mat-list>
 
       <!-- <div class="profile-actions mb-1" fxLayoutAlign="center center">
@@ -109,3 +111,9 @@
     <router-outlet></router-outlet>
   </div>
 </div>
+
+<ng-template #loading>
+  <div class="wrap-loading-catalog">
+    <mat-spinner [diameter]="60"></mat-spinner>
+  </div>
+</ng-template>

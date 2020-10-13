@@ -13,6 +13,7 @@ import { MatDialog } from '@angular/material';
 import { ModalEliminarComponent } from '../../../../shared/components/modal-eliminar/modal-eliminar.component';
 import { debounceTime } from 'rxjs/operators';
 import { FileUploader } from 'ng2-file-upload';
+import { parse } from 'querystring';
 
 @Component({
   selector: 'app-modificar-articulo',
@@ -31,6 +32,7 @@ export class ModificarArticuloComponent implements OnInit {
   catalogEstatus: EstatusArticulo[] = [];
   urlImage = environment.urlImages;
   imgArticle;
+  selectedVal;
 
   public uploaderArchivo: FileUploader = new FileUploader({ url: '' });
   public hasBaseDropZoneOver: boolean = false;
@@ -68,6 +70,8 @@ export class ModificarArticuloComponent implements OnInit {
             }
             this.articulo = articulo;
             this.articuloForm.patchValue(articulo);
+            this.selectedVal = this.articulo.materiaPrima.toString();
+            console.log(this.selectedVal);
             this.articuloForm.get('familia').setValue(articulo.familia.idFamilia);
             this.articuloForm.get('estatusArticulo').setValue(articulo.estatusArticulo.idEstatusArticulo);
           },
@@ -109,8 +113,16 @@ export class ModificarArticuloComponent implements OnInit {
       ]),
       costo: new FormControl('', [
         Validators.required,
-      ])
+      ]),
+      // materiaPrima: new FormControl('', [
+      //   Validators.required,
+      // ])
     })
+  }
+
+  public onValChange(val) {
+    this.selectedVal = val;
+    console.log(val);
   }
 
   updateArticle() {
@@ -128,7 +140,8 @@ export class ModificarArticuloComponent implements OnInit {
         idEmpleadoModifico: this.idUsuarioLogeado,
         ...this.articuloForm.value,
         familia: refreshFamily,
-        estatusArticulo: refreshEstatus
+        estatusArticulo: refreshEstatus,
+        materiaPrima: parseInt(this.selectedVal)
       };
       console.log(articulo);
 

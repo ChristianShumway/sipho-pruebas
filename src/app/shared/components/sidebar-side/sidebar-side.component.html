@@ -16,13 +16,13 @@
             </div>
         
             <!-- Sidebar user -->
-            <div class="app-user">
+            <div class="app-user" *ngIf="empleado$ | async as empleado; else loading">
                 <div class="app-user-photo">
-                <img src="assets/images/face-7.jpg" class="mat-elevation-z1" alt="">
+                <img src="{{urlImagen}}/employe/photo/{{empleado.imagen}}" class="mat-elevation-z1" alt="">
                 </div>
                 <span class="app-user-name mb-05">
                 <!-- <mat-icon class="icon-xs text-muted">person</mat-icon>  -->
-                Watson Joyce
+                {{empleado.nombre}} {{empleado.apellidoPaterno}} {{empleado.apellidoMaterno}}
                 </span>
                 <!-- Small buttons -->
                 <div class="app-user-controls">
@@ -70,8 +70,17 @@
                     </mat-menu>
                 </div>
             </div>
+            <ng-template #loading>
+                <div class="wrap-loading-catalog">
+                    <mat-spinner [diameter]="40"></mat-spinner>
+                </div>
+            </ng-template>
             <!-- Navigation -->
-            <app-sidenav [items]="menuItems" [hasIconMenu]="hasIconTypeMenuItem" [iconMenuTitle]="iconTypeMenuTitle"></app-sidenav>
+            <div>
+                <!-- {{menuItems | json}} -->
+                <app-sidenav [items]="menuItems" [hasIconMenu]="hasIconTypeMenuItem" [iconMenuTitle]="iconTypeMenuTitle"></app-sidenav>
+            </div>
+            
         </div>
     </div>
 </div>

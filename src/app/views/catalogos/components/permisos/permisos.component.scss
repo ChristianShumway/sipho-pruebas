@@ -1,0 +1,26 @@
+.mat-expanded .mat-expansion-panel-header {
+  margin-bottom: 0rem; 
+  // border: 1px solid red !important;
+}
+
+mat-expansion-panel.panel-uno.mat-expanded{
+  // background: rgba(211, 211, 211, 0.12);;
+}
+
+.btn-permisos{
+  margin: 15px 0;
+}
+
+.opcion-principal{
+  color: gray;
+  text-transform: uppercase;
+}
+
+.titulo-subopcion{
+  color: gray;
+  text-transform: lowercase;
+}
+
+.titulo-subopcion p::first-letter{
+  text-transform: uppercase;
+}

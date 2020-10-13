@@ -48,30 +48,39 @@
     <span class="notification-number mat-bg-warn">3</span>
   </button> -->
   <!-- Top left user menu -->
-  <button
-    mat-icon-button
-    [matMenuTriggerFor]="accountMenu"
-    class="topbar-button-right img-button"
-  >
-    <img src="assets/images/face-7.jpg" alt="" />
-  </button>
+  <ng-container *ngIf="empleado$ | async as empleado; else loading">
+    <button
+      mat-icon-button
+      [matMenuTriggerFor]="accountMenu"
+      class="topbar-button-right img-button"
+    >
+      <img src="{{urlImagen}}/employe/photo/{{empleado.imagen}}" alt="empleado" />
+    </button>
+  
+    <mat-menu #accountMenu="matMenu">
+      <button mat-menu-item [routerLink]="['/perfil/ajustes']">
+        <mat-icon>account_box</mat-icon>
+        <span>Perfil</span>
+      </button>
+      <!-- <button mat-menu-item [routerLink]="['/profile/settings']">
+        <mat-icon>settings</mat-icon>
+        <span>Perfil</span>
+      </button> -->
+      <!-- <button mat-menu-item>
+        <mat-icon>notifications_off</mat-icon>
+        <span>Disable alerts</span>
+      </button> -->
+      <button mat-menu-item (click)="logOut()">
+        <mat-icon>exit_to_app</mat-icon>
+        <span>Cerrar Sesión</span>
+      </button>
+    </mat-menu>
+  </ng-container>
 
-  <mat-menu #accountMenu="matMenu">
-    <button mat-menu-item [routerLink]="['/perfil/ajustes']">
-      <mat-icon>account_box</mat-icon>
-      <span>Perfil</span>
-    </button>
-    <!-- <button mat-menu-item [routerLink]="['/profile/settings']">
-      <mat-icon>settings</mat-icon>
-      <span>Perfil</span>
-    </button> -->
-    <!-- <button mat-menu-item>
-      <mat-icon>notifications_off</mat-icon>
-      <span>Disable alerts</span>
-    </button> -->
-    <button mat-menu-item (click)="logOut()">
-      <mat-icon>exit_to_app</mat-icon>
-      <span>Cerrar Sesión</span>
-    </button>
-  </mat-menu>
+  <ng-template #loading>
+    <div class="wrap-loading-catalg">
+      <mat-spinner [diameter]="20"></mat-spinner>
+    </div>
+  </ng-template>
+  
 </mat-toolbar>

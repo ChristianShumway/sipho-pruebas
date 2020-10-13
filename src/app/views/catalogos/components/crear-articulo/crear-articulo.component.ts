@@ -70,6 +70,9 @@ export class CrearArticuloComponent implements OnInit {
       ]),
       costo: new FormControl('', [
         Validators.required,
+      ]),
+      materiaPrima: new FormControl('', [
+        Validators.required,
       ])
     })
   }
@@ -83,6 +86,7 @@ export class CrearArticuloComponent implements OnInit {
         idArticulo: 0,
         idEmpleadoModifico: this.idUsuarioLogeado,
         ...this.articuloForm.value,
+        materiaPrima: parseInt(this.articuloForm.get('materiaPrima').value)
       };
 
       console.log(articulo);

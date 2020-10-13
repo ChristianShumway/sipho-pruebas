@@ -1,6 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from "@angular/router";
 import { AutenticacionService } from '../../shared/services/autenticacion.service';
+import { Empleado } from './../../shared/models/empleado';
+import { Observable } from 'rxjs';
+import { environment } from './../../../environments/environment';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-profile',
@@ -8,6 +12,10 @@ import { AutenticacionService } from '../../shared/services/autenticacion.servic
 })
 export class ProfileComponent implements OnInit {
   activeView : string = 'overview';
+
+  public empleadoLlamado;
+  public empleado$: Observable<Empleado>;
+  public urlImagen = environment.urlImages
 
   // Doughnut
   doughnutChartColors: any[] = [{
@@ -48,6 +56,16 @@ export class ProfileComponent implements OnInit {
 
   ngOnInit() {
     this.activeView = this.router.snapshot.params['view'];
+    this.getEmpleadoLogeado();
+  }
+
+  async getEmpleadoLogeado() {
+    const usuarioLogeado = await  this.autenticacionService.currentUserValue;
+    this.empleadoLlamado = await this.autenticacionService.getEmpleadoLogeado(usuarioLogeado);
+    this.empleado$ = await this.autenticacionService.empleadoLog$
+    .pipe(
+      map((empleado: Empleado) => empleado)
+    );
   }
 
 }

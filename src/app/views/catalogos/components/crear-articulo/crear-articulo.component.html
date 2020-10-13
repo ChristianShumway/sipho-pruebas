@@ -70,6 +70,17 @@
             </div>
           </div>
         </div>
+        <div class="pb-1">
+          <div class="example-selected-value">Materia Prima:</div>
+          <mat-button-toggle-group #group="matButtonToggleGroup" formControlName="materiaPrima" value="0">
+            <mat-button-toggle value="1" class="true">
+              <mat-icon>done</mat-icon> 
+            </mat-button-toggle>
+            <mat-button-toggle value="0" class="false">
+              <mat-icon>clear</mat-icon>
+            </mat-button-toggle>
+          </mat-button-toggle-group>
+        </div>
       </div>
 
       <div class="cont-btns">

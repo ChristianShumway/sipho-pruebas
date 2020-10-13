@@ -44,6 +44,9 @@ export class CrearVehiculoComponent implements OnInit {
       ]),
       placa: new FormControl('', [
         Validators.required,
+      ]),
+      numeroEconomico: new FormControl('', [
+        Validators.required,
       ])
     })
   }

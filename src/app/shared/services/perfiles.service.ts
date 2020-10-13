@@ -4,6 +4,8 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from './../../../environments/environment'; 
 import { Observable } from 'rxjs';
 import { BehaviorSubject } from 'rxjs';
+import { AuthorizedProfile } from './../models/authorized-profile';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -37,5 +39,14 @@ export class PerfilesService {
   deletePerfil(perfil:  Partial<Perfil>): Observable<any>{
     const headerss = new HttpHeaders({'Content-Type': 'application/json'});
     return this.http.post<any>(`${environment.apiURL}/catalog/deletePerfil`, JSON.stringify(perfil), { headers: headerss});
+  }
+
+  getAuthorizedProfiles(idOPtion: number){
+    return this.http.get<AuthorizedProfile>(`${environment.apiURL}/config/getAuthorizedProfiles/${idOPtion}`);
+  }
+
+  updateAuthorizedProfile(authorizedProfile: Partial<AuthorizedProfile[]>): Observable<any>{
+    const headerss = new HttpHeaders({'Content-Type': 'application/json'});
+    return this.http.post<Perfil>(`${environment.apiURL}/config/saveAuthorizedProfiles`, JSON.stringify(authorizedProfile), { headers: headerss});
   }
 }

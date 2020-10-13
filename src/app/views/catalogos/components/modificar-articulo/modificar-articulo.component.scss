@@ -70,4 +70,12 @@
   cursor: pointer;
 }
 
+::ng-deep .mat-button-toggle-checked.true {
+  background: #a5d6a7 !important;
+  color: white;
+}
 
+::ng-deep .mat-button-toggle-checked.false {
+  background: #ffab91 !important;
+  color: white;
+}

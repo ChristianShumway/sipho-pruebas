@@ -70,7 +70,7 @@
               </small>
             </div>
           </div>
-          <div class="pb-1">
+          <!-- <div class="pb-1">
             <mat-form-field class="full-width">
               <input matInput name="gafete" formControlName="gafete" placeholder="Número Gafete">
             </mat-form-field>
@@ -79,7 +79,27 @@
                 Número gafete es un campo requerido
               </small>
             </div>
+          </div> -->
+          <div class="pb-1">
+            <mat-form-field class="full-width">
+              <input 
+                matInput 
+                [matDatepicker]="fechaIngreso"
+                formControlName="fechaIngreso" 
+                name="date" 
+                placeholder="Fecha Ingreso" 
+                (dateChange)="onFechaIngreso($event)"
+              >
+              <mat-datepicker-toggle matSuffix [for]="fechaIngreso" (selectedChange)="onFechaIngreso($event)"></mat-datepicker-toggle>
+              </mat-form-field>
+              <mat-datepicker #fechaIngreso></mat-datepicker>
+            <div class="validaciones">
+              <small *ngIf="empleadoForm.controls['fechaIngreso'].hasError('required') && empleadoForm.controls['fechaIngreso'].touched" class="form-error-msg">
+                Fecha de ingreso es un campo requerido
+              </small>
+            </div>
           </div>
+          
           <div class="pb-1">
             <mat-form-field class="full-width">
               <mat-label>Perfil</mat-label>

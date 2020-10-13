@@ -1,0 +1,22 @@
+<div mat-dialog-title class="mat-title">
+  <img src="assets/images/logo-panaderia.png" alt="cima" class="logo panaderia" />
+  <h3>Perfiles</h3>
+</div>
+
+<div mat-dialog-content class="mat-content">
+  <div class="data-principal"></div>
+  <!-- <label>Seleccionar todos los perfiles</label> -->
+  <hr>
+  <mat-selection-list #profileAuth>
+    <mat-list-option (click)="onProfileChange(profileAuth)" *ngFor="let profile of authorizedProfileList" [value]="profile" [selected]="profile.selected">
+      {{profile.nombre}}
+    </mat-list-option>
+  </mat-selection-list>
+</div>
+
+<div mat-dialog-actions>
+  <div class="wrap-buttons">
+    <button mat-button (click)="onNoClick()">Cerrar</button>
+    <button mat-raised-button color="primary" [mat-dialog-close]="authorizedProfileListSelected" cdkFocusInitial>Ok</button>
+  </div>
+</div>

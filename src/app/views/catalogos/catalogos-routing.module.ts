@@ -27,6 +27,7 @@ import { VerCodigoQrComponent } from './components/ver-codigo-qr/ver-codigo-qr.c
 import { VehiculosComponent } from './components/vehiculos/vehiculos.component';
 import { CrearVehiculoComponent } from './components/crear-vehiculo/crear-vehiculo.component';
 import { ModificarVehiculoComponent } from './components/modificar-vehiculo/modificar-vehiculo.component';
+import { PermisosComponent } from './components/permisos/permisos.component';
 
 const routes: Routes = [
   {
@@ -163,6 +164,11 @@ const routes: Routes = [
     component: ModificarVehiculoComponent,
     path: 'modificar-vehiculo/:idVehiculo',
     data: { title: 'Modificar Vehículo', breadcrumb: 'Modificar Vehículo'}
+  },
+  {
+    component: PermisosComponent,
+    path: 'permisos',
+    data: { title: 'Permisos', breadcrumb: 'Permisos'}
   },
 ];
 

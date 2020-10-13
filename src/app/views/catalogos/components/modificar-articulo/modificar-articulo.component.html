@@ -70,6 +70,17 @@
               </small>
             </div>
           </div>
+          <div class="pb-1">
+            <div class="example-selected-value">Materia Prima:</div>
+            <mat-button-toggle-group #group="matButtonToggleGroup" [value]="selectedVal" (change)="onValChange(group.value)"  >
+              <mat-button-toggle value="1" class="true">
+                <mat-icon>done</mat-icon> 
+              </mat-button-toggle>
+              <mat-button-toggle value="0" class="false">
+                <mat-icon>clear</mat-icon>
+              </mat-button-toggle>
+            </mat-button-toggle-group>
+          </div>
         </div>
         <div fxFlex="100" fxFlex.gt-xs="40">
           <div class="wrap-image-article" *ngIf="imgArticle">

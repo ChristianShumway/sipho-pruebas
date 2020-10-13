@@ -9,12 +9,13 @@ export interface Empleado {
   telefono: string;
   nss: string;
   perfil?: Perfil;
-  gafete: string;
+  gafete?: string;
   email: string;
   contrasena?: string;
   idEmpleadoModifico?: number;
   cambiarContrasena?: number;
   imagen?: string;
+  fechaIngreso: string;
 }
 
 export interface EmpleadoContent {
