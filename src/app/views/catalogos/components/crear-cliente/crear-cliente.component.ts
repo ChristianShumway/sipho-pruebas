@@ -67,10 +67,10 @@ export class CrearClienteComponent implements OnInit {
       ciudad: new FormControl('', [
         Validators.required,
       ]),
-      latitud: new FormControl('21.862058500142656', [
+      latitud: new FormControl('21.8980987', [
         Validators.required,
       ]),
-      longitud: new FormControl('-102.29690491288909', [
+      longitud: new FormControl('-102.2872657', [
         Validators.required,
       ]),
       observacion: new FormControl('', [

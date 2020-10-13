@@ -102,9 +102,9 @@ export class VerMapaComponent implements OnInit {
         console.log(position);
         // this.latitude =position.coords.latitude;
         // this.longitude =position.coords.longitude;
-        this.defaultPos();
-        this.getAddress(this.latitude, this.longitude);
-        this.zoom = 20;
+        // this.defaultPos();
+        // this.getAddress(this.latitude, this.longitude);
+        // this.zoom = 20;
       }, function(objPositionError){
         switch (objPositionError.code){
           
@@ -132,9 +132,9 @@ export class VerMapaComponent implements OnInit {
       this.useAlerts('Su navegador no soporta la API de geolocalización', ' ', 'error-dialog');
     }
     
-    // this.defaultPos();
-    // this.getAddress(this.latitude, this.longitude);
-    // this.zoom = 20;
+    this.defaultPos();
+    this.getAddress(this.latitude, this.longitude);
+    this.zoom = 20;
   }
 
   private defaultPos(){
