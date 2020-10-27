@@ -39,7 +39,10 @@ export class AutenticacionService {
 
   getEmpleadoLogeado(idUser) {
     return this.http.get(`${environment.apiURL}/dashboard/getEmployeById/${idUser}`).subscribe(
-      (empleado: Empleado) => this.empleadoLogeado.next(empleado), 
+      (empleado: Empleado) => {
+        // console.log(empleado);
+        this.empleadoLogeado.next(empleado);
+      }, 
       (error) => console.log(error) 
     );
   }

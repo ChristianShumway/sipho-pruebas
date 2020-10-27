@@ -7,6 +7,8 @@ import {MatSnackBar} from '@angular/material/snack-bar';
 import { GruposService } from 'app/shared/services/grupos.service';
 import { AutenticacionService } from './../../../../shared/services/autenticacion.service';
 import { DatePipe } from '@angular/common';
+import { MatButton } from '@angular/material';
+import { ViewChild } from '@angular/core';
 
 @Component({
   selector: 'app-crear-grupo',
@@ -19,7 +21,7 @@ export class CrearGrupoComponent implements OnInit {
   idUsuarioLogeado;
   hoy = new Date();
   pipe = new DatePipe('en-US');
-
+  @ViewChild(MatButton, {static: false}) submitButton: MatButton;
 
   constructor(
     private router: Router,
@@ -46,6 +48,7 @@ export class CrearGrupoComponent implements OnInit {
     const myFormatedDate = this.pipe.transform(this.hoy, format);
 
     if(this.grupoForm.valid){
+      this.submitButton.disabled = true;
       const grupo: Grupo = {
         idGrupo: 0,
         idEmpleadoCreo: this.idUsuarioLogeado,
@@ -63,11 +66,13 @@ export class CrearGrupoComponent implements OnInit {
             this.useAlerts(response.mensaje, ' ', 'success-dialog');
           } else {
             this.useAlerts(response.mensaje, ' ', 'error-dialog');
+            this.submitButton.disabled = false;
           }
         }),
         (error => {
           console.log(error);
           this.useAlerts(error.message, ' ', 'error-dialog');
+          this.submitButton.disabled = false;
         })
       );
     }

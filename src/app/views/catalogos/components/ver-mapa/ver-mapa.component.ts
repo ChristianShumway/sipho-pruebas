@@ -22,6 +22,12 @@ import { MapsAPILoader, MouseEvent, AgmMap } from '@agm/core';
 export class VerMapaComponent implements OnInit {
   // private map;
 
+  private mylocations = [
+    { lat: 21.8859281, lng: -102.3046445 },
+    { lat: 21.9299648, lng: -102.2715139},
+    { lat: 21.9241922, lng: -102.2803545 }
+  ];
+
   @ViewChild('search', {static: true})
   public searchElementRef: ElementRef;
   @ViewChild('direccion', {static: true})

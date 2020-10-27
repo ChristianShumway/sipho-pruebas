@@ -29,6 +29,7 @@ import { CrearVehiculoComponent } from './components/crear-vehiculo/crear-vehicu
 import { ModificarVehiculoComponent } from './components/modificar-vehiculo/modificar-vehiculo.component';
 import { PermisosComponent } from './components/permisos/permisos.component';
 import { AuthModuleGuard } from '../../shared/services/auth/auth-module.guard';
+import { VerCodigoQrVehiculoComponent } from './components/ver-codigo-qr-vehiculo/ver-codigo-qr-vehiculo.component';
 
 const routes: Routes = [
   {
@@ -157,7 +158,7 @@ const routes: Routes = [
   {
     component: VerCodigoQrComponent,
     path: 'qr/:idCliente',
-    data: { title: 'Código QR', breadcrumb: 'Código QR'}
+    data: { title: 'Código QR Cliente', breadcrumb: 'Código QR Cliente'}
   },
   {
     component: VehiculosComponent,
@@ -174,6 +175,11 @@ const routes: Routes = [
     component: ModificarVehiculoComponent,
     path: 'modificar-vehiculo/:idVehiculo',
     data: { title: 'Modificar Vehículo', breadcrumb: 'Modificar Vehículo'}
+  },
+  {
+    component: VerCodigoQrVehiculoComponent,
+    path: 'qr-vehiculo/:idVehiculo',
+    data: { title: 'Código QR Vehículo', breadcrumb: 'Código QR Vehículo'}
   },
   {
     component: PermisosComponent,

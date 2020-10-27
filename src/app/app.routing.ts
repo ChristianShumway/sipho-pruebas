@@ -40,12 +40,16 @@ export const rootRouterConfig: Routes = [
         path: 'catalogos', 
         loadChildren: () => import('./views/catalogos/catalogos.module').then(m => m.CatalogosModule), 
         data: { title: 'Catálogos', breadcrumb: 'Catálogos'},
-        // canActivate: [AuthModuleGuard],
       },
       {
         path: 'perfil', 
         loadChildren: () => import('./views/profile/profile.module').then(m => m.ProfileModule), 
         data: { title: 'Perfil', breadcrumb: 'Perfil'}
+      },
+      {
+        path: 'bitacora-checkin', 
+        loadChildren: () => import('./views/bitacora-checkin/bitacora-checkin.module').then(m => m.BitacoraCheckinModule), 
+        data: { title: 'Bitácora Checkin', breadcrumb: 'Bitácora Checkin'}
       },
       {
         path: 'others', 

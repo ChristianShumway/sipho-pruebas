@@ -1,0 +1,46 @@
+<mat-card *ngIf="vehiculo; else loading">
+  <div class="container-qr">
+    <div class="wrap-buttons">
+      <button mat-icon-button [routerLink]="['/catalogos/vehiculos']" matTooltip="Regresar" matTooltipPosition="left">
+        <mat-icon>keyboard_backspace</mat-icon>
+      </button>
+    </div>
+    <div class="wrap-qr" #printme id="printme">
+      <div class="front" #downloadFront>
+        <div class="wrap-logo">
+          <img src="assets/images/logo-panaderia.png" alt="logo">
+        </div>
+
+        <div class="wrap-image-qr">
+          <img [src]="codigoQR" alt="qr">
+        </div>
+        <div class="wrap-data">
+          <p class="rs">{{vehiculo.linea}} {{vehiculo.marca}} {{vehiculo.modelo}} - {{vehiculo.placa}}</p>
+          <p class="rs">No. Económico:{{vehiculo.numeroEconomico}}</p>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="wrap-btn-descargar">
+      <button (click)="printGafete()" mat-raised-button color="primary">
+        <mat-icon aria-hidden="false" class="icon">save_alt</mat-icon>
+        Descargar
+      </button>
+    </div>
+  </div>
+</mat-card>
+
+<ng-template #loading>
+  <mat-card>
+    <div class="wrap-loading-catalog">
+      <mat-spinner [diameter]="60"></mat-spinner>
+    </div>
+  </mat-card>
+</ng-template>
+
+
+<div id="download">
+  <!-- <img #canvas> -->
+  <a #downloadLink></a>
+</div>

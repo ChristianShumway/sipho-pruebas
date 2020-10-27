@@ -45,6 +45,7 @@ import { CrearVehiculoComponent } from './components/crear-vehiculo/crear-vehicu
 import { ModificarVehiculoComponent } from './components/modificar-vehiculo/modificar-vehiculo.component';
 import { PermisosComponent } from './components/permisos/permisos.component';
 import { ModalPermisosComponent } from './components/modal-permisos/modal-permisos.component';
+import { VerCodigoQrVehiculoComponent } from './components/ver-codigo-qr-vehiculo/ver-codigo-qr-vehiculo.component';
 
 export let options: Partial<IConfig> | (() => Partial<IConfig>);
 
@@ -71,7 +72,16 @@ export let options: Partial<IConfig> | (() => Partial<IConfig>);
     ClientesComponent, 
     CrearClienteComponent, 
     ModificarClienteComponent, 
-    VerMapaComponent, VerGafeteComponent, SubirImagenArticuloComponent, VerCodigoQrComponent, VehiculosComponent, CrearVehiculoComponent, ModificarVehiculoComponent, PermisosComponent, ModalPermisosComponent
+    VerMapaComponent, 
+    VerGafeteComponent, 
+    SubirImagenArticuloComponent, 
+    VerCodigoQrComponent, 
+    VehiculosComponent, 
+    CrearVehiculoComponent, 
+    ModificarVehiculoComponent, 
+    PermisosComponent, 
+    ModalPermisosComponent, 
+    VerCodigoQrVehiculoComponent
   ],
   imports: [
     CommonModule,

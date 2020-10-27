@@ -8,6 +8,8 @@ import { AutenticacionService } from 'app/shared/services/autenticacion.service'
 import { DatePipe } from '@angular/common';
 import { PerfilesService } from 'app/shared/services/perfiles.service';
 import { Perfil } from 'app/shared/models/perfil';
+import { MatButton } from '@angular/material';
+import { ViewChild } from '@angular/core';
 
 @Component({
   selector: 'app-crear-empleado',
@@ -23,6 +25,7 @@ export class CrearEmpleadoComponent implements OnInit {
   pipe = new DatePipe('en-US');
   perfiles: Perfil[] = [];
   fechaIngreso;
+  @ViewChild(MatButton, {static: false}) submitButton: MatButton;
 
   constructor(
     private router: Router,
@@ -67,6 +70,11 @@ export class CrearEmpleadoComponent implements OnInit {
       ]),
       telefono: new FormControl('', [
         Validators.required,
+        Validators.maxLength(10)
+      ]),
+      telefonoEmergencia: new FormControl('', [
+        Validators.required,
+        Validators.maxLength(10)
       ]),
       nss: new FormControl('', [
         Validators.required,
@@ -95,6 +103,7 @@ export class CrearEmpleadoComponent implements OnInit {
     const myFormatedDate = this.pipe.transform(this.fechaIngreso, format);
 
     if (this.empleadoForm.valid) {
+      this.submitButton.disabled = true;
       const empleado: Empleado = {
         idEmpleado: 0,
         idEmpleadoModifico: this.idUsuarioLogeado,
@@ -103,7 +112,6 @@ export class CrearEmpleadoComponent implements OnInit {
       };
 
       console.log(empleado);
-
       this.empleadoService.createEmpleado(empleado).subscribe(
         ((response: any) => {
           console.log(response);
@@ -112,11 +120,13 @@ export class CrearEmpleadoComponent implements OnInit {
             this.useAlerts(response.mensaje, ' ', 'success-dialog');
           } else {
             this.useAlerts(response.mensaje, ' ', 'error-dialog');
+            this.submitButton.disabled = false;
           }
         }),
         (error => {
           console.log(error);
           this.useAlerts(error.message, ' ', 'error-dialog');
+          this.submitButton.disabled = false;
         })
       );
     }

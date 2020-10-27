@@ -58,6 +58,22 @@
               <small *ngIf="empleadoForm.controls['telefono'].hasError('required') && empleadoForm.controls['telefono'].touched" class="form-error-msg">
                 Teléfono es un campo requerido
               </small>
+              <small *ngIf="empleadoForm.controls['telefono'].hasError('maxlength') && empleadoForm.controls['telefono'].touched" class="form-error-msg">
+                El teléfono no debe ser de mayor a {{empleadoForm.controls['telefono'].errors.maxlength.requiredLength}} caracteres 
+              </small> 
+            </div>
+          </div>
+          <div class="pb-1">
+            <mat-form-field class="full-width">
+              <input matInput name="telefonoEmergencia" formControlName="telefonoEmergencia" placeholder="Teléfono de Emergencia">
+            </mat-form-field>
+            <div class="validaciones">
+              <small *ngIf="empleadoForm.controls['telefonoEmergencia'].hasError('required') && empleadoForm.controls['telefonoEmergencia'].touched" class="form-error-msg">
+                Teléfono de emergencia es un campo requerido
+              </small>
+              <small *ngIf="empleadoForm.controls['telefonoEmergencia'].hasError('maxlength') && empleadoForm.controls['telefonoEmergencia'].touched" class="form-error-msg">
+                El teléfono de emergencia no debe ser de mayor a {{empleadoForm.controls['telefonoEmergencia'].errors.maxlength.requiredLength}} caracteres 
+              </small> 
             </div>
           </div>
           <div class="pb-1">

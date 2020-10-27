@@ -20,6 +20,22 @@
               </small>
             </div>
           </div>
+          <div class="pb-1">
+            <mat-form-field class="full-width">
+              <mat-label>Grupo</mat-label>
+              <mat-select formControlName="vistaGrupo" required>
+                <mat-option *ngFor="let grupo of grupos" [value]="grupo.idGrupo">
+                  {{grupo.descripcion}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+            <div class="validaciones">
+              <small *ngIf="familiaForm.controls['vistaGrupo'].hasError('required') && familiaForm.controls['vistaGrupo'].touched" class="form-error-msg">
+                Grupo es un campo requerido
+              </small>
+            </div>
+          </div>
+
         </div>
       </div>
 

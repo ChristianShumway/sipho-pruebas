@@ -23,6 +23,10 @@ export class GruposService {
     return this.http.get<Grupo>(`${environment.apiURL}/catalog/getGrupoById/${idGrupo}`); 
   }
 
+  getGruposSelect(): Observable<Grupo[]>  {
+    return this.http.get<Grupo[]>(`${environment.apiURL}/catalog/getSelectGrupo`); 
+  }
+
   getGruposFiltro(texto: string): Observable<Grupo[]>  {
     return this.http.get<Grupo[]>(`${environment.apiURL}/catalog/getGrupoByFilter/${texto}`); 
   }

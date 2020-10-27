@@ -7,6 +7,7 @@ export interface Vehiculo {
   idEmpleadoModifico?: number;
   activo?: number;
   numeroEconomico: string;
+  qr?: string;
 }
 
 export interface VehiculoContent {

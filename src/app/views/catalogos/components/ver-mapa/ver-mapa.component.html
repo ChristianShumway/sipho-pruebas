@@ -11,6 +11,7 @@
     [mapTypeControl]='true'>
     <agm-marker [latitude]="latitude" [longitude]="longitude" [markerDraggable]="true" (dragEnd)="markerDragEnd($event)">
     </agm-marker>
+    <!-- <agm-marker *ngFor='let loc of mylocations' [latitude]='loc.lat' [longitude]='loc.lng'></agm-marker> -->
   </agm-map>
 </div>
 

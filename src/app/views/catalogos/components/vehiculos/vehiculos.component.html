@@ -23,6 +23,7 @@
               <mat-icon class="">more_vert</mat-icon>
             </button>
             <mat-menu #vehiculoMenu="matMenu">
+              <button mat-menu-item [routerLink]="['/catalogos/qr-vehiculo', vehiculo.idVehiculo]">Código QR</button>
               <button mat-menu-item [routerLink]="['/catalogos/modificar-vehiculo', vehiculo.idVehiculo]">Editar</button>
               <button mat-menu-item (click)="openDialoAlertDelete(vehiculo)">Eliminar</button>
             </mat-menu>

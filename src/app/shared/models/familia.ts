@@ -1,3 +1,5 @@
+import { Grupo } from './grupo';
+
 export interface Familia {
   idFamilia?: number;
   descripcion: string;
@@ -5,6 +7,7 @@ export interface Familia {
   idEmpleadoModifico?: number;
   fechaCreacion?: string;
   fechaModificacion?: string;
+  vistaGrupo: Grupo;
 }
 
 

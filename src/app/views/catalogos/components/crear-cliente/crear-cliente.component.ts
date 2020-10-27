@@ -6,8 +6,9 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ClienteService } from 'app/shared/services/cliente.service';
 import { AutenticacionService } from 'app/shared/services/autenticacion.service';
 import { DatePipe } from '@angular/common';
-import { MatBottomSheet } from '@angular/material';
+import { MatBottomSheet, MatButton } from '@angular/material';
 import { VerMapaComponent } from '../ver-mapa/ver-mapa.component';
+import { ViewChild } from '@angular/core';
 
 @Component({
   selector: 'app-crear-cliente',
@@ -20,6 +21,7 @@ export class CrearClienteComponent implements OnInit {
   idUsuarioLogeado;
   hoy = new Date();
   pipe = new DatePipe('en-US');
+  @ViewChild(MatButton, {static: false}) submitButton: MatButton;
 
   constructor(
     private router: Router,
@@ -56,12 +58,14 @@ export class CrearClienteComponent implements OnInit {
       ]),
       codigoPostal: new FormControl('', [
         Validators.required,
+        Validators.maxLength(5),
+        Validators.minLength(5),
       ]),
       telefono: new FormControl('', [
         Validators.required,
+        Validators.maxLength(10)
       ]),
       email: new FormControl('', [
-        Validators.required,
         Validators.email
       ]),
       ciudad: new FormControl('', [
@@ -85,6 +89,7 @@ export class CrearClienteComponent implements OnInit {
     const myFormatedDate = this.pipe.transform(this.hoy, format);
 
     if (this.clienteForm.valid) {
+      this.submitButton.disabled = true;
       const cliente: Cliente = {
         idCliente: 0,
         idEmpleadoModificacion: this.idUsuarioLogeado,
@@ -93,21 +98,23 @@ export class CrearClienteComponent implements OnInit {
 
       console.log(cliente);
 
-      // this.clienteService.updateCliente(cliente).subscribe(
-      //   ((response: any) => {
-      //     console.log(response);
-      //     if (response.estatus === '05') {
-      //       this.router.navigate(['/catalogos/clientes']);
-      //       this.useAlerts(response.mensaje, ' ', 'success-dialog');
-      //     } else {
-      //       this.useAlerts(response.mensaje, ' ', 'error-dialog');
-      //     }
-      //   }),
-      //   (error => {
-      //     console.log(error);
-      //     this.useAlerts(error.message, ' ', 'error-dialog');
-      //   })
-      // );
+      this.clienteService.updateCliente(cliente).subscribe(
+        ((response: any) => {
+          console.log(response);
+          if (response.estatus === '05') {
+            this.router.navigate(['/catalogos/clientes']);
+            this.useAlerts(response.mensaje, ' ', 'success-dialog');
+          } else {
+            this.useAlerts(response.mensaje, ' ', 'error-dialog');
+            this.submitButton.disabled = false;
+          }
+        }),
+        (error => {
+          console.log(error);
+          this.useAlerts(error.message, ' ', 'error-dialog');
+          this.submitButton.disabled = false;
+        })
+      );
     }
   }
 

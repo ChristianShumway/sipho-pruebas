@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Perfil } from './../../../../shared/models/perfil';
@@ -6,6 +6,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { PerfilesService } from 'app/shared/services/perfiles.service';
 import { AutenticacionService } from './../../../../shared/services/autenticacion.service';
 import { DatePipe } from '@angular/common';
+import { MatButton } from '@angular/material';
 
 @Component({
   selector: 'app-crear-perfil',
@@ -18,7 +19,7 @@ export class CrearPerfilComponent implements OnInit {
   idUsuarioLogeado;
   hoy = new Date();
   pipe = new DatePipe('en-US');
-
+  @ViewChild(MatButton, {static: false}) submitButton: MatButton;
 
   constructor(
     private router: Router,
@@ -41,6 +42,7 @@ export class CrearPerfilComponent implements OnInit {
   }
 
   createProfile() {
+    this.submitButton.disabled = true;
     const format = 'yyyy/MM/dd';
     const myFormatedDate = this.pipe.transform(this.hoy, format);
 
@@ -62,11 +64,13 @@ export class CrearPerfilComponent implements OnInit {
             this.useAlerts(response.mensaje, ' ', 'success-dialog');
           } else {
             this.useAlerts(response.mensaje, ' ', 'error-dialog');
+            this.submitButton.disabled = false;
           }
         }),
         (error => {
           console.log(error);
           this.useAlerts(error.message, ' ', 'error-dialog');
+          this.submitButton.disabled = false;
         })
       );
     }

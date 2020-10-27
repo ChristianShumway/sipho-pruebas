@@ -9,11 +9,12 @@ import { DatePipe } from '@angular/common';
 import { FamiliaService } from 'app/shared/services/familia.service';
 import { Familia } from 'app/shared/models/familia';
 import { environment } from './../../../../../environments/environment';
-import { MatDialog } from '@angular/material';
+import { MatDialog, MatButton } from '@angular/material';
 import { ModalEliminarComponent } from '../../../../shared/components/modal-eliminar/modal-eliminar.component';
 import { debounceTime } from 'rxjs/operators';
 import { FileUploader } from 'ng2-file-upload';
 import { parse } from 'querystring';
+import { ViewChild } from '@angular/core';
 
 @Component({
   selector: 'app-modificar-articulo',
@@ -22,6 +23,7 @@ import { parse } from 'querystring';
 })
 export class ModificarArticuloComponent implements OnInit {
 
+  @ViewChild(MatButton, {static: false}) submitButton: MatButton;
   articuloForm: FormGroup;
   idArticulo;
   idUsuarioLogeado;
@@ -126,6 +128,7 @@ export class ModificarArticuloComponent implements OnInit {
   }
 
   updateArticle() {
+    this.submitButton.disabled = true;
     if (this.articuloForm.valid) {
       const format = 'yyyy/MM/dd';
       const myFormatedDate = this.pipe.transform(this.hoy, format);
@@ -152,11 +155,13 @@ export class ModificarArticuloComponent implements OnInit {
             this.useAlerts(response.mensaje, ' ', 'success-dialog');
           } else {
             this.useAlerts(response.mensaje, ' ', 'error-dialog');
+            this.submitButton.disabled = false;
           }
         }),
         (error => {
           console.log(error);
           this.useAlerts(error.message, ' ', 'error-dialog');
+          this.submitButton.disabled = false;
         })
       );
     }

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { CustomValidators } from 'ng2-validation';
 import { Router, ActivatedRoute, Params } from '@angular/router';
@@ -7,6 +7,9 @@ import {MatSnackBar} from '@angular/material/snack-bar';
 import { DatePipe } from '@angular/common';
 import { AutenticacionService } from '../../../../shared/services/autenticacion.service';
 import { FamiliaService } from 'app/shared/services/familia.service';
+import { Grupo } from 'app/shared/models/grupo';
+import { GruposService } from 'app/shared/services/grupos.service';
+import { MatButton } from '@angular/material';
 
 @Component({
   selector: 'app-modificar-familia',
@@ -23,6 +26,8 @@ export class ModificarFamiliaComponent implements OnInit {
   hoy = new Date();
   pipe = new DatePipe('en-US');
   idUsuarioLogeado;
+  grupos: Grupo[] = [];
+  @ViewChild(MatButton, {static: false}) submitButton: MatButton;
 
   constructor(
     private router: Router,
@@ -30,11 +35,13 @@ export class ModificarFamiliaComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private snackBar: MatSnackBar,
     private autenticacionService: AutenticacionService,
+    private gruposService: GruposService
   ) { }
 
   ngOnInit() {
     this.getValidations();
     this.getFamilia();
+    this.getCatalogo();
     this.idUsuarioLogeado = this.autenticacionService.currentUserValue;
   }
 
@@ -47,6 +54,7 @@ export class ModificarFamiliaComponent implements OnInit {
             console.log(familia);
             this.familia = familia;
             this.familiaForm.patchValue(familia);
+            this.familiaForm.get('vistaGrupo').setValue(familia.vistaGrupo.idGrupo);
           },
           error => console.log(error)
         );
@@ -58,20 +66,35 @@ export class ModificarFamiliaComponent implements OnInit {
     this.familiaForm = new FormGroup({
       descripcion: new FormControl('', [
         Validators.required,
+      ]),
+      vistaGrupo: new FormControl('', [
+        Validators.required,
       ])
     })
   }
 
+  getCatalogo() {
+    this.gruposService.getGruposSelect().subscribe(
+      (grupos: Grupo[]) => {
+        this.grupos = grupos;
+        console.log(this.grupos);
+      }
+    );
+  }
+
   updateFamilia(){
     if(this.familiaForm.valid){
+      this.submitButton.disabled = true;
       const format = 'yyyy/MM/dd';
       const myFormatedDate = this.pipe.transform(this.hoy, format);
+      const refreshGroup: Grupo = this.grupos.find( (grupo: Grupo) => grupo.idGrupo === this.familiaForm.value.vistaGrupo );
      
       const familia: Familia = {
         idFamilia: parseInt(this.idFamilia),
         idEmpleadoModifico: this.idUsuarioLogeado,
         fechaModificacion: myFormatedDate,
         ...this.familiaForm.value,
+        vistaGrupo: refreshGroup
       };
       console.log(familia);
 
@@ -81,13 +104,19 @@ export class ModificarFamiliaComponent implements OnInit {
           if(response.estatus === '05'){
             this.router.navigate(['/catalogos/familias']);
             this.useAlerts(response.mensaje, ' ', 'success-dialog');
+            this.submitButton.disabled = false;
+
           } else {
             this.useAlerts(response.mensaje, ' ', 'error-dialog');
+            this.submitButton.disabled = false;
+
           }
         }),
         (error => {
           console.log(error);
           this.useAlerts(error.message, ' ', 'error-dialog');
+          this.submitButton.disabled = false;
+
         })
       );
     }

@@ -119,6 +119,36 @@
         </form>
       </mat-card-content>
     </mat-tab>
+    <mat-tab label="Foto de Perfil">
+      <mat-card-content class="mt-1" *ngIf="empleado; else loading">
+        <div class="mb-1">
+          <input style="visibility: hidden;" type="file" #fileInput ng2FileSelect [uploader]="uploaderProfile" />
+          <div ng2FileDrop (click)="fileInput.click()" [ngClass]="{'dz-file-over': hasBaseDropZoneOver}" [uploader]="uploaderProfile"
+            (fileOver)="fileOverBase($event)" class="fileupload-drop-zone-logo-div">
+            <p>Imágen de Perfil</p>
+            <p>Arrastra o click sobre la imágen la zona punteada</p>
+
+            <div *ngIf="uploaderProfile.queue.length; else tableNoData">
+              <div *ngFor="let item of uploaderProfile.queue ">
+                <div *ngIf="!item.isSuccess" class="progress" style="margin-bottom: 0;">
+                  <div class="progress-bar" role="progressbar" [ngStyle]="{ 'width': item.progress + '%' }"></div>
+                  <mat-progress-bar class="" color="primary" mode="determinate" [value]="item.progress">
+                  </mat-progress-bar>
+                </div>
+              </div>
+            </div>
+
+            <div *ngIf = "!empleado">
+              <div class="wrap-loading-catalog">
+                <mat-spinner [diameter]="40"></mat-spinner>
+              </div>
+            </div>
+
+            <img *ngIf = "empleado" class="fileupload-drop-zone-logo" src="{{rutaImg}}/employe/photo/{{empleado.imagen}}" alt="">
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-tab>
   </mat-tab-group>
 </mat-card>
 

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Vehiculo } from 'app/shared/models/vehiculo';
@@ -6,6 +6,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { VehiculoService } from 'app/shared/services/vehiculo.service';
 import { AutenticacionService } from 'app/shared/services/autenticacion.service';
 import { DatePipe } from '@angular/common';
+import { MatButton } from '@angular/material';
 
 @Component({
   selector: 'app-crear-vehiculo',
@@ -18,6 +19,7 @@ export class CrearVehiculoComponent implements OnInit {
   idUsuarioLogeado;
   hoy = new Date();
   pipe = new DatePipe('en-US');
+  @ViewChild(MatButton, {static: false}) submitButton: MatButton;
 
   constructor(
     private router: Router,
@@ -56,6 +58,7 @@ export class CrearVehiculoComponent implements OnInit {
     const myFormatedDate = this.pipe.transform(this.hoy, format);
 
     if (this.vehiculoForm.valid) {
+      this.submitButton.disabled = true;
       const vehiculo: Vehiculo = {
         idVehiculo: 0,
         idEmpleadoModifico: this.idUsuarioLogeado,
@@ -73,11 +76,13 @@ export class CrearVehiculoComponent implements OnInit {
             this.useAlerts(response.mensaje, ' ', 'success-dialog');
           } else {
             this.useAlerts(response.mensaje, ' ', 'error-dialog');
+            this.submitButton.disabled = false;
           }
         }),
         (error => {
           console.log(error);
           this.useAlerts(error.message, ' ', 'error-dialog');
+          this.submitButton.disabled = false;
         })
       );
     }

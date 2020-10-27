@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Proveedor, TipoProveedor, PeriodoCompraProveedor } from 'app/shared/models/proveedor';
@@ -6,6 +6,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ProveedorService } from 'app/shared/services/proveedor.service';
 import { AutenticacionService } from 'app/shared/services/autenticacion.service';
 import { DatePipe } from '@angular/common';
+import { MatButton } from '@angular/material';
 
 @Component({
   selector: 'app-modificar-proveedor',
@@ -22,6 +23,8 @@ export class ModificarProveedorComponent implements OnInit {
   pipe = new DatePipe('en-US');
   tiposProveedores: TipoProveedor[] = [];
   periodosCompra: PeriodoCompraProveedor[] = [];
+  @ViewChild(MatButton, {static: false}) submitButton: MatButton;
+
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -106,6 +109,7 @@ export class ModificarProveedorComponent implements OnInit {
 
   updateProveedor() {
     if (this.proveedorForm.valid) {
+      this.submitButton.disabled = true;
       const format = 'yyyy/MM/dd';
       const myFormatedDate = this.pipe.transform(this.hoy, format);
 
@@ -130,11 +134,13 @@ export class ModificarProveedorComponent implements OnInit {
             this.useAlerts(response.mensaje, ' ', 'success-dialog');
           } else {
             this.useAlerts(response.mensaje, ' ', 'error-dialog');
+            this.submitButton.disabled = false;
           }
         }),
         (error => {
           console.log(error);
           this.useAlerts(error.message, ' ', 'error-dialog');
+          this.submitButton.disabled = false;
         })
       );
     }

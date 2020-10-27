@@ -6,6 +6,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ProveedorService } from 'app/shared/services/proveedor.service';
 import { AutenticacionService } from 'app/shared/services/autenticacion.service';
 import { DatePipe } from '@angular/common';
+import { MatButton } from '@angular/material';
+import { ViewChild } from '@angular/core';
 
 @Component({
   selector: 'app-crear-proveedor',
@@ -20,6 +22,8 @@ export class CrearProveedorComponent implements OnInit {
   pipe = new DatePipe('en-US');
   tiposProveedores: TipoProveedor[] = [];
   periodosCompra: PeriodoCompraProveedor[] = [];
+  @ViewChild(MatButton, {static: false}) submitButton: MatButton;
+
 
   constructor(
     private router: Router,
@@ -85,8 +89,9 @@ export class CrearProveedorComponent implements OnInit {
   createProveedor() {
     const format = 'yyyy/MM/dd';
     const myFormatedDate = this.pipe.transform(this.hoy, format);
-
+    
     if (this.proveedorForm.valid) {
+      this.submitButton.disabled = true;
       const proveedor: Proveedor = {
         idProveedor: 0,
         idEmpleadoModifico: this.idUsuarioLogeado,
@@ -103,11 +108,13 @@ export class CrearProveedorComponent implements OnInit {
             this.useAlerts(response.mensaje, ' ', 'success-dialog');
           } else {
             this.useAlerts(response.mensaje, ' ', 'error-dialog');
+            this.submitButton.disabled = false;
           }
         }),
         (error => {
           console.log(error);
           this.useAlerts(error.message, ' ', 'error-dialog');
+          this.submitButton.disabled = false;
         })
       );
     }

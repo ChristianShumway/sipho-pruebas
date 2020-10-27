@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { Cliente } from 'app/shared/models/cliente';
@@ -6,7 +6,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ClienteService } from 'app/shared/services/cliente.service';
 import { AutenticacionService } from 'app/shared/services/autenticacion.service';
 import { DatePipe } from '@angular/common';
-import { MatBottomSheet } from '@angular/material';
+import { MatBottomSheet, MatButton } from '@angular/material';
 import { VerMapaComponent } from '../ver-mapa/ver-mapa.component';
 
 @Component({
@@ -22,6 +22,7 @@ export class ModificarClienteComponent implements OnInit {
   cliente: Cliente;
   hoy = new Date();
   pipe = new DatePipe('en-US');
+  @ViewChild(MatButton, {static: false}) submitButton: MatButton;
 
   constructor(
     private router: Router,
@@ -76,12 +77,14 @@ export class ModificarClienteComponent implements OnInit {
       ]),
       codigoPostal: new FormControl('', [
         Validators.required,
+        Validators.maxLength(5),
+        Validators.minLength(5),
       ]),
       telefono: new FormControl('', [
         Validators.required,
+        Validators.maxLength(10)
       ]),
       email: new FormControl('', [
-        Validators.required,
         Validators.email
       ]),
       ciudad: new FormControl('', [
@@ -102,6 +105,7 @@ export class ModificarClienteComponent implements OnInit {
 
   updateCustomer() {
     if (this.clienteForm.valid) {
+      this.submitButton.disabled = true;
       const format = 'yyyy/MM/dd';
       const myFormatedDate = this.pipe.transform(this.hoy, format);
 
@@ -119,11 +123,13 @@ export class ModificarClienteComponent implements OnInit {
             this.useAlerts(response.mensaje, ' ', 'success-dialog');
           } else {
             this.useAlerts(response.mensaje, ' ', 'error-dialog');
+            this.submitButton.disabled = false;
           }
         }),
         (error => {
           console.log(error);
           this.useAlerts(error.message, ' ', 'error-dialog');
+          this.submitButton.disabled = false;
         })
       );
     }

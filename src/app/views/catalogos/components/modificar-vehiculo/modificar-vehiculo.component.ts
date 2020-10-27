@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { Vehiculo } from 'app/shared/models/vehiculo';
@@ -7,7 +7,7 @@ import { VehiculoService } from 'app/shared/services/vehiculo.service';
 import { AutenticacionService } from 'app/shared/services/autenticacion.service';
 import { DatePipe } from '@angular/common';
 import { environment } from './../../../../../environments/environment';
-import { MatDialog } from '@angular/material';
+import { MatDialog, MatButton } from '@angular/material';
 import { ModalEliminarComponent } from '../../../../shared/components/modal-eliminar/modal-eliminar.component';
 import { debounceTime } from 'rxjs/operators';
 import { FileUploader } from 'ng2-file-upload';
@@ -28,6 +28,7 @@ export class ModificarVehiculoComponent implements OnInit {
   urlImage = environment.urlImages;
   imgTemp = '/vehicle/image/truck-default.png';
   imgVehicle;
+  @ViewChild(MatButton, {static: false}) submitButton: MatButton;
 
   public uploaderArchivo: FileUploader = new FileUploader({ url: '' });
   public hasBaseDropZoneOver: boolean = false;
@@ -92,6 +93,7 @@ export class ModificarVehiculoComponent implements OnInit {
 
   updateVehicle() {
     if (this.vehiculoForm.valid) {
+      this.submitButton.disabled = true;
       const format = 'yyyy/MM/dd';
       const myFormatedDate = this.pipe.transform(this.hoy, format);
 
@@ -110,11 +112,13 @@ export class ModificarVehiculoComponent implements OnInit {
             this.useAlerts(response.mensaje, ' ', 'success-dialog');
           } else {
             this.useAlerts(response.mensaje, ' ', 'error-dialog');
+            this.submitButton.disabled = false;
           }
         }),
         (error => {
           console.log(error);
           this.useAlerts(error.message, ' ', 'error-dialog');
+          this.submitButton.disabled = false;
         })
       );
     }

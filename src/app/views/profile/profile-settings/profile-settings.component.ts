@@ -9,6 +9,7 @@ import { AutenticacionService } from 'app/shared/services/autenticacion.service'
 import { DatePipe } from '@angular/common';
 import { PerfilesService } from 'app/shared/services/perfiles.service';
 import { Perfil } from 'app/shared/models/perfil';
+import { environment } from './../../../../environments/environment';
 
 @Component({
   selector: 'app-profile-settings',
@@ -16,8 +17,8 @@ import { Perfil } from 'app/shared/models/perfil';
   styleUrls: ['./profile-settings.component.css']
 })
 export class ProfileSettingsComponent implements OnInit {
-  public uploader: FileUploader = new FileUploader({ url: 'upload_url' });
-  public hasBaseDropZoneOver: boolean = false;
+  // public uploader: FileUploader = new FileUploader({ url: 'upload_url' });
+  // public hasBaseDropZoneOver: boolean = false;
 
   empleadoForm: FormGroup;
   idEmpleado;
@@ -27,6 +28,11 @@ export class ProfileSettingsComponent implements OnInit {
   pipe = new DatePipe('en-US');
   perfiles: Perfil[] = [];
   fechaIngreso;
+  public uploaderProfile: FileUploader = new FileUploader({ url: '' });
+  public hasBaseDropZoneOver: boolean = false;
+  rutaImg: string;
+  rutaServe: string;
+  loadingFile = false;
   
   constructor(
     private snackBar: MatSnackBar,
@@ -34,12 +40,14 @@ export class ProfileSettingsComponent implements OnInit {
     private autenticacionService: AutenticacionService,
     private perfilesService: PerfilesService,
     private activatedRoute: ActivatedRoute,
+    private router: Router
   ) { }
 
   ngOnInit() {
     this.getEmpleado();
     this.getValidations();
     this.getCatalogs();
+    this.initUploadImae();
   }
   
   getEmpleado() {
@@ -61,7 +69,7 @@ export class ProfileSettingsComponent implements OnInit {
   getCatalogs() {
     this.perfilesService.getSelectPerfil().subscribe(
       (perfiles) => {
-        console.log(perfiles);
+        // console.log(perfiles);
         this.perfiles = perfiles;
       },
       error => console.log(error)
@@ -104,6 +112,49 @@ export class ProfileSettingsComponent implements OnInit {
     this.fechaIngreso = event.value;
   }
 
+  
+  initUploadImae(){
+    this.rutaServe =environment.apiURL;
+    this.rutaImg = environment.urlImages;
+    const headers = [{name: 'Accept', value: 'application/json'}];
+    this.uploaderProfile = new FileUploader({ url: this.rutaServe+'/catalog/uploadImageEmploye' , autoUpload: true, headers: headers});
+    this.uploaderProfile.onBuildItemForm = (fileItem: any, form: any) => {
+      form.append('idEmploye' , this.empleado.idEmpleado);
+      form.append('idEmployeModified ' , this.idUsuarioLogeado);
+      this.loadingFile = true;
+     };
+    this.uploaderProfile.uploadAll();
+    this.uploaderProfile.onCompleteItem =  (item:any, response:any, status:any, headers:any) => {
+      this.loadingFile = false;
+      const result = JSON.parse(response);
+      console.log(result);
+
+      if (result != undefined) {
+        if(result.noEstatus === 5) {
+          // debugger;
+          this.autenticacionService.getEmpleadoLogeado(result.response.idEmpleado);
+          this.useAlerts(result.mensaje, ' ', 'success-dialog');
+          this.autenticacionService.logout();
+          this.router.navigateByUrl('/login');
+          // this.empleado.imagen = item.some.name;
+        } else {
+          console.log('aqui');
+          if(result.status === 500) {
+            this.useAlerts('Imágen excede el tamaño, favor de reportar', ' ', 'error-dialog');   
+          } else {
+            this.useAlerts(result.message, ' ', 'error-dialog');
+          }
+        }
+      } else {
+        this.useAlerts('Ocurrio un error, favor de reportar', ' ', 'error-dialog');
+      }
+     
+      // this.empleado.imagen = item.some.name;
+      // this.useAlerts('Imágen de perfil actualizada', ' ', 'success-dialog');
+      // this.autenticacionService.getEmpleadoLogeado(this.idUsuarioLogeado);
+    };
+
+  }
 
   updateEmploye() {
     if (this.empleadoForm.valid) {

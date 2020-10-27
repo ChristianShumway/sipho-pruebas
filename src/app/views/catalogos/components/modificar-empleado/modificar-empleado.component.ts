@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { Empleado } from 'app/shared/models/empleado';
@@ -8,6 +8,7 @@ import { AutenticacionService } from 'app/shared/services/autenticacion.service'
 import { DatePipe } from '@angular/common';
 import { PerfilesService } from 'app/shared/services/perfiles.service';
 import { Perfil } from 'app/shared/models/perfil';
+import { MatButton } from '@angular/material';
 
 @Component({
   selector: 'app-modificar-empleado',
@@ -24,6 +25,7 @@ export class ModificarEmpleadoComponent implements OnInit {
   pipe = new DatePipe('en-US');
   perfiles: Perfil[] = [];
   fechaIngreso;
+  @ViewChild(MatButton, {static: false}) submitButton: MatButton;
 
   constructor(
     private router: Router,
@@ -88,6 +90,11 @@ export class ModificarEmpleadoComponent implements OnInit {
       ]),
       telefono: new FormControl('', [
         Validators.required,
+        Validators.maxLength(10)
+      ]),
+      telefonoEmergencia: new FormControl('', [
+        Validators.required,
+        Validators.maxLength(10)
       ]),
       nss: new FormControl('', [
         Validators.required,
@@ -113,6 +120,7 @@ export class ModificarEmpleadoComponent implements OnInit {
 
   updateEmploye() {
     if (this.empleadoForm.valid) {
+      this.submitButton.disabled = true;
       const format = 'yyyy-MM-dd';
       const myFormatedFechaIngreso = this.pipe.transform(this.fechaIngreso, format);
 
@@ -137,11 +145,13 @@ export class ModificarEmpleadoComponent implements OnInit {
             this.autenticacionService.getEmpleadoLogeado(this.idUsuarioLogeado);
           } else {
             this.useAlerts(response.mensaje, ' ', 'error-dialog');
+            this.submitButton.disabled = false;
           }
         }),
         (error => {
           console.log(error);
           this.useAlerts(error.message, ' ', 'error-dialog');
+          this.submitButton.disabled = false;
         })
       );
     }

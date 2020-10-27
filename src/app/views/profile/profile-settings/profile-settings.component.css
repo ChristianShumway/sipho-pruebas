@@ -14,3 +14,28 @@
 .cont-btns button:first-child{
   margin-right: 10px;
 }
+
+.wrap-title img{
+  max-width: 200px;
+}
+
+.fileupload-drop-zone-logo{
+  width: 100%;
+}
+  
+.fileupload-drop-zone-logo-div{
+  text-align: center;
+  padding-left: 5%;
+  padding-right: 5%;
+  border: 1px dashed rgba(0, 0, 0, .15);
+  margin: 10px;
+  cursor: pointer;
+}
+
+.wrapper-settings{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 435px;
+}
+  
