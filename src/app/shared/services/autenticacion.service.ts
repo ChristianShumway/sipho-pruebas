@@ -17,8 +17,11 @@ export class AutenticacionService {
   public currentProfile: Observable<Empleado>;
   
   private empleado: Empleado;
+  private newTime: any
   private empleadoLogeado = new BehaviorSubject<Empleado>(null);
-  empleadoLog$ = this.empleadoLogeado.asObservable()
+  private checknewTime = new BehaviorSubject<any>(null);
+  empleadoLog$ = this.empleadoLogeado.asObservable();
+  newTime$ = this.checknewTime.asObservable()
 
   constructor(
     private http: HttpClient
@@ -42,6 +45,7 @@ export class AutenticacionService {
       (empleado: Empleado) => {
         // console.log(empleado);
         this.empleadoLogeado.next(empleado);
+        this.checknewTime.next(Date.now())
       }, 
       (error) => console.log(error) 
     );

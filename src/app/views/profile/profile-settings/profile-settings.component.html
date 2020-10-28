@@ -119,7 +119,7 @@
         </form>
       </mat-card-content>
     </mat-tab>
-    <!-- <mat-tab label="Foto de Perfil">
+    <mat-tab label="Foto de Perfil">
       <mat-card-content class="mt-1" *ngIf="empleado; else loading">
         <div class="mb-1">
           <input style="visibility: hidden;" type="file" #fileInput ng2FileSelect [uploader]="uploaderProfile" />
@@ -144,11 +144,11 @@
               </div>
             </div>
 
-            <img *ngIf = "empleado" class="fileupload-drop-zone-logo" src="{{rutaImg}}/employe/photo/{{empleado.imagen}}" alt="">
+            <img *ngIf = "empleado" class="fileupload-drop-zone-logo show-picture" [src]="linkPicture" alt="">
           </div>
         </div>
       </mat-card-content>
-    </mat-tab> -->
+    </mat-tab>
   </mat-tab-group>
 </mat-card>
 

@@ -23,8 +23,8 @@ export class SidebarSideComponent implements OnInit, OnDestroy, AfterViewInit {
   public empleadoLlamado;
   public empleado$: Observable<Empleado>;
   public urlImagen = environment.urlImages;
+  public timesStamp: any;
   
-
   constructor(
     private navService: NavigationService,
     public themeService: ThemeService,
@@ -56,6 +56,9 @@ export class SidebarSideComponent implements OnInit, OnDestroy, AfterViewInit {
   async getEmpleadoLogeado() {
     const usuarioLogeado = await  this.autenticacionService.currentUserValue;
     this.empleadoLlamado = await this.autenticacionService.getEmpleadoLogeado(usuarioLogeado);
+    this.autenticacionService.newTime$.subscribe(
+      result =>  this.timesStamp = result
+    );
     this.empleado$ = await this.autenticacionService.empleadoLog$
     .pipe(
       map((empleado: Empleado) => empleado)

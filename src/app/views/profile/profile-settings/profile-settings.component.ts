@@ -33,6 +33,9 @@ export class ProfileSettingsComponent implements OnInit {
   rutaImg: string;
   rutaServe: string;
   loadingFile = false;
+
+  linkPicture: string = '';
+  timeStamp: any;
   
   constructor(
     private snackBar: MatSnackBar,
@@ -44,6 +47,8 @@ export class ProfileSettingsComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.rutaServe =environment.apiURL;
+    this.rutaImg = environment.urlImages;
     this.getEmpleado();
     this.getValidations();
     this.getCatalogs();
@@ -61,6 +66,7 @@ export class ProfileSettingsComponent implements OnInit {
         this.fechaIngreso.setDate(this.fechaIngreso.getDate()+1);
         this.empleadoForm.patchValue(empleado);
         this.empleadoForm.get('perfil').setValue(empleado.perfil.idPerfil);
+        this.setLinkPicture(empleado.imagen);
       },
       error => console.log(error)
     );    
@@ -114,8 +120,6 @@ export class ProfileSettingsComponent implements OnInit {
 
   
   initUploadImae(){
-    this.rutaServe =environment.apiURL;
-    this.rutaImg = environment.urlImages;
     const headers = [{name: 'Accept', value: 'application/json'}];
     this.uploaderProfile = new FileUploader({ url: this.rutaServe+'/catalog/uploadImageEmploye' , autoUpload: true, headers: headers});
     this.uploaderProfile.onBuildItemForm = (fileItem: any, form: any) => {
@@ -126,34 +130,45 @@ export class ProfileSettingsComponent implements OnInit {
     this.uploaderProfile.uploadAll();
     this.uploaderProfile.onCompleteItem =  (item:any, response:any, status:any, headers:any) => {
       this.loadingFile = false;
-      const result = JSON.parse(response);
-      console.log(result);
-
-      if (result != undefined) {
-        if(result.noEstatus === 5) {
-          // debugger;
-          this.autenticacionService.getEmpleadoLogeado(result.response.idEmpleado);
-          this.useAlerts(result.mensaje, ' ', 'success-dialog');
-          this.autenticacionService.logout();
-          this.router.navigateByUrl('/login');
-          // this.empleado.imagen = item.some.name;
-        } else {
-          console.log('aqui');
-          if(result.status === 500) {
-            this.useAlerts('Imágen excede el tamaño, favor de reportar', ' ', 'error-dialog');   
-          } else {
-            this.useAlerts(result.message, ' ', 'error-dialog');
-          }
-        }
-      } else {
+      console.log(status);
+      if(status === 0) {
         this.useAlerts('Ocurrio un error, favor de reportar', ' ', 'error-dialog');
+      } else {
+        const result = JSON.parse(response);
+        console.log(result);
+  
+        if (result != undefined) {
+          if(result.noEstatus === 5) {
+            // debugger;
+            this.autenticacionService.getEmpleadoLogeado(result.response.idEmpleado);
+            this.useAlerts(result.mensaje, ' ', 'success-dialog');
+            // location.reload();
+            // window.location.reload(); 
+            // this.autenticacionService.logout();
+            // this.router.navigateByUrl('/login');
+            this.empleado.imagen = result.response.imagen;
+            this.setLinkPicture(result.response.imagen);
+          } else {
+            console.log('aqui');
+            if(result.status === 500) {
+              this.useAlerts('Imágen excede el tamaño, favor de reportar', ' ', 'error-dialog');   
+            } else {
+              this.useAlerts(result.message, ' ', 'error-dialog');
+            }
+          }
+        } else {
+          this.useAlerts('Ocurrio un error, favor de reportar', ' ', 'error-dialog');
+        }
+       
       }
-     
-      // this.empleado.imagen = item.some.name;
-      // this.useAlerts('Imágen de perfil actualizada', ' ', 'success-dialog');
-      // this.autenticacionService.getEmpleadoLogeado(this.idUsuarioLogeado);
     };
 
+  }
+
+
+  public setLinkPicture(img: string) {
+    this.linkPicture = `${this.rutaImg}/employe/photo/${img}?timeStamp=${Date.now()}`;
+    // this.timeStamp = (new Date()).getTime();
   }
 
   updateEmploye() {

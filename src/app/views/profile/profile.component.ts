@@ -5,6 +5,7 @@ import { Empleado } from './../../shared/models/empleado';
 import { Observable } from 'rxjs';
 import { environment } from './../../../environments/environment';
 import { map } from 'rxjs/operators';
+import { now } from 'moment';
 
 @Component({
   selector: 'app-profile',
@@ -15,7 +16,8 @@ export class ProfileComponent implements OnInit {
 
   public empleadoLlamado;
   public empleado$: Observable<Empleado>;
-  public urlImagen = environment.urlImages
+  public urlImagen = environment.urlImages;
+  timesStamp: any;
 
   // Doughnut
   doughnutChartColors: any[] = [{
@@ -62,6 +64,12 @@ export class ProfileComponent implements OnInit {
   async getEmpleadoLogeado() {
     const usuarioLogeado = await  this.autenticacionService.currentUserValue;
     this.empleadoLlamado = await this.autenticacionService.getEmpleadoLogeado(usuarioLogeado);
+    this.autenticacionService.newTime$.subscribe(
+      result => {
+        // console.log(result);
+        this.timesStamp = result;
+      }
+    );
     this.empleado$ = await this.autenticacionService.empleadoLog$
     .pipe(
       map((empleado: Empleado) => empleado)

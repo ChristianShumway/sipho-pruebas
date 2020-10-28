@@ -18,7 +18,7 @@
             <!-- Sidebar user -->
             <div class="app-user" *ngIf="empleado$ | async as empleado; else loading">
                 <div class="app-user-photo">
-                <img src="{{urlImagen}}/employe/photo/{{empleado.imagen}}" class="mat-elevation-z1" alt="">
+                <img src="{{urlImagen}}/employe/photo/{{empleado.imagen}}?timeStamp={{timesStamp}}" class="mat-elevation-z1" alt="">
                 </div>
                 <span class="app-user-name mb-05">
                 <!-- <mat-icon class="icon-xs text-muted">person</mat-icon>  -->

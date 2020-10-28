@@ -33,6 +33,7 @@ export class HeaderSideComponent implements OnInit {
   public empleadoLlamado;
   public empleado$: Observable<Empleado>;
   public urlImagen = environment.urlImages;
+  timesStamp: any;
 
   constructor(
     private themeService: ThemeService,
@@ -94,6 +95,9 @@ export class HeaderSideComponent implements OnInit {
   async getEmpleadoLogeado() {
     const usuarioLogeado = await  this.autenticacionService.currentUserValue;
     this.empleadoLlamado = await this.autenticacionService.getEmpleadoLogeado(usuarioLogeado);
+    this.autenticacionService.newTime$.subscribe(
+      result =>  this.timesStamp = result
+    );
     this.empleado$ = await this.autenticacionService.empleadoLog$
     .pipe(
       map((empleado: Empleado) => empleado)
