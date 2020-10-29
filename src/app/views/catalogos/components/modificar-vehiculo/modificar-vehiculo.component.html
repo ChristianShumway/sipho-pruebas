@@ -54,7 +54,23 @@
             </mat-form-field>
             <div class="validaciones">
               <small *ngIf="vehiculoForm.controls['numeroEconomico'].hasError('required') && vehiculoForm.controls['numeroEconomico'].touched" class="form-error-msg">
-              Número económico del vehículo es un campo requerido
+                Número económico del vehículo es un campo requerido
+              </small>
+            </div>
+          </div>
+          <div class="pb-1">
+            <mat-form-field class="full-width">
+              <mat-label>Tipo Combustible</mat-label>
+              <mat-select formControlName="vistaTipoCombustible" required>
+                <mat-option *ngFor="let tipo of tipoCombustible" [value]="tipo.idTipoCombustible">
+                  {{tipo.descripcion}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+            <div class="validaciones">
+              <small *ngIf="vehiculoForm.controls['vistaTipoCombustible'].hasError('required') && vehiculoForm.controls['vistaTipoCombustible'].touched"
+                class="form-error-msg">
+                Tipo de combustible es un campo requerido
               </small>
             </div>
           </div>

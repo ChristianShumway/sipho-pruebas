@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { BehaviorSubject } from 'rxjs';
-import { Vehiculo, VehiculoContent } from './../models/vehiculo';
+import { Vehiculo, VehiculoContent, TipoCombustible } from './../models/vehiculo';
 import { environment } from 'environments/environment';
 
 @Injectable({
@@ -39,6 +39,10 @@ export class VehiculoService {
   deleteImagenVehiculo(img: any): Observable<any>{
     const headerss = new HttpHeaders({'Content-Type': 'application/json'});
     return this.http.post<any>(`${environment.apiURL}/catalog/deleteImageVehicle`, JSON.stringify(img), { headers: headerss});
+  }
+
+  getTipoCombustible(): Observable<TipoCombustible[]>  {
+    return this.http.get<TipoCombustible[]>(`${environment.apiURL}/catalog/getSelectTipoCombustible`); 
   }
 
 }

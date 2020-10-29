@@ -8,6 +8,7 @@ export interface Vehiculo {
   activo?: number;
   numeroEconomico: string;
   qr?: string;
+  vistaTipoCombustible: TipoCombustible;
 }
 
 export interface VehiculoContent {
@@ -15,4 +16,9 @@ export interface VehiculoContent {
   totalPages: number;
   totalItems: number;
   content: Vehiculo[];
+}
+
+export interface TipoCombustible {
+  idTipoCombustible: number;
+  descripcion: string;
 }

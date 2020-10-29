@@ -46,6 +46,15 @@
   }
 }
 
+.mat-form-field + .mat-form-field {
+  // margin-left: 8px;
+}
+
+.wrap-search {
+  // border: 10px solid red !important;
+  margin: 0 10px 20px 10px;
+}
+
 @media screen and (max-width:599px) {
   .wrap-details {
     grid-template-columns: 1fr;

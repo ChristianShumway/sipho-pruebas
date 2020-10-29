@@ -56,7 +56,8 @@ export class VehiculosComponent implements OnInit {
   getVehiculos(idPaginator) {
     this.vehiculoService.getVehiculos(idPaginator).subscribe(
       ((vehiculos: VehiculoContent) => {
-        this.vehiculos = vehiculos.content.filter((vehiculo: Vehiculo) => vehiculo.activo === 1);
+        // this.vehiculos = vehiculos.content.filter((vehiculo: Vehiculo) => vehiculo.activo === 1);
+        this.vehiculos = vehiculos.content;
         console.log(this.vehiculos);
         this.paginator.length = vehiculos.totalItems;
         this.dataSource.data = this.vehiculos;

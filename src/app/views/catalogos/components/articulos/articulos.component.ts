@@ -10,6 +10,8 @@ import { AutenticacionService } from 'app/shared/services/autenticacion.service'
 import { ModalEliminarComponent } from 'app/shared/components/modal-eliminar/modal-eliminar.component';
 import { SubirImagenArticuloComponent } from '../subir-imagen-articulo/subir-imagen-articulo.component';
 import { environment } from './../../../../../environments/environment';
+import { FamiliaService } from 'app/shared/services/familia.service';
+import { Familia } from 'app/shared/models/familia';
 
 @Component({
   selector: 'app-articulos',
@@ -25,6 +27,10 @@ export class ArticulosComponent implements OnInit {
   estatusData = 1;
   dataSerach;
   urlImage = environment.urlImages;
+  familias: Familia[] = [];
+  idFamilia:number;
+  tipoMateriaPrima:string;
+  textSearch:string = '';
 
   @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
   obs$: Observable<any>;
@@ -38,11 +44,12 @@ export class ArticulosComponent implements OnInit {
     private articuloService: ArticuloService,
     private autenticacionService: AutenticacionService,
     private bottomSheet: MatBottomSheet,
-
+    private familiaService: FamiliaService
   ) { }
 
   ngOnInit() {
     this.getArticulos(this.paginaActual);
+    this.getCatalog();
     this.changeDetectorRef.detectChanges();
     // this.dataSource.paginator = this.paginator;
     this.obs$ = this.dataSource.connect();
@@ -70,17 +77,35 @@ export class ArticulosComponent implements OnInit {
     );
   }
 
+  getCatalog() {
+    this.familiaService.getSelectFamilia().subscribe(
+      (result: Familia[]) => {
+        console.log(result);
+        this.familias = result;
+      }
+    );
+  }
+
   ngOnDestroy() {
     if (this.dataSource) {
       this.dataSource.disconnect();
     }
   }
 
-  updateFilter(event) {
-    const val = event.target.value.toLowerCase();
-    this.dataSerach = val;
-    if(val) {
-      this.articuloService.getArticulosFiltro(val).subscribe(
+  search() {
+    if(!this.textSearch && !this.idFamilia && !this.tipoMateriaPrima){
+      // console.log('no traigo nada de busqueda');
+      this.getArticulos(this.paginaActual);
+    } else {
+      let text = !this.textSearch ? '&nbsp' : this.textSearch;
+      let fam = !this.idFamilia ? 0 : this.idFamilia;
+      let matPrima = !this.tipoMateriaPrima ? -1 : parseInt(this.tipoMateriaPrima, 10);
+     
+      console.log(text);
+      console.log(fam);  
+      console.log(matPrima);
+  
+      this.articuloService.getArticulosFiltro(text, fam, matPrima).subscribe(
         result => {
           if(result.length > 0) {
             console.log(result);
@@ -96,26 +121,34 @@ export class ArticulosComponent implements OnInit {
         },
         error => console.log(error)
       );
-    } else {
-      this.getArticulos(this.paginaActual);
     }
+  }
+
+  updateFilter(event) {
+    this.search();
     // const val = event.target.value.toLowerCase();
-    // var columns = Object.keys(this.articulosTemp[0]);
-    // columns.splice(columns.length - 1);
-
-    // if (!columns.length)
-    //   return;
-
-    // const rows = this.articulosTemp.filter(function (d) {
-    //   for (let i = 0; i <= columns.length; i++) {
-    //     let column = columns[i];
-    //     if (d[column] && d[column].toString().toLowerCase().indexOf(val) > -1) {
-    //       return true;
-    //     }
-    //   }
-    // })
-
-    // this.dataSource.data = rows;
+    // this.textSearch = val;
+  
+    // if(val) {
+    //   this.articuloService.getArticulosFiltro(val, 1, 1).subscribe(
+    //     result => {
+    //       if(result.length > 0) {
+    //         console.log(result);
+    //         this.dataSource.data = result;
+    //         this.paginator.length = result.length;
+    //         this.estatusData = 1;
+    //       } else {
+    //         this.dataSource.data = [];
+    //         this.paginator.length = 0;
+    //         this.estatusData = 0;
+    //         console.log('no se encontro');
+    //       }
+    //     },
+    //     error => console.log(error)
+    //   );
+    // } else {
+    //   this.getArticulos(this.paginaActual);
+    // }
   }
 
   openDialoAlertDelete(idArticulo) {

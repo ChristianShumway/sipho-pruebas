@@ -3,8 +3,46 @@
 </div>
 
 <mat-form-field class="margin-333" style="width: 98%">
-  <input matInput placeholder="Filtrar Artículos" value="" (keyup)='updateFilter($event)'>
+  <input matInput placeholder="Filtrar Artículos" [(ngModel)] = "textSearch" (keyup)='updateFilter($event)'>
 </mat-form-field>
+<!-- <a mat-raised-button matTooltip="Buscar" matTooltipPosition="left" color="primary" (click)="search()">Buscar</a> -->
+
+<div class="wrap-search">
+  <mat-accordion>
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          Filtros
+        </mat-panel-title>
+        <mat-panel-description>
+          agregar filtros para una busqueda mas especifica
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+      <div class="pb-1">
+        <mat-form-field class="full-width">
+          <mat-label>Familia</mat-label>
+          <mat-select   [(ngModel)] = "idFamilia" (ngModelChange)="search()">
+            <mat-option value=""></mat-option>
+            <mat-option *ngFor="let familia of familias" [value]="familia.idFamilia">
+              {{familia.descripcion}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="pb-1">
+        <mat-form-field class="full-width">
+          <mat-label>Materia Prima</mat-label>
+          <mat-select   [(ngModel)] = "tipoMateriaPrima" (ngModelChange)="search()">
+            <mat-option value=""></mat-option>
+            <mat-option value="1">Si</mat-option>
+            <mat-option value="0">No</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </mat-expansion-panel> 
+    
+  </mat-accordion>
+</div>
 
 
 <div fxLayout="row wrap" *ngIf="obs$ | async as articulos; else noArticulos">
@@ -78,8 +116,8 @@
 
 <div *ngIf="estatusData === 0">
   <div class="wrap-loading-catalog">
-    <h2>No se encontró información referente a
-      <b style="color:red">{{dataSerach}}</b>
+    <h2>No se encontró información referente a su busqueda
+      <!-- <b style="color:red">{{dataSerach}}</b> -->
     </h2>
   </div>
 </div>

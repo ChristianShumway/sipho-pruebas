@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Vehiculo } from 'app/shared/models/vehiculo';
+import { Vehiculo, TipoCombustible } from 'app/shared/models/vehiculo';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { VehiculoService } from 'app/shared/services/vehiculo.service';
 import { AutenticacionService } from 'app/shared/services/autenticacion.service';
@@ -19,6 +19,7 @@ export class CrearVehiculoComponent implements OnInit {
   idUsuarioLogeado;
   hoy = new Date();
   pipe = new DatePipe('en-US');
+  tipoCombustible: TipoCombustible[] = [];
   @ViewChild(MatButton, {static: false}) submitButton: MatButton;
 
   constructor(
@@ -31,6 +32,7 @@ export class CrearVehiculoComponent implements OnInit {
   ngOnInit() {
     this.getValidations();
     this.idUsuarioLogeado = this.autenticacionService.currentUserValue;
+    this.getCatalogo();
   }
       
   getValidations() {
@@ -49,8 +51,18 @@ export class CrearVehiculoComponent implements OnInit {
       ]),
       numeroEconomico: new FormControl('', [
         Validators.required,
+      ]),
+      vistaTipoCombustible: new FormControl('', [
+        Validators.required
       ])
     })
+  }
+
+  getCatalogo() {
+    this.vehiculoService.getTipoCombustible().subscribe(
+      (result: TipoCombustible[]) => this.tipoCombustible = result,
+      error => console.log(error)
+    );
   }
 
   createVehicle() {

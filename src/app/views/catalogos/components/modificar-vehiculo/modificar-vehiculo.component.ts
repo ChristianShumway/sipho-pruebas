@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Router, ActivatedRoute, Params } from '@angular/router';
-import { Vehiculo } from 'app/shared/models/vehiculo';
+import { Vehiculo, TipoCombustible } from 'app/shared/models/vehiculo';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { VehiculoService } from 'app/shared/services/vehiculo.service';
 import { AutenticacionService } from 'app/shared/services/autenticacion.service';
@@ -28,6 +28,7 @@ export class ModificarVehiculoComponent implements OnInit {
   urlImage = environment.urlImages;
   imgTemp = '/vehicle/image/truck-default.png';
   imgVehicle;
+  tipoCombustible: TipoCombustible[] = [];
   @ViewChild(MatButton, {static: false}) submitButton: MatButton;
 
   public uploaderArchivo: FileUploader = new FileUploader({ url: '' });
@@ -49,6 +50,7 @@ export class ModificarVehiculoComponent implements OnInit {
     this.getVehiculo();
     this.idUsuarioLogeado = this.autenticacionService.currentUserValue;
     this.initUploadCatalogo();
+    this.getCatalogo();
   }
 
   getVehiculo() {
@@ -64,6 +66,9 @@ export class ModificarVehiculoComponent implements OnInit {
             }
             this.vehiculo = vehiculo;
             this.vehiculoForm.patchValue(vehiculo);
+            if(vehiculo.vistaTipoCombustible){
+              this.vehiculoForm.get('vistaTipoCombustible').setValue(vehiculo.vistaTipoCombustible.idTipoCombustible);
+            }
           },
           error => console.log(error)
         );
@@ -87,8 +92,18 @@ export class ModificarVehiculoComponent implements OnInit {
       ]),
       numeroEconomico: new FormControl('', [
         Validators.required,
+      ]),
+      vistaTipoCombustible: new FormControl('', [
+        Validators.required
       ])
     })
+  }
+
+  getCatalogo() {
+    this.vehiculoService.getTipoCombustible().subscribe(
+      (result: TipoCombustible[]) => this.tipoCombustible = result,
+      error => console.log(error)
+    );
   }
 
   updateVehicle() {
@@ -96,12 +111,14 @@ export class ModificarVehiculoComponent implements OnInit {
       this.submitButton.disabled = true;
       const format = 'yyyy/MM/dd';
       const myFormatedDate = this.pipe.transform(this.hoy, format);
+      const refreshTipoCombustible: TipoCombustible = this.tipoCombustible.find( (tipo: TipoCombustible) => tipo.idTipoCombustible === this.vehiculoForm.value.vistaTipoCombustible );
 
       const vehiculo: Vehiculo = {
         idVehiculo: parseInt(this.idVehiculo),
         idEmpleadoModifico: this.idUsuarioLogeado,
         activo: 1,
         ...this.vehiculoForm.value,
+        vistaTipoCombustible: refreshTipoCombustible
       };
       console.log(vehiculo);
 

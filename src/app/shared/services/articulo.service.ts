@@ -24,8 +24,8 @@ export class ArticuloService {
     return this.http.get<Articulo>(`${environment.apiURL}/catalog/getArticuloById/${idArticulo}`); 
   }
 
-  getArticulosFiltro(texto: string): Observable<Articulo[]>  {
-    return this.http.get<Articulo[]>(`${environment.apiURL}/catalog/getArticleByFilter/${texto}`); 
+  getArticulosFiltro(texto: string, idFamilia: number, materiaPrima: number): Observable<Articulo[]>  {
+    return this.http.get<Articulo[]>(`${environment.apiURL}/catalog/getArticleByFilter/${texto}/${idFamilia}/${materiaPrima}`); 
   }
 
   // getSelectEstatusArticulo
