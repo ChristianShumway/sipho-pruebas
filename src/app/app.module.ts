@@ -57,7 +57,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     RouterModule.forRoot(rootRouterConfig, { useHash: true, preloadingStrategy: PreloadAllModules }),
     AgmCoreModule.forRoot({
       apiKey: 'AIzaSyBK9scW-xOTnRY_OIUy6VscLFbAfsZeft8',
-      libraries: ['places'],
+      libraries: ['places', 'drawing', 'geometry'],
       // apiVersion: '3.31'
     })
   ],

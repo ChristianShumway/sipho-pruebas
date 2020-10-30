@@ -23,7 +23,7 @@
             <mat-menu #clienteMenu="matMenu">
               <button mat-menu-item [routerLink]="['/catalogos/qr', cliente.idCliente]">Código QR</button>
               <button mat-menu-item [routerLink]="['/catalogos/modificar-cliente', cliente.idCliente]">Editar</button>
-              <button mat-menu-item (click)="openDialoAlertDelete(cliente.idcliente)">Eliminar</button>
+              <button mat-menu-item (click)="openDialoAlertDelete(cliente.idCliente)">Eliminar</button>
             </mat-menu>
           </div>
           <mat-divider></mat-divider>

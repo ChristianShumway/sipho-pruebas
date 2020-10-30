@@ -1,3 +1,18 @@
-<div #mapa id="map" style="width: 500px; height: 500px;"></div>
-<div #indicators  id="indicators"></div>
-
+<div class="col-md-12">
+  <!-- <agm-map [latitude]="latitude" [longitude]="longitude" [fullscreenControl]='true' [mapTypeControl]='true' [fitBounds]="true"> -->
+  <agm-map #gm [latitude]="latitude" [longitude]="longitude" [zoom]="zoom" [scrollwheel]="null" [gestureHandling]="'cooperative'"[mapTypeControl]='true'>
+    <agm-marker 
+    *ngFor="let coordinate of showMarks; let i=index" 
+    [latitude]="coordinate.location.lat" 
+    [longitude]="coordinate.location.lng"    
+    [iconUrl]="icon" 
+    (markerClick)="gm.lastOpen?.close(); gm.lastOpen = infoWindow; markerClicked(coordinate);"
+    >
+        <agm-info-window #infoWindow>{{previous | json}}</agm-info-window>
+    </agm-marker>
+    <agm-polyline *ngFor = "let dataCoordinates of multipleDataCoordinates" [visible]="true" [strokeWeight]="3" [strokeColor]="dataCoordinates.color" >
+      <agm-polyline-point *ngFor="let coordinate of dataCoordinates.path; let i=index" [latitude]="coordinate.location.lat" [longitude]="coordinate.location.lng"></agm-polyline-point>
+    </agm-polyline>
+  </agm-map>
+ 
+</div> 

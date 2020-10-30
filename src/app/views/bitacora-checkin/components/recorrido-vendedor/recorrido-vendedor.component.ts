@@ -1,23 +1,24 @@
 import { Component, OnInit, AfterViewInit, ElementRef } from '@angular/core';
 import { ViewChild } from '@angular/core';
+import { MapsAPILoader, AgmInfoWindow } from '@agm/core';
 
-declare var google;
+// declare var google;
 
-interface Marker {
-  position: {
-    lat: number,
-    lng: number,
-  };
-  title: string;
-}
+// interface Marker {
+//   position: {
+//     lat: number,
+//     lng: number,
+//   };
+//   title: string;
+// }
 
-interface WayPoint {
+interface Coordinate {
   location: {
     lat: number,
     lng: number,
   };
   stopover: boolean;
-  idCoustomer?: number;
+  coustomer: string;
 }
 
 @Component({
@@ -27,167 +28,142 @@ interface WayPoint {
 })
 export class RecorridoVendedorComponent implements OnInit, AfterViewInit {
 
-  @ViewChild("mapa", {static: false}) public mapaId: ElementRef;
-  @ViewChild("indicators", {static: false}) public indicators: ElementRef;
-  map: any;
+  showMarks = [];
   
-  rendererOptions = {
-    map: this.map,
-    suppressMarkers : true
-  }
+  latitude: number;
+  longitude: number;
+  zoom: number;
+  icon;
+  previous: AgmInfoWindow = null;
+  multipleDataCoordinates: any[] = [];
 
-  directionsService = new google.maps.DirectionsService(); //controlar o calcular la ruta optima
-  directionsDisplay = new google.maps.DirectionsRenderer(this.rendererOptions); //pintar la ruta optima
-
-  origin = {lat: 21.8980987, lng: -102.2872657};
-  destination = {lat: 21.8883246, lng: -102.2526027};
-
-  wayPoints: WayPoint[] = [
+  dataCoordinates: Coordinate[] = [
     {
-      location: { lat: 21.8883246, lng: -102.2526027 }, // Jardín Botánico
+      location: { lat:21.8883246, lng:-102.2526027},
       stopover: true,
+      coustomer: 'direcion 1'
     },
     {
-      location: { lat: 21.8954565, lng: -102.2630688 }, // Parque la 93
+      location: { lat:21.8954565, lng:-102.2630688},
+      stopover: false,
+      coustomer: 'direcion 2'
+    },
+    {
+      location: { lat:21.8886726, lng:-102.2810349},
+      stopover: false,
+      coustomer: 'direcion 3'
+    },
+    {
+      location: { lat:21.8794157, lng: -102.300542},
       stopover: true,
+      coustomer: 'direcion 1'
     },
     {
-      location: { lat: 21.8886726, lng: -102.2810349}, // Maloka
+      location: { lat:21.8776983, lng:-102.2966796},
+      stopover: false,
+      coustomer: 'direcion 1'
+    },
+    {
+      location: { lat:21.8532776, lng:-102.2727224},
       stopover: true,
-    },
-  ];
-  
-  markers: Marker[] = [
-    {
-      position: {
-        lat: 4.658383846282959,
-        lng: -74.09394073486328,
-      },
-      title: 'Parque Simón Bolivar'
+      coustomer: 'direcion 1'
     },
     {
-      position: {
-        lat: 4.667945861816406,
-        lng: -74.09964752197266,
-      },
-      title: 'Jardín Botánico'
+      location: { lat:21.8563518, lng:-102.2619972},
+      stopover: false,
+      coustomer: 'direcion 1'
     },
     {
-      position: {
-        lat: 4.676802158355713,
-        lng: -74.04825592041016,
-      },
-      title: 'Parque la 93'
-    },
-    {
-      position: {
-        lat: 4.6554284,
-        lng: -74.1094989,
-      },
-      title: 'Maloka'
-    },
+      location: { lat:21.8683988, lng:-102.2674488},
+      stopover: true,
+      coustomer: 'direcion 1'
+    }
   ];
 
-  icons = {
-    start: new google.maps.MarkerImage(
-     // URL
-     'assets/images/mark-home.png',
-     // (width,height)
-     new google.maps.Size( 44, 32 ),
-     // The origin point (x,y)
-     new google.maps.Point( 0, 0 ),
-     // The anchor point (x,y)
-     new google.maps.Point( 22, 32 )
-    ),
-    markCoustomer: new google.maps.MarkerImage(
-     // URL
-     'assets/images/mark.png',
-     new google.maps.Size( 44, 32 ),
-     new google.maps.Point( 0, 0 ),
-     new google.maps.Point( 22, 32 )
-    )
-  };
+  dataCoordinates2: Coordinate[] = [
+    {
+      location: { lat:21.8735218, lng:-102.2804503},
+      stopover: true,
+      coustomer: 'direcion 1'
+    },
+    {
+      location: { lat:21.8950816, lng:-102.3235301},
+      stopover: true,
+      coustomer: 'direcion 2'
+    },
+    {
+      location: { lat:21.8928343, lng:-102.3186324},
+      stopover: false,
+      coustomer: 'direcion 3'
+    },
+    {
+      location: { lat:21.8996034, lng:-102.3118032},
+      stopover: true,
+      coustomer: 'direcion 4'
+    }
+  ];
   
-  constructor() { }
+ 
+  constructor(
+    private mapsAPILoader: MapsAPILoader,
 
+  ) {}
+  
   ngOnInit() {
-    // this.loadMap();
+    this.mapsAPILoader.load().then(() => {
+      this.setCurrentLocation();
+    });
+
+    this.icon = "./../../../../../assets/images/mark.png";
+
+    this.multipleDataCoordinates = [
+      {
+        path: this.dataCoordinates,
+        color: 'red'
+      },
+      {
+        path: this.dataCoordinates2,
+        color: 'blue'
+      }
+    ];
   }
   
   ngAfterViewInit() {
-    this.loadMap();
+    // this.loadMap();
   }
-
-  loadMap() {
-    const mapEle = this.mapaId.nativeElement;
-    const indicatorsEle = this.indicators.nativeElement;
-    
-    // create map
-    this.map = new google.maps.Map(mapEle, {
-      center: this.origin,
-      zoom: 12,
-      gestureHandling: "cooperative",
-    });
-
-    this.directionsDisplay.setMap(this.map);
-    // this.directionsDisplay.setPanel(indicatorsEle);
   
-    google.maps.event.addListenerOnce(this.map, 'idle', () => {
-      mapEle.classList.add('show-map');
-      this.calculateRoute();
-      // this.renderMarkers();
+  private setCurrentLocation() {
+    this.latitude= 21.8980987;
+    this.longitude = -102.2872657;
+    this.zoom = 14;
+    this.getMarks();
+    
+  }
+
+  getMarks() {
+    this.multipleDataCoordinates.map( data => {
+      data.path.map( (coordinate: Coordinate) => {
+        if (coordinate.stopover === true) {
+          this.showMarks = [...this.showMarks, coordinate];
+        }
+        // console.log(this.showMarks);
+      });
     });
   }
 
-  private calculateRoute() {
-    // queremos calcular una ruta
-    this.directionsService.route({
-      origin: this.origin,
-      destination: this.origin,
-      waypoints: this.wayPoints,
-      optimizeWaypoints: true,
-      travelMode: google.maps.TravelMode.DRIVING,
-    }, (response, status)  => {
-      if (status === google.maps.DirectionsStatus.OK) {
-        console.log(response);
-        this.directionsDisplay.setDirections(response);
-        const legs = response.routes[0].legs;
-        legs.map( (leg, index) => {
-          if(index > 0) {
-            this.makeMarker( leg.start_location, this.icons.markCoustomer, "cliente" );
-          } else {
-            this.makeMarker( leg.start_location, this.icons.start, "Panaderia el Horno" );            
-          }
-        } )
-      } else {
-        alert('Could not display directions due to: ' + status);
-      }
-    });
+
+  showInfo(info) {
+    console.log(info);
+    if (this.previous) {
+      this.previous.close();
+  }
+  this.previous = info;
   }
 
-  makeMarker( position, icon, title ) {
-    new google.maps.Marker({
-      position: position,
-      map: this.map,
-      icon: icon,
-      title: title
-    });
+  markerClicked(info ){
+    console.log(info);
+    this.previous = info;
   }
-
-  renderMarkers() {
-    this.markers.forEach(marker => {
-      this.addMarker(marker);
-    });
-  }
-
-  addMarker(marker: Marker) {
-    return new google.maps.Marker({
-      position: marker.position,
-      map: this.map,
-      // title:` ${marker.title} - aqui`
-    });
-  }
-
  
 
 }
