@@ -1,23 +1,24 @@
-// #map {
-//   width: 100%;
-//   height: 100%;
-//   opacity: 0;
-//   transition: opacity 150ms ease-in;
-//   display: block;
-//   &.show-map{
-//     opacity: 1;
-//   }
-// }
+.wrap-button {
+  text-align: right;
+}
 
-// #indicators {
-//   padding: 16px;
-//   height: 40%;
-//   width: 100%;
-//   overflow-y: auto;
-//   display: block;
-// }
+.wrap-mapa {
+  margin: 20px 10px;
+  agm-map {
+    height: 400px;
+  }
+}
 
+.table-container {
+  position: relative;
+  max-height: 400px !important;
+  overflow: auto;
+}
 
-agm-map {
-  height: 100vh;
+table {
+  width: 100%;
+}
+
+th.mat-sort-header-sorted {
+  color: black;
 }

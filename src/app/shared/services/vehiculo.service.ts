@@ -26,6 +26,10 @@ export class VehiculoService {
     return this.http.get<Vehiculo[]>(`${environment.apiURL}/catalog/getVehicleByFilter/${texto}`); 
   }
 
+  getVehiculosSelect(): Observable<Vehiculo[]>  {
+    return this.http.get<Vehiculo[]>(`${environment.apiURL}/catalog/getSelectVehicle`); 
+  }
+
   updateVehiculo(vehiculo: Partial<Vehiculo>): Observable<any>{
     const headerss = new HttpHeaders({'Content-Type': 'application/json'});
     return this.http.post<any>(`${environment.apiURL}/catalog/updateVehicle`, JSON.stringify(vehiculo), { headers: headerss});

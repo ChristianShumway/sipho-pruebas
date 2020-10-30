@@ -1,163 +1,127 @@
-import { Component, OnInit, AfterViewInit, ElementRef } from '@angular/core';
-import { ViewChild } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ElementRef, ViewChildren, QueryList, ViewChild } from '@angular/core';
 import { MapsAPILoader, AgmInfoWindow } from '@agm/core';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { DatePipe } from '@angular/common';
+import { VehiculoService } from 'app/shared/services/vehiculo.service';
+import { RepartidorService } from 'app/shared/services/repartidor.service';
+import { ClienteService } from 'app/shared/services/cliente.service';
+import { Vehiculo } from 'app/shared/models/vehiculo';
+import { Repartidor } from 'app/shared/models/repartidor';
+import {MatSort} from '@angular/material/sort';
+import {MatPaginator} from '@angular/material/paginator';
 
-// declare var google;
-
-// interface Marker {
-//   position: {
-//     lat: number,
-//     lng: number,
-//   };
-//   title: string;
-// }
-
-interface Coordinate {
-  location: {
-    lat: number,
-    lng: number,
-  };
-  stopover: boolean;
-  coustomer: string;
-}
+import {MatTableDataSource} from '@angular/material/table';
 
 @Component({
   selector: 'app-recorrido-vendedor',
   templateUrl: './recorrido-vendedor.component.html',
   styleUrls: ['./recorrido-vendedor.component.scss']
 })
-export class RecorridoVendedorComponent implements OnInit, AfterViewInit {
+export class RecorridoVendedorComponent implements OnInit {
 
-  showMarks = [];
-  
+  fechaInicio;
+  pipe = new DatePipe('en-US');
+  bitacoraForm: FormGroup;
+  vehiculos: Vehiculo[] = [];
   latitude: number;
   longitude: number;
   zoom: number;
-  icon;
-  previous: AgmInfoWindow = null;
+  icon: string;
+  showMarks: Repartidor[] = [];
   multipleDataCoordinates: any[] = [];
+  previous: AgmInfoWindow = null;
+  dataTable: any[] = [];
+  displayedColumns: string[] = ['empleado', 'cliente', 'fecha'];
+  dataSource = null;
+  @ViewChild(MatSort, {static: true}) sort: MatSort;
+  @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
 
-  dataCoordinates: Coordinate[] = [
-    {
-      location: { lat:21.8883246, lng:-102.2526027},
-      stopover: true,
-      coustomer: 'direcion 1'
-    },
-    {
-      location: { lat:21.8954565, lng:-102.2630688},
-      stopover: false,
-      coustomer: 'direcion 2'
-    },
-    {
-      location: { lat:21.8886726, lng:-102.2810349},
-      stopover: false,
-      coustomer: 'direcion 3'
-    },
-    {
-      location: { lat:21.8794157, lng: -102.300542},
-      stopover: true,
-      coustomer: 'direcion 1'
-    },
-    {
-      location: { lat:21.8776983, lng:-102.2966796},
-      stopover: false,
-      coustomer: 'direcion 1'
-    },
-    {
-      location: { lat:21.8532776, lng:-102.2727224},
-      stopover: true,
-      coustomer: 'direcion 1'
-    },
-    {
-      location: { lat:21.8563518, lng:-102.2619972},
-      stopover: false,
-      coustomer: 'direcion 1'
-    },
-    {
-      location: { lat:21.8683988, lng:-102.2674488},
-      stopover: true,
-      coustomer: 'direcion 1'
-    }
-  ];
-
-  dataCoordinates2: Coordinate[] = [
-    {
-      location: { lat:21.8735218, lng:-102.2804503},
-      stopover: true,
-      coustomer: 'direcion 1'
-    },
-    {
-      location: { lat:21.8950816, lng:-102.3235301},
-      stopover: true,
-      coustomer: 'direcion 2'
-    },
-    {
-      location: { lat:21.8928343, lng:-102.3186324},
-      stopover: false,
-      coustomer: 'direcion 3'
-    },
-    {
-      location: { lat:21.8996034, lng:-102.3118032},
-      stopover: true,
-      coustomer: 'direcion 4'
-    }
-  ];
-  
- 
   constructor(
     private mapsAPILoader: MapsAPILoader,
-
+    private vehiculoService: VehiculoService,
+    private repartidorService: RepartidorService,
+    private clienteService: ClienteService
   ) {}
   
   ngOnInit() {
+    this.getValidations();
+    this.getCatalog();
+    this.fechaInicio = new Date(this.bitacoraForm.controls['date'].value);
+    this.fechaInicio.setDate(this.fechaInicio.getDate());
     this.mapsAPILoader.load().then(() => {
       this.setCurrentLocation();
     });
-
     this.icon = "./../../../../../assets/images/mark.png";
-
-    this.multipleDataCoordinates = [
-      {
-        path: this.dataCoordinates,
-        color: 'red'
-      },
-      {
-        path: this.dataCoordinates2,
-        color: 'blue'
-      }
-    ];
   }
-  
-  ngAfterViewInit() {
-    // this.loadMap();
+
+  private getValidations(){
+    this.bitacoraForm = new FormGroup({
+      date: new FormControl(new Date(), Validators.required),
+      vehicles: new FormControl('', Validators.required)
+    })
+  }
+
+  public onFechaInicio(event): void {
+    this.fechaInicio = event.value;
+  }
+
+  private getCatalog() {
+    this.vehiculoService.getVehiculosSelect().subscribe(
+      (vehiculos: Vehiculo[]) => {
+        console.log(vehiculos);
+        this.vehiculos = vehiculos;
+      }
+    );
   }
   
   private setCurrentLocation() {
     this.latitude= 21.8980987;
     this.longitude = -102.2872657;
     this.zoom = 14;
-    this.getMarks();
+  }
+
+  getTravels(){
+    if( this.bitacoraForm.valid) {
+      const format = 'yyyy-MM-dd';
+      const nuevaFechaInicio = this.pipe.transform(this.fechaInicio, format);
+
+      const data = {
+        // ...this.bitacoraForm.value,
+        vehicles: [this.bitacoraForm.value.vehicles],
+        date: nuevaFechaInicio
+      }
     
+      console.log(data);
+      this.repartidorService.getLogDeliveryMan(data).subscribe(
+        result => {
+          console.log(result);
+          this.multipleDataCoordinates = result;
+          this.getMarks();
+        },
+        error => console.log(error)
+      );
+    }
   }
 
   getMarks() {
     this.multipleDataCoordinates.map( data => {
-      data.path.map( (coordinate: Coordinate) => {
+      data.path.map( (coordinate: Repartidor) => {
         if (coordinate.stopover === true) {
           this.showMarks = [...this.showMarks, coordinate];
+          this.dataTable = [...this.dataTable,  {
+            cliente: coordinate.customer,
+            empleado: coordinate.employe,
+            fecha: coordinate.date
+          }];
         }
-        // console.log(this.showMarks);
       });
     });
-  }
 
-
-  showInfo(info) {
-    console.log(info);
-    if (this.previous) {
-      this.previous.close();
-  }
-  this.previous = info;
+    console.log(this.showMarks);
+    console.log(this.dataTable);
+    this.dataSource = new MatTableDataSource(this.dataTable);
+    this.dataSource.sort = this.sort;
+    this.dataSource.paginator = this.paginator;
   }
 
   markerClicked(info ){
@@ -165,5 +129,9 @@ export class RecorridoVendedorComponent implements OnInit, AfterViewInit {
     this.previous = info;
   }
  
+}
 
+export class Recorrido {
+  constructor(public empleado: string, public cliente: string, public fecha: string) {
+  }
 }
