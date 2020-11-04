@@ -43,37 +43,53 @@
 
 <mat-card class="col-md-10 wrap-mapa">
   <!-- <agm-map [latitude]="latitude" [longitude]="longitude" [fullscreenControl]='true' [mapTypeControl]='true' [fitBounds]="true"> -->
-  <agm-map #gm [latitude]="latitude" [longitude]="longitude" [zoom]="zoom" [scrollwheel]="null" [gestureHandling]="'cooperative'"
-    [mapTypeControl]='true'>
-    <agm-marker *ngFor="let coordinate of showMarks; let i=index" [latitude]="coordinate.location.lat" [longitude]="coordinate.location.lng"
-      [iconUrl]="icon" (markerClick)="gm.lastOpen?.close(); gm.lastOpen = infoWindow; markerClicked(coordinate);">
-      <agm-info-window #infoWindow>{{previous | json}}</agm-info-window>
-    </agm-marker>
-    <agm-polyline *ngFor="let dataCoordinates of multipleDataCoordinates" [visible]="true" [strokeWeight]="3" [strokeColor]="dataCoordinates.color">
-      <agm-polyline-point *ngFor="let coordinate of dataCoordinates.path; let i=index" [latitude]="coordinate.location.lat" [longitude]="coordinate.location.lng"></agm-polyline-point>
-    </agm-polyline>
-  </agm-map>
+  <div *ngIf="!search">
+    <agm-map #gm [latitude]="latitude" [longitude]="longitude" [zoom]="zoom" [scrollwheel]="null" [gestureHandling]="'cooperative'"
+      [mapTypeControl]='true'>
+      <agm-marker [latitude]="latitude" [longitude]="longitude" [iconUrl]="pin">
+      </agm-marker>
+      <agm-marker *ngFor="let coordinate of showMarks; let i=index" [latitude]="coordinate.location.lat" [longitude]="coordinate.location.lng"
+        [iconUrl]="icon" (markerClick)="gm.lastOpen?.close(); gm.lastOpen = infoWindow; markerClicked(coordinate);">
+        <agm-info-window #infoWindow [maxWidth]="280">
+          <div *ngIf="previous" style="text-align: center">{{previous}}</div>
+          <div class="wrap-loading-catalog load" *ngIf="!previous">
+            <mat-spinner [diameter]="30"></mat-spinner>
+          </div>
+        </agm-info-window>
+      </agm-marker>
+      
+      <agm-polyline *ngFor="let dataCoordinates of multipleDataCoordinates" [visible]="true" [strokeWeight]="3" [strokeColor]="dataCoordinates.color">
+        <agm-polyline-point *ngFor="let coordinate of dataCoordinates.path; let i=index" [latitude]="coordinate.location.lat" [longitude]="coordinate.location.lng"></agm-polyline-point>
+      </agm-polyline>
+    </agm-map>
+  </div>
+  <div class="app-loader" *ngIf="search">
+    <div class="spinner">
+      <div class="double-bounce1 mat-bg-primary"></div>
+      <div class="double-bounce2 mat-bg-accent"></div>
+    </div>
+  </div>
 </mat-card>
 
-<mat-card class="wrap-table-info" *ngIf="dataTable.length" >
+<mat-card class="wrap-table-info" *ngIf="dataTable.length">
   <div class="table-container">
-    <table #table mat-table [dataSource]="dataSource" class="mat-elevation-z8"  matSort>
-  
+    <table #table mat-table [dataSource]="dataSource" class="mat-elevation-z8" matSort>
+
       <ng-container matColumnDef="empleado">
         <th mat-header-cell *matHeaderCellDef mat-sort-header> Empleado </th>
         <td mat-cell *matCellDef="let recorrido"> {{recorrido.empleado}} </td>
       </ng-container>
-  
+
       <ng-container matColumnDef="cliente">
         <th mat-header-cell *matHeaderCellDef mat-sort-header> Cliente </th>
         <td mat-cell *matCellDef="let recorrido"> {{recorrido.cliente}} </td>
       </ng-container>
-  
+
       <ng-container matColumnDef="fecha">
         <th mat-header-cell *matHeaderCellDef mat-sort-header> Fecha </th>
-        <td mat-cell *matCellDef="let recorrido"> {{recorrido.fecha | date}} </td>
+        <td mat-cell *matCellDef="let recorrido"> {{recorrido.fecha | date: 'dd/MM/yyyy HH:mm:ss'}} </td>
       </ng-container>
-  
+
       <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
     </table>

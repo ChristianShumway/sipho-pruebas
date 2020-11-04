@@ -11,6 +11,8 @@ import {MatSort} from '@angular/material/sort';
 import {MatPaginator} from '@angular/material/paginator';
 
 import {MatTableDataSource} from '@angular/material/table';
+import { Cliente } from '../../../../shared/models/cliente';
+import { MatSnackBar } from '@angular/material';
 
 @Component({
   selector: 'app-recorrido-vendedor',
@@ -27,20 +29,25 @@ export class RecorridoVendedorComponent implements OnInit {
   longitude: number;
   zoom: number;
   icon: string;
+  pin: string;
   showMarks: Repartidor[] = [];
   multipleDataCoordinates: any[] = [];
-  previous: AgmInfoWindow = null;
+  previous = null;
   dataTable: any[] = [];
   displayedColumns: string[] = ['empleado', 'cliente', 'fecha'];
   dataSource = null;
   @ViewChild(MatSort, {static: true}) sort: MatSort;
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
+  search: boolean = true;
+  latActualRepartidor: number;
+  lngActualRepartido: number;
 
   constructor(
     private mapsAPILoader: MapsAPILoader,
     private vehiculoService: VehiculoService,
     private repartidorService: RepartidorService,
-    private clienteService: ClienteService
+    private clienteService: ClienteService,
+    private snackBar: MatSnackBar
   ) {}
   
   ngOnInit() {
@@ -50,8 +57,10 @@ export class RecorridoVendedorComponent implements OnInit {
     this.fechaInicio.setDate(this.fechaInicio.getDate());
     this.mapsAPILoader.load().then(() => {
       this.setCurrentLocation();
+      this.search = false;
     });
-    this.icon = "./../../../../../assets/images/mark.png";
+    this.icon = "assets/images/mark.png";
+    this.pin = "assets/images/pin.png";
   }
 
   private getValidations(){
@@ -68,7 +77,7 @@ export class RecorridoVendedorComponent implements OnInit {
   private getCatalog() {
     this.vehiculoService.getVehiculosSelect().subscribe(
       (vehiculos: Vehiculo[]) => {
-        console.log(vehiculos);
+        // console.log(vehiculos);
         this.vehiculos = vehiculos;
       }
     );
@@ -84,6 +93,8 @@ export class RecorridoVendedorComponent implements OnInit {
     if( this.bitacoraForm.valid) {
       const format = 'yyyy-MM-dd';
       const nuevaFechaInicio = this.pipe.transform(this.fechaInicio, format);
+      this.multipleDataCoordinates = [];
+      this.search = true;
 
       const data = {
         // ...this.bitacoraForm.value,
@@ -91,10 +102,8 @@ export class RecorridoVendedorComponent implements OnInit {
         date: nuevaFechaInicio
       }
     
-      console.log(data);
       this.repartidorService.getLogDeliveryMan(data).subscribe(
         result => {
-          console.log(result);
           this.multipleDataCoordinates = result;
           this.getMarks();
         },
@@ -104,34 +113,68 @@ export class RecorridoVendedorComponent implements OnInit {
   }
 
   getMarks() {
-    this.multipleDataCoordinates.map( data => {
-      data.path.map( (coordinate: Repartidor) => {
-        if (coordinate.stopover === true) {
-          this.showMarks = [...this.showMarks, coordinate];
-          this.dataTable = [...this.dataTable,  {
-            cliente: coordinate.customer,
-            empleado: coordinate.employe,
-            fecha: coordinate.date
-          }];
-        }
+    this.showMarks = [];
+    this.dataTable = [];
+    this.search = false;
+    if(this.multipleDataCoordinates[0].path.length > 0 ){
+      this.zoom = 0;
+      this.multipleDataCoordinates.map( data => {
+        const medium = Math.round(data.path.length / 2);
+        this.latitude = data.path[data.path.length - 1].location.lat;
+        this.longitude = data.path[data.path.length - 1].location.lng;
+        this.latActualRepartidor = data.path[data.path.length - 1].location.lat;
+        this.lngActualRepartido = data.path[data.path.length - 1].location.lng;
+        console.log(this.latActualRepartidor);
+        console.log(this.lngActualRepartido);
+        console.log(data);
+        this.zoom = 20;
+        data.path.map( (coordinate: Repartidor) => {
+          if (coordinate.stopover === true) {
+            this.showMarks = [...this.showMarks, coordinate];
+            this.dataTable = [...this.dataTable,  {
+              cliente: coordinate.customer,
+              empleado: coordinate.employe,
+              fecha: coordinate.date
+            }];
+          }
+        });
       });
-    });
-
-    console.log(this.showMarks);
-    console.log(this.dataTable);
-    this.dataSource = new MatTableDataSource(this.dataTable);
-    this.dataSource.sort = this.sort;
-    this.dataSource.paginator = this.paginator;
+      
+      // console.log(this.showMarks);
+      // console.log(this.dataTable);
+      this.dataSource = new MatTableDataSource(this.dataTable);
+      this.dataSource.sort = this.sort;
+      this.dataSource.paginator = this.paginator;
+    } else {
+      this.useAlerts(`No se encontró recorrido de este vehículo en esta fecha`, ' ', 'error-dialog');
+      this.setCurrentLocation();
+    }
   }
 
-  markerClicked(info ){
+  markerClicked(info){
     console.log(info);
-    this.previous = info;
+    this.previous = null;
+    // this.previous = info;
+    this.clienteService.getCliente(info.idCustomer).subscribe(
+      (cliente: Cliente) => {
+        console.log(cliente);
+        let prop = 'Propietario:';
+        // prop = prop.bold();
+        this.previous = `${prop} ${cliente.propietario}, 
+        Razón Social: ${cliente.razonSocial}, 
+        Domicilio: ${cliente.calle} ${cliente.numero} ${cliente.colonia}, ${cliente.codigoPostal}, ${cliente.ciudad}.`;
+      },
+      error => console.log(error)
+    );
+  }
+
+  useAlerts(message, action, className) {
+    this.snackBar.open(message, action, {
+      duration: 2000,
+      verticalPosition: 'bottom',
+      horizontalPosition: 'right',
+      panelClass: [className]
+    });
   }
  
-}
-
-export class Recorrido {
-  constructor(public empleado: string, public cliente: string, public fecha: string) {
-  }
 }
