@@ -1,0 +1,62 @@
+<mat-card class="p-0 container-create-user">
+  <mat-card-title class="">
+    <div class="card-title-text">Formulario para el registro de una vitrina</div>
+    <mat-divider></mat-divider>
+  </mat-card-title>
+
+  <mat-card-content>
+    <form [formGroup]="vitrinaForm" (submit)="createVitrina()">
+      <div fxLayout="row wrap">
+        <div fxFlex="100" fxFlex.gt-xs="100">
+          <div class="pb-1">
+            <mat-form-field class="full-width">
+              <input matInput name="descripcion" formControlName="descripcion" placeholder="Descripción">
+            </mat-form-field>
+            <div class="validaciones">
+              <small *ngIf="vitrinaForm.controls['descripcion'].hasError('required') && vitrinaForm.controls['descripcion'].touched" class="form-error-msg">
+                Descripción de la vitrina es un campo requerido
+              </small>
+            </div>
+          </div>
+          <div class="pb-1">
+            <mat-form-field class="full-width">
+              <input matInput name="color" formControlName="color" placeholder="Color">
+            </mat-form-field>
+            <div class="validaciones">
+              <small *ngIf="vitrinaForm.controls['color'].hasError('required') && vitrinaForm.controls['color'].touched"
+                class="form-error-msg">
+                Color de la vitrina es un campo requerido
+              </small>
+            </div>
+          </div>
+          <div class="pb-1">
+            <mat-form-field class="full-width">
+              <input matInput name="noCharolas" formControlName="noCharolas" placeholder="No. Charolas" mask="separator.2" thousandSeparator=",">
+            </mat-form-field>
+            <div class="validaciones">
+              <small *ngIf="vitrinaForm.controls['noCharolas'].hasError('required') && vitrinaForm.controls['noCharolas'].touched" class="form-error-msg">
+                Número de charolas es un campo requerido
+              </small>
+            </div>
+          </div>
+          <div class="pb-1">
+            <mat-form-field class="full-width">
+              <input matInput name="folio" formControlName="folio" placeholder="Folio">
+            </mat-form-field>
+            <div class="validaciones">
+              <small *ngIf="vitrinaForm.controls['folio'].hasError('required') && vitrinaForm.controls['folio'].touched"
+                class="form-error-msg">
+                Folio de la vitrina es un campo requerido
+              </small>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="cont-btns">
+        <button mat-raised-button color="primary" [disabled]="vitrinaForm.invalid" #submitButton type="submit">Agregar</button>
+        <button mat-raised-button [routerLink]="'/catalogos/vitrinas'">Cancelar</button>
+      </div>
+    </form>
+  </mat-card-content>
+</mat-card>

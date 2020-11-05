@@ -46,6 +46,12 @@ import { ModificarVehiculoComponent } from './components/modificar-vehiculo/modi
 import { PermisosComponent } from './components/permisos/permisos.component';
 import { ModalPermisosComponent } from './components/modal-permisos/modal-permisos.component';
 import { VerCodigoQrVehiculoComponent } from './components/ver-codigo-qr-vehiculo/ver-codigo-qr-vehiculo.component';
+import { VitrinasComponent } from './components/vitrinas/vitrinas.component';
+import { CrearVitrinaComponent } from './components/crear-vitrina/crear-vitrina.component';
+import { ModificarVitrinaComponent } from './components/modificar-vitrina/modificar-vitrina.component';
+import { RutasComponent } from './components/rutas/rutas.component';
+import { CrearRutaComponent } from './components/crear-ruta/crear-ruta.component';
+import { ModificarRutaComponent } from './components/modificar-ruta/modificar-ruta.component';
 
 export let options: Partial<IConfig> | (() => Partial<IConfig>);
 
@@ -81,7 +87,7 @@ export let options: Partial<IConfig> | (() => Partial<IConfig>);
     ModificarVehiculoComponent, 
     PermisosComponent, 
     ModalPermisosComponent, 
-    VerCodigoQrVehiculoComponent
+    VerCodigoQrVehiculoComponent, VitrinasComponent, CrearVitrinaComponent, ModificarVitrinaComponent, RutasComponent, CrearRutaComponent, ModificarRutaComponent
   ],
   imports: [
     CommonModule,

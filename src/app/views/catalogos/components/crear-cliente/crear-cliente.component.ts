@@ -5,10 +5,11 @@ import { Cliente } from 'app/shared/models/cliente';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ClienteService } from 'app/shared/services/cliente.service';
 import { AutenticacionService } from 'app/shared/services/autenticacion.service';
-import { DatePipe } from '@angular/common';
 import { MatBottomSheet, MatButton } from '@angular/material';
 import { VerMapaComponent } from '../ver-mapa/ver-mapa.component';
 import { ViewChild } from '@angular/core';
+import { RutaService } from 'app/shared/services/ruta.service';
+import { Ruta } from 'app/shared/models/ruta';
 
 @Component({
   selector: 'app-crear-cliente',
@@ -19,8 +20,7 @@ export class CrearClienteComponent implements OnInit {
 
   clienteForm: FormGroup;
   idUsuarioLogeado;
-  hoy = new Date();
-  pipe = new DatePipe('en-US');
+  rutas: Ruta[] = [];
   @ViewChild(MatButton, {static: false}) submitButton: MatButton;
 
   constructor(
@@ -29,10 +29,12 @@ export class CrearClienteComponent implements OnInit {
     private clienteService: ClienteService,
     private autenticacionService: AutenticacionService,
     private bottomSheet: MatBottomSheet,
+    private rutaService: RutaService
   ) { }
 
   ngOnInit() {
     this.getValidations();
+    this.getCatalog();
     this.idUsuarioLogeado = this.autenticacionService.currentUserValue;
   }
 
@@ -80,14 +82,21 @@ export class CrearClienteComponent implements OnInit {
       observacion: new FormControl('', [
         Validators.required,
       ]),
+      vistaRuta: new FormControl('', [
+        Validators.required
+      ])
 
     })
   }
 
-  createCustomer() {
-    const format = 'yyyy/MM/dd';
-    const myFormatedDate = this.pipe.transform(this.hoy, format);
+  getCatalog() {
+    this.rutaService.getSelectRuta().subscribe(
+      (rutas: Ruta[]) => this.rutas = rutas,
+      error => console.log(error)
+    );
+  }
 
+  createCustomer() {
     if (this.clienteForm.valid) {
       this.submitButton.disabled = true;
       const cliente: Cliente = {

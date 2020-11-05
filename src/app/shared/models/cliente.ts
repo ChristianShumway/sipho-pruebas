@@ -1,3 +1,5 @@
+import { Ruta } from './ruta';
+
 export interface Cliente {
   idCliente?: number;
   razonSocial: string;
@@ -15,6 +17,7 @@ export interface Cliente {
   observacion: string;
   idEmpleadoModificacion?: number;
   qr?: string;
+  vistaRuta: Ruta;
 }
 
 export interface ClienteContent {

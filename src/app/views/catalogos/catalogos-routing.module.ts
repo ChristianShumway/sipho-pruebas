@@ -30,6 +30,12 @@ import { ModificarVehiculoComponent } from './components/modificar-vehiculo/modi
 import { PermisosComponent } from './components/permisos/permisos.component';
 import { AuthModuleGuard } from '../../shared/services/auth/auth-module.guard';
 import { VerCodigoQrVehiculoComponent } from './components/ver-codigo-qr-vehiculo/ver-codigo-qr-vehiculo.component';
+import { VitrinasComponent } from './components/vitrinas/vitrinas.component';
+import { CrearVitrinaComponent } from './components/crear-vitrina/crear-vitrina.component';
+import { ModificarVitrinaComponent } from './components/modificar-vitrina/modificar-vitrina.component';
+import { RutasComponent } from './components/rutas/rutas.component';
+import { CrearRutaComponent } from './components/crear-ruta/crear-ruta.component';
+import { ModificarRutaComponent } from './components/modificar-ruta/modificar-ruta.component';
 
 const routes: Routes = [
   {
@@ -186,6 +192,38 @@ const routes: Routes = [
     path: 'permisos',
     data: { title: 'Permisos', breadcrumb: 'Permisos'},
     canActivate: [AuthModuleGuard],
+  },
+  {
+    component: VitrinasComponent,
+    path: 'vitrinas',
+    data: { title: 'Vitrinas', breadcrumb: 'Vitrinas'},
+    canActivate: [AuthModuleGuard],
+  },
+  {
+    component: CrearVitrinaComponent,
+    path: 'crear-vitrina',
+    data: { title: 'Crear Vitrina', breadcrumb: 'Crear Vitrina'}
+  },
+  {
+    component: ModificarVitrinaComponent,
+    path: 'modificar-vitrina/:idVitrina',
+    data: { title: 'Modificar Vitrina', breadcrumb: 'Modificar Vitrina'}
+  },
+  {
+    component: RutasComponent,
+    path: 'rutas',
+    data: { title: 'Rutas', breadcrumb: 'Rutas'},
+    canActivate: [AuthModuleGuard],
+  },
+  {
+    component: CrearRutaComponent,
+    path: 'crear-ruta',
+    data: { title: 'Crear Ruta', breadcrumb: 'Crear Ruta'}
+  },
+  {
+    component: ModificarRutaComponent,
+    path: 'modificar-ruta/:idRuta',
+    data: { title: 'Modificar Ruta', breadcrumb: 'Modificar Ruta'}
   },
 ];
 

@@ -5,9 +5,11 @@ import { Cliente } from 'app/shared/models/cliente';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ClienteService } from 'app/shared/services/cliente.service';
 import { AutenticacionService } from 'app/shared/services/autenticacion.service';
-import { DatePipe } from '@angular/common';
 import { MatBottomSheet, MatButton } from '@angular/material';
 import { VerMapaComponent } from '../ver-mapa/ver-mapa.component';
+import { Ruta } from 'app/shared/models/ruta';
+import { RutaService } from 'app/shared/services/ruta.service';
+import { switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-modificar-cliente',
@@ -20,8 +22,7 @@ export class ModificarClienteComponent implements OnInit {
   idCliente;
   idUsuarioLogeado;
   cliente: Cliente;
-  hoy = new Date();
-  pipe = new DatePipe('en-US');
+  rutas: Ruta[] = [];
   @ViewChild(MatButton, {static: false}) submitButton: MatButton;
 
   constructor(
@@ -31,28 +32,36 @@ export class ModificarClienteComponent implements OnInit {
     private autenticacionService: AutenticacionService,
     private activatedRoute: ActivatedRoute,
     private bottomSheet: MatBottomSheet,
+    private rutaService: RutaService
   ) { }
 
   ngOnInit() {
     this.getValidations();
     this.getCliente();
+    this.getCatalogo();
     this.idUsuarioLogeado = this.autenticacionService.currentUserValue;
   }
 
   getCliente() {
-    this.activatedRoute.params.subscribe((data: Params) => {
-      this.idCliente = data.idCliente;
-      if (this.idCliente) {
-        this.clienteService.getCliente(this.idCliente).subscribe(
-          (cliente: Cliente) => {
-            console.log(cliente);
-            this.cliente = cliente;
-            this.clienteForm.patchValue(cliente);
-          },
-          error => console.log(error)
-        );
-      }
-    });
+    this.activatedRoute.params.pipe(
+      switchMap ( (params: Params) => this.clienteService.getCliente(params.idCliente) )
+    ).subscribe(
+      (cliente: Cliente) => {
+        console.log(cliente);
+        this.cliente = cliente;
+        this.idCliente = cliente.idCliente;
+        this.clienteForm.patchValue(cliente);
+        this.clienteForm.get('vistaRuta').setValue(cliente.vistaRuta.idRuta)
+      },
+      error => console.log(error)
+    );
+  }
+
+  getCatalogo() {
+    this.rutaService.getSelectRuta().subscribe(
+      (rutas: Ruta[]) => this.rutas = rutas, 
+      error => console.log(error)
+    );
   }
 
   getValidations() {
@@ -99,6 +108,9 @@ export class ModificarClienteComponent implements OnInit {
       observacion: new FormControl('', [
         Validators.required,
       ]),
+      vistaRuta: new FormControl('', [
+        Validators.required,
+      ]),
     });
   }
 
@@ -106,16 +118,14 @@ export class ModificarClienteComponent implements OnInit {
   updateCustomer() {
     if (this.clienteForm.valid) {
       this.submitButton.disabled = true;
-      const format = 'yyyy/MM/dd';
-      const myFormatedDate = this.pipe.transform(this.hoy, format);
-
+      const newRuta = this.rutas.find( (ruta: Ruta) => ruta.idRuta === this.clienteForm.value.vistaRuta);
       const cliente: Cliente = {
         idCliente: parseInt(this.idCliente),
         idEmpleadoModificacion: this.idUsuarioLogeado,
         ...this.clienteForm.value,
+        vistaRuta: newRuta
       };
       console.log(cliente);
-
       this.clienteService.updateCliente(cliente).subscribe(
         (response => {
           if (response.estatus === '05') {

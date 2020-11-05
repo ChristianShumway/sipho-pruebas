@@ -41,14 +41,17 @@
             </p>
             <p class="p-info-catalogss" matTooltip="Correo Electrónico" matTooltipPosition="below">
               <mat-icon class="text-muted">email</mat-icon> 
-              <span>{{cliente.email}}</span>
+              <span>{{cliente.email || 'Sin correo'}}</span>
             </p>
           </div>
           <div class="wrap-detailss">
             <p class="p-info-catalogss " matTooltip="Dirección" matTooltipPosition="below">
               <mat-icon class="text-muted">store</mat-icon> 
               <span>{{cliente.calle}} No. {{cliente.numero}}, Colonia {{cliente.colonia}}, {{cliente.codigoPostal}} {{cliente.ciudad}}, México.</span>
-              <!-- <span>{{cliente.calle}} No. {{cliente.numero}}, Colonia {{cliente.colonia}}</span> -->
+            </p>
+            <p class="p-info-catalogss " matTooltip="Ruta" matTooltipPosition="below">
+              <mat-icon class="text-muted">local_shipping</mat-icon> 
+              <span>{{cliente.vistaRuta.descripcion}}</span>
             </p>
           </div>
         </mat-card-content>
