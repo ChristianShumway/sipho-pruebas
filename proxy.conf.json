@@ -1,21 +1,21 @@
 {
   "/dashboard/*": {
-    "target": "http://108.175.5.160:8080/Sipho/",
+    "target": "http://4485949.online-server.cloud:8080/Sipho/",
     "secure": false,
     "logLevel": "debug"
   },
   "/catalog/*": {
-    "target": "http://108.175.5.160:8080/Sipho/",
+    "target": "http://4485949.online-server.cloud:8080/Sipho/",
     "secure": false,
     "logLevel": "debug"
   },
   "/config/*": {
-    "target": "http://108.175.5.160:8080/Sipho/",
+    "target": "http://4485949.online-server.cloud:8080/Sipho/",
     "secure": false,
     "logLevel": "debug"
   },
   "/delivery/*": {
-    "target": "http://108.175.5.160:8080/Sipho/",
+    "target": "http://4485949.online-server.cloud:8080/Sipho/",
     "secure": false,
     "logLevel": "debug"
   }

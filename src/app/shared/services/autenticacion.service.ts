@@ -59,10 +59,16 @@ export class AutenticacionService {
     const headerss = new HttpHeaders({ 'Content-Type': 'application/json' });
     return this.http.post<any>(`${environment.apiURL}/dashboard/autenticacion`, JSON.stringify(user), { headers: headerss })
       .pipe(map( user => {
-        this.currentUserSubject.next(user.idEmpleado);
-        this.currentProfileSubject.next(user.perfil);
+        // this.currentUserSubject.next(user.idEmpleado);
+        // this.currentProfileSubject.next(user.perfil);
         return user;
       }));
+  }
+
+  isLogin(user) {
+    console.log(user);
+    this.currentUserSubject.next(user.idEmpleado);
+    this.currentProfileSubject.next(user.perfil);
   }
 
   restoreUser(user) {

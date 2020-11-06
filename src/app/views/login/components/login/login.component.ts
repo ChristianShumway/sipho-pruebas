@@ -30,9 +30,9 @@ export class LoginComponent implements OnInit {
     private autenticacionService: AutenticacionService
   ) { 
     // redirect to home if already logged in
-    if (this.autenticacionService.currentUserValue) {
-      this.router.navigate(['/dashboard']);
-    }
+    // if (this.autenticacionService.currentUserValue) {
+    //   this.router.navigate(['/dashboard']);
+    // }
   }
 
   ngOnInit() {
@@ -50,13 +50,14 @@ export class LoginComponent implements OnInit {
     .pipe(first()) 
     .subscribe(
       (user: Empleado) => {
-        // console.log(user);
+        console.log(user);
         if(user.email){
           if(user.cambiarContrasena === 0){
             localStorage.setItem('currentUserSession', JSON.stringify(user.idEmpleado));
             localStorage.setItem('perfilEmpleado', JSON.stringify(user.perfil));
+            this.autenticacionService.isLogin(user);
             this.useAlerts('Acceso de usuario correcto', ' ', 'success-dialog');
-            this.router.navigate(['dashboard']);
+            this.router.navigate(['/dashboard']);
             this.existeUsuario = true;
           } else if(user.cambiarContrasena === 1) {
             this.useAlerts('Tienes que cambiar tu contraseña temporal', ' ', 'warning-dialog');

@@ -3,6 +3,7 @@ import { AdminLayoutComponent } from './shared/components/layouts/admin-layout/a
 import { AuthLayoutComponent } from './shared/components/layouts/auth-layout/auth-layout.component';
 import { AuthGuard } from './shared/services/auth/auth.guard';
 import { AuthModuleGuard } from './shared/services/auth/auth-module.guard';
+import { ShowLoginGuard } from './shared/services/auth/show-login.guard';
 
 export const rootRouterConfig: Routes = [
   { 
@@ -13,7 +14,8 @@ export const rootRouterConfig: Routes = [
   {
     path: 'login',
     loadChildren: () => import('./views/login/login.module').then(m => m.LoginModule),
-    data: { title: 'Inicio de Sesión' }
+    data: { title: 'Inicio de Sesión' },
+    canActivate: [ShowLoginGuard]
   },
   {
     path: '', 
