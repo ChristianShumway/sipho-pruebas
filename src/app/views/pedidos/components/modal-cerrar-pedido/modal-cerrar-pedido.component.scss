@@ -1,0 +1,37 @@
+.title,
+.content,
+.actions{
+  justify-content: center;
+  text-align: center;
+}
+
+.mat-cancel{
+  background: lightgrey;
+  color: darkslategray;
+}
+
+.mat-delete{
+  background: #f15757;
+  color: white;
+ }
+
+.mat-dialog-title{
+  background: #f15757;
+  padding: 20px 0 0 0 !important;
+  margin: 24px 0 0 0 !important;
+}
+
+mat-icon{
+  color: white !important;
+  font-size: 50px !important;
+}
+
+.mat-dialog-content{
+  background: #f15757;
+  color: white;
+  padding-top: 10px !important;
+}
+
+.mat-dialog-actions{
+  margin-bottom: 0 !important;
+}

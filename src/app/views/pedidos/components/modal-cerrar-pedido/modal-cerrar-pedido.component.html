@@ -1,0 +1,9 @@
+<div mat-dialog-content class="content">
+  <p><mat-icon class="text-muted">warning</mat-icon></p>
+  <p>¿Está seguro de cerrar este pedido?</p>
+</div>
+<div mat-dialog-actions class="actions">
+  <button mat-raised-button [color]="'cancel'" (click)="onNoClick()">Cancelar</button>
+  <button mat-raised-button [color]="'delete'" [mat-dialog-close]="'cerrar'" cdkFocusInitial>Cerrar</button>
+</div>
+

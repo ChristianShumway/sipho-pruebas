@@ -1,6 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { DatePipe } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute, Params } from '@angular/router';
 import { MatButton, MatTableDataSource } from '@angular/material';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import { AutenticacionService } from 'app/shared/services/autenticacion.service';
@@ -8,23 +7,24 @@ import { PedidoService } from 'app/shared/services/pedido.service';
 import { ClienteService } from 'app/shared/services/cliente.service';
 import { Cliente } from 'app/shared/models/cliente';
 import { Pedido } from 'app/shared/models/pedido';
+import { switchMap } from 'rxjs/operators';
 
 @Component({
-  selector: 'app-realizar-pedido',
-  templateUrl: './realizar-pedido.component.html',
-  styleUrls: ['./realizar-pedido.component.scss']
+  selector: 'app-modificar-pedido',
+  templateUrl: './modificar-pedido.component.html',
+  styleUrls: ['./modificar-pedido.component.scss']
 })
-export class RealizarPedidoComponent implements OnInit {
+export class ModificarPedidoComponent implements OnInit {
 
   @ViewChild('save', {static: false}) submitButton: MatButton;
   idUsuarioLogeado;
-  hoy = new Date();
-  pipe = new DatePipe('en-US');
   clientes: Cliente[] = [];
   cliente: Cliente[] = [];
+  pedido: Pedido;
   dataSearch:string = '';
   searchNow: boolean = false;
   noData: boolean;
+  isLoadingData: boolean = true;
   selected;
   isReadOnly: boolean = false;
   displayedColumns: string[] = ['propietario', 'razonSocial', 'rfc', 'telefono', 'accion'];
@@ -37,10 +37,27 @@ export class RealizarPedidoComponent implements OnInit {
     private pedidoService: PedidoService,
     private router: Router,
     private snackBar: MatSnackBar,
+    private activatedRoute: ActivatedRoute
   ) { }
 
   ngOnInit() {
     this.idUsuarioLogeado = this.autenticacionService.currentUserValue;
+    this.getOrder();
+  }
+
+  getOrder() {
+    this.activatedRoute.params.pipe(
+      switchMap((params: Params) => this.pedidoService.getPedido(params.idPedido))
+    ).subscribe(
+      (pedido: Pedido) => {
+        this.pedido = pedido;
+        this.setCoustomer(pedido.vistaCliente);
+      },
+      error => {
+        console.log(error);
+        this.useAlerts(error.message, ' ', 'error-dialog');
+      }
+    );
   }
 
   searchCoustomers(event) {
@@ -60,7 +77,6 @@ export class RealizarPedidoComponent implements OnInit {
       );
     } else {
       this.searchNow = false;
-      // this.useAlerts('No se encontraron clientes con este nombre', ' ', 'error-dialog');
     }
   }
 
@@ -69,9 +85,11 @@ export class RealizarPedidoComponent implements OnInit {
     this.clientes = [];
     this.noData = false;
     this.searchNow = false;
+    this.isLoadingData = false;
   }
 
   setCoustomer(coustomer) {
+    this.isLoadingData = true;
     this.cliente = [...this.cliente, coustomer];
     console.log(this.cliente);
     this.dataSource = new MatTableDataSource(this.cliente);
@@ -86,19 +104,13 @@ export class RealizarPedidoComponent implements OnInit {
 
   CrearPedido() {
     this.submitButton.disabled = true;
-    const format = 'yyyy-MM-dd';
-    const myFormatedDate = this.pipe.transform(this.hoy, format);
-    const cliente = this.cliente[0];
-    const pedido: Pedido = {
-      idPedido: 0,
-      vistaCliente: cliente,
-      fechaSurtir: myFormatedDate,
-      idEstatus: 1,
+    this.pedido = {
+      ...this.pedido,
+      vistaCliente: this.cliente[0],
       idEmpleadoModifico: this.idUsuarioLogeado
     };
-    console.log(pedido)
-
-    this.pedidoService.updatePedido(pedido).subscribe(
+    console.log(this.pedido);
+    this.pedidoService.updatePedido(this.pedido).subscribe(
       response => {
         if(response.estatus === '05'){
           this.router.navigate(['/pedidos/ver-pedidos']);

@@ -18,6 +18,9 @@ import { PedidosRoutingModule } from './pedidos-routing.module';
 import { RealizarPedidoComponent } from './components/realizar-pedido/realizar-pedido.component';
 import { VerPedidosComponent } from './components/ver-pedidos/ver-pedidos.component';
 import { AgregarOrdenPedidoComponent } from './components/agregar-orden-pedido/agregar-orden-pedido.component';
+import { ModificarPedidoComponent } from './components/modificar-pedido/modificar-pedido.component';
+import { ModificarOrdenPedidoComponent } from './components/modificar-orden-pedido/modificar-orden-pedido.component';
+import { ModalCerrarPedidoComponent } from './components/modal-cerrar-pedido/modal-cerrar-pedido.component';
 
 export let options: Partial<IConfig> | (() => Partial<IConfig>);
 
@@ -25,7 +28,10 @@ export let options: Partial<IConfig> | (() => Partial<IConfig>);
   declarations: [
     RealizarPedidoComponent,
     VerPedidosComponent,
-    AgregarOrdenPedidoComponent
+    AgregarOrdenPedidoComponent,
+    ModificarPedidoComponent,
+    ModificarOrdenPedidoComponent,
+    ModalCerrarPedidoComponent
   ],
   imports: [
     CommonModule,
@@ -43,6 +49,8 @@ export let options: Partial<IConfig> | (() => Partial<IConfig>);
     NgxMaskModule.forRoot(options),
     AgmCoreModule
   ],
-  entryComponents: []
+  entryComponents: [
+    ModalCerrarPedidoComponent
+  ]
 })
 export class PedidosModule { }

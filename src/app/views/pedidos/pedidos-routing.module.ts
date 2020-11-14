@@ -4,6 +4,8 @@ import { RealizarPedidoComponent } from './components/realizar-pedido/realizar-p
 import { AuthModuleGuard } from '../../shared/services/auth/auth-module.guard';
 import { VerPedidosComponent } from './components/ver-pedidos/ver-pedidos.component';
 import { AgregarOrdenPedidoComponent } from './components/agregar-orden-pedido/agregar-orden-pedido.component';
+import { ModificarPedidoComponent } from './components/modificar-pedido/modificar-pedido.component';
+import { ModificarOrdenPedidoComponent } from './components/modificar-orden-pedido/modificar-orden-pedido.component';
 
 const routes: Routes = [
   {
@@ -23,7 +25,20 @@ const routes: Routes = [
     component: AgregarOrdenPedidoComponent,
     data: { title: 'Agregar Orden al Pedido', breadcrumb: 'Agregar Orden al Pedido'},
     // canActivate: [AuthModuleGuard],
-  }
+  },
+  {
+    path: 'modificar-pedido/:idPedido',
+    component: ModificarPedidoComponent,
+    data: { title: 'Modificar Pedido', breadcrumb: 'Modificar Pedido'},
+    // canActivate: [AuthModuleGuard],
+  },
+  {
+    path: 'modificar-orden-pedido/:idPedido',
+    component: ModificarOrdenPedidoComponent,
+    data: { title: 'Modificar Orden al Pedido', breadcrumb: 'Modificar Orden al Pedido'},
+    // canActivate: [AuthModuleGuard],
+  },
+  
 ];
 
 @NgModule({

@@ -27,9 +27,14 @@
   </mat-card>
 </div>
 
-<div class="wrap-result" *ngIf="articulosSeleccionados.length">
+<div class="wrap-result">
   <mat-card>
-    <div class="coustomer-container mat-elevation-z8">
+    <div *ngIf="isLoadingData">
+      <div class="wrap-loading-catalog">
+        <mat-spinner [diameter]="60"></mat-spinner>
+      </div>
+    </div>
+    <div class="coustomer-container mat-elevation-z8" *ngIf="articulosSeleccionados.length">
       <mat-table #table [dataSource]="dataSource" [class.isMobile]="isMobile">
 
         <ng-container matColumnDef="no">
@@ -63,7 +68,8 @@
           <mat-cell *matCellDef="let article">
             <span class="mobile-label">Familia:</span>
             <div class="align-center">
-              {{article.articulo.familia.descripcion}}
+              <!-- {{article.articulo.familia.descripcion || '-'}} -->
+              -
             </div>
           </mat-cell>
         </ng-container>
@@ -75,7 +81,8 @@
           <mat-cell *matCellDef="let article">
             <span class="mobile-label">Grupo:</span>
             <div class="align-center">
-              {{article.articulo.familia.vistaGrupo.descripcion}}
+              <!-- {{article.articulo.familia.vistaGrupo.descripcion || '-'}} -->
+              -
             </div>
           </mat-cell>
         </ng-container>
@@ -87,10 +94,10 @@
           <mat-cell *matCellDef="let article">
             <span class="mobile-label">Cantidad:</span>
             <div class="align-center">
-              <mat-form-field appearance="outline"  class="cantidad-seleccionada">
+              <mat-form-field appearance="outline" class="cantidad-seleccionada">
                 <mat-label>Cantidad</mat-label>
-                <input matInput type="number" placeholder="Cantidad" [(ngModel)] = "article.cantidad">
-                <!-- <mat-icon matSuffix>sentiment_very_satisfied</!--> 
+                <input matInput type="number" placeholder="Cantidad" [(ngModel)]="article.cantidad">
+                <!-- <mat-icon matSuffix>sentiment_very_satisfied</!-->
               </mat-form-field>
             </div>
           </mat-cell>
@@ -103,7 +110,7 @@
           <mat-cell *matCellDef="let article; let i = index">
             <span class="mobile-label">Acciones:</span>
             <div class="align-center">
-              <button mat-mini-fab color="primary" (click)="deleteArticle(i)" matTooltip="Quitar Articulo" matTooltipPosition="left">
+              <button mat-mini-fab color="primary" (click)="deleteArticle(i, article)" matTooltip="Quitar Articulo" matTooltipPosition="left">
                 <mat-icon>delete</mat-icon>
               </button>
             </div>
@@ -114,10 +121,10 @@
         <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
       </mat-table>
     </div>
-    <mat-paginator [pageSizeOptions]="[10, 20,30, 100]"></mat-paginator>
-    <!-- <mat-paginator [pageSizeOptions]="[10]"></mat-paginator> -->
-    <div class="col-button">
-      <button #save mat-raised-button color="primary" (click)="CrearDetallePedido()">Registrar</button>
+    <!-- <mat-paginator [pageSizeOptions]="[10, 20,30, 100]"></mat-paginator> -->
+    <mat-paginator [pageSizeOptions]="[10]"></mat-paginator>
+    <div class="col-button" *ngIf="articulosSeleccionados.length">
+      <button #save mat-raised-button color="primary" (click)="CrearDetallePedido()">Modificar</button>
     </div>
   </mat-card>
 </div>

@@ -10,15 +10,24 @@ import { environment } from 'environments/environment';
 })
 export class PedidoService {
 
+  private pedidos: PedidoContent;
+  private dataPedidos = new BehaviorSubject<PedidoContent>(null);
+  orders$ = this.dataPedidos.asObservable();
+
   constructor(
     private http: HttpClient
   ) { }
 
-  
-  
-  // getVitrinasFiltro(texto: string): Observable<Vitrina[]>  {
-    //   return this.http.get<Vitrina[]>(`${environment.apiURL}/catalog/getVitrinaByFilter/${texto}`); 
-    // }
+  getDataPedidos(date: string, page: number) {
+    return this.http.get(`${environment.apiURL}/delivery/getOrderByDate/${date}/${page}`).subscribe(
+      (response: PedidoContent) => {
+        this.pedidos = response
+        console.log(this.pedidos);
+        this.dataPedidos.next(this.pedidos);
+      }, 
+      (error) => console.log(error) 
+    );
+  }
     
   updatePedido(pedido: Partial<Pedido>): Observable<any>{
     const headerss = new HttpHeaders({'Content-Type': 'application/json'});
@@ -43,7 +52,7 @@ export class PedidoService {
     return this.http.post<any>(`${environment.apiURL}/delivery/deleteorder`, JSON.stringify(pedido), { headers: headerss});
   }
 
-  deleteDetallesPedido(detallesPedido: Partial <DetallesPedido[]>): Observable<any>{
+  deleteDetallesPedido(detallesPedido: Partial <DetallesPedido>): Observable<any>{
     const headerss = new HttpHeaders({'Content-Type': 'application/json'});
     return this.http.post<any>(`${environment.apiURL}/delivery/deleteDetOrder`, JSON.stringify(detallesPedido), { headers: headerss});
   }

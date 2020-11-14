@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { MatButton, MatInput, MatTableDataSource, MatSort, MatPaginator } from '@angular/material';
@@ -11,12 +11,11 @@ import { Pedido, DetallesPedido } from 'app/shared/models/pedido';
 import { switchMap } from 'rxjs/operators';
 
 @Component({
-  selector: 'app-agregar-orden-pedido',
-  templateUrl: './agregar-orden-pedido.component.html',
-  styleUrls: ['./agregar-orden-pedido.component.scss']
+  selector: 'app-modificar-orden-pedido',
+  templateUrl: './modificar-orden-pedido.component.html',
+  styleUrls: ['./modificar-orden-pedido.component.scss']
 })
-
-export class AgregarOrdenPedidoComponent implements OnInit {
+export class ModificarOrdenPedidoComponent implements OnInit, AfterViewInit {
 
   @ViewChild('save', {static: false}) submitButton: MatButton;
   idUsuarioLogeado;
@@ -29,6 +28,7 @@ export class AgregarOrdenPedidoComponent implements OnInit {
   searchNow: boolean = false;
   noData: boolean;
   selected;
+  isLoadingData: boolean = true;
   displayedColumns: string[] = ['no', 'nombre', 'familia', 'grupo', 'cantidad', 'accion'];
   dataSource: MatTableDataSource<DetallesPedido>;
   @ViewChild(MatPaginator, {static: false}) paginator: MatPaginator;
@@ -46,14 +46,26 @@ export class AgregarOrdenPedidoComponent implements OnInit {
   ngOnInit() {
     this.idUsuarioLogeado = this.autenticacionService.currentUserValue;
     this.getPedido();
-    console.log(this.paginator);
+  }
+
+  ngAfterViewInit() {
+    this.dataSource = new MatTableDataSource(this.articulosSeleccionados);
+    this.dataSource.paginator = this.paginator;
+    this.modifPaginator();
   }
 
   getPedido() {
     this.activatedRoute.params.pipe(
       switchMap((params: Params) => this.pedidoService.getPedido(params.idPedido))
     ).subscribe(
-      (result: Pedido) => this.pedido = result,
+      (result: Pedido) => {
+        this.pedido = result;
+        this.articulosSeleccionados = result.detpedido;
+        console.log(this.articulosSeleccionados);
+        this.dataSource = new MatTableDataSource(this.articulosSeleccionados);
+        this.dataSource.paginator = this.paginator;
+        this.isLoadingData = false;
+      },
       error => console.log(error)
     );
   }
@@ -108,15 +120,34 @@ export class AgregarOrdenPedidoComponent implements OnInit {
     }
   }
 
-  deleteArticle(index) {
-    console.log(index);
+  deleteArticle(index, det: DetallesPedido) {
+    if (det.idDetPedido !== 0) {
+      this.pedidoService.deleteDetallesPedido(det).subscribe(
+        response => {
+          if(response.estatus === '05'){
+            this.useAlerts(response.mensaje, ' ', 'success-dialog');
+            this.ProccesDelete(index);
+          } else {
+            this.useAlerts(response.mensaje, ' ', 'error-dialog');
+          }
+        },
+        error => {
+          console.log(error);
+          this.useAlerts(error.message, ' ', 'error-dialog');
+        }
+      );
+    } else {
+      this.ProccesDelete(index);
+    }
+  }
+
+  ProccesDelete(index) {
     this.articulosSeleccionados.splice(index, 1);
     this.articulosSeleccionados = [...this.articulosSeleccionados];
     console.log(this.articulosSeleccionados);
     this.useAlerts('Artículo eliminado de la lista correctamente', ' ', 'success-dialog');
     this.dataSource = new MatTableDataSource(this.articulosSeleccionados);
     this.dataSource.paginator = this.paginator;
-    // this.paginator.length = this.articulosSeleccionados.length;
   }
 
   CrearDetallePedido() {
@@ -168,5 +199,6 @@ export class AgregarOrdenPedidoComponent implements OnInit {
       return `${start} - ${end} de ${length}`;
     };
   }
+
 
 }

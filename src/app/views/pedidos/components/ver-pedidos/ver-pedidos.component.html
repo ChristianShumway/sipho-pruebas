@@ -41,7 +41,7 @@
           <mat-header-cell *matHeaderCellDef class="center-table"> No. </mat-header-cell>
           <mat-cell *matCellDef="let element; let i = index" class="center-table">
             <span class="mobile-label">No:</span>
-             {{element.idPedido}}
+             {{dataSource.filteredData.indexOf(element) + 1}}
           </mat-cell>
         </ng-container>
 
@@ -65,7 +65,7 @@
           <mat-header-cell *matHeaderCellDef class="center-table"> Dirección </mat-header-cell>
           <mat-cell *matCellDef="let element" class="center-table">
             <span class="mobile-label">Dirección:</span>
-            {{element.vistaCliente.calle}}
+            {{element.vistaCliente.calle}} {{element.vistaCliente.numero}} {{element.vistaCliente.colonia}}
           </mat-cell>
         </ng-container>
 
@@ -79,10 +79,25 @@
 
         <ng-container matColumnDef="acciones">
           <mat-header-cell *matHeaderCellDef class="center-table"> Acciones </mat-header-cell>
-          <mat-cell *matCellDef="let element" class="center-table">
+          <mat-cell *matCellDef="let element; let i = index" class="center-table">
             <span class="mobile-label">Acciones:</span>
             <div class="wrap-actions">
-              <button mat-mini-fab color="warn" (click) = "deleteOrder()" matTooltip="Eliminar Pedido" matTooltipPosition="left">
+              <button *ngIf = "element.idEstatus === 1" mat-mini-fab color="primary" [routerLink] = "['/pedidos/modificar-pedido', element.idPedido]" matTooltip="Eliminar Pedido" >
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button mat-mini-fab disabled *ngIf = "element.idEstatus === 0">
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button *ngIf = "element.idEstatus === 1" mat-mini-fab [color]="'edit'" (click) = "closeOrder(dataSource.filteredData.indexOf(element), element)" matTooltip="Cerrar Pedido" >
+                <mat-icon>lock_open</mat-icon>
+              </button>
+              <button *ngIf = "element.idEstatus === 0" mat-mini-fab disabled>
+                <mat-icon>lock</mat-icon>
+              </button>
+              <button mat-mini-fab color="warn" *ngIf = "element.idEstatus === 1" (click) = "deleteOrder(dataSource.filteredData.indexOf(element), element)" matTooltip="Eliminar Pedido" >
+                <mat-icon>delete</mat-icon>
+              </button>
+              <button mat-mini-fab disabled *ngIf = "element.idEstatus === 0">
                 <mat-icon>delete</mat-icon>
               </button>
             </div>
@@ -104,23 +119,26 @@
                         <mat-icon>more_vert</mat-icon>
                       </button>
                       <mat-menu #menu="matMenu">
-                        <button *ngIf="!element.detpedido.length" mat-menu-item [routerLink] = "['/pedidos/agregar-orden-pedido', element.idPedido]">
+                        <button *ngIf="!element.detpedido.length && element.idEstatus === 1" mat-menu-item [routerLink] = "['/pedidos/agregar-orden-pedido', element.idPedido]">
                           <mat-icon>plus_one</mat-icon>
                           <span>Agregar Lista de Productos</span>
                         </button>
-                        <button *ngIf="element.detpedido.length" mat-menu-item (click)="deleteDetOrder()">
-                          <mat-icon>delete</mat-icon>
-                          <span>Eliminar Lista de Productos</span>
+                        <button *ngIf="element.detpedido.length && element.idEstatus === 1" mat-menu-item [routerLink] = "['/pedidos/modificar-orden-pedido', element.idPedido]">
+                          <mat-icon>edit</mat-icon>
+                          <span>Modificar Lista de Productos</span>
                         </button>
                       </mat-menu>
                     </div>
                   </div>
                   <div class="scroll-products" *ngIf="element.detpedido.length">
-                    <div class="row-detail info" *ngFor = "let producto of element.detpedido">
+                    <div class="row-detail info" *ngFor = "let producto of element.detpedido; index as i">
                       <div>{{producto.articulo.nombre}}</div>
                       <div>{{producto.cantidad}}</div>
                       <div>
-                        <button mat-mini-fab color="warn" (click) = "deleteOrder()" matTooltip="Eliminar Producto" matTooltipPosition="left">
+                        <button mat-mini-fab *ngIf="element.idEstatus === 1" color="warn" (click) = "deleteDetOrder(i, producto, element)" matTooltip="Eliminar Producto" matTooltipPosition="left">
+                          <mat-icon>delete</mat-icon>
+                        </button>
+                        <button mat-mini-fab *ngIf="element.idEstatus === 0" disabled>
                           <mat-icon>delete</mat-icon>
                         </button>
                       </div>
