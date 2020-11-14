@@ -12,7 +12,7 @@ import {MatPaginator} from '@angular/material/paginator';
 
 import {MatTableDataSource} from '@angular/material/table';
 import { Cliente } from '../../../../shared/models/cliente';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar, MatButton } from '@angular/material';
 
 @Component({
   selector: 'app-recorrido-vendedor',
@@ -34,13 +34,14 @@ export class RecorridoVendedorComponent implements OnInit {
   multipleDataCoordinates: any[] = [];
   previous = null;
   dataTable: any[] = [];
-  displayedColumns: string[] = ['empleado', 'cliente', 'fecha'];
+  displayedColumns: string[] = ['empleado', 'cliente', 'fecha', 'matutino', 'vespertino'];
   dataSource = null;
   @ViewChild(MatSort, {static: true}) sort: MatSort;
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
   search: boolean = true;
   latActualRepartidor: number;
   lngActualRepartido: number;
+  @ViewChild(MatButton, {static: false}) submitButton: MatButton;
 
   constructor(
     private mapsAPILoader: MapsAPILoader,
@@ -91,6 +92,7 @@ export class RecorridoVendedorComponent implements OnInit {
 
   getTravels(){
     if( this.bitacoraForm.valid) {
+      this.submitButton.disabled = true;
       const format = 'yyyy-MM-dd';
       const nuevaFechaInicio = this.pipe.transform(this.fechaInicio, format);
       this.multipleDataCoordinates = [];
@@ -104,10 +106,17 @@ export class RecorridoVendedorComponent implements OnInit {
     
       this.repartidorService.getLogDeliveryMan(data).subscribe(
         result => {
+          console.log(result);
           this.multipleDataCoordinates = result;
           this.getMarks();
+          this.submitButton.disabled = false;
         },
-        error => console.log(error)
+        error => {
+          console.log(error);
+          this.submitButton.disabled = false;
+          this.useAlerts(error, ' ', 'error-dialog');
+          this.setCurrentLocation();
+        }
       );
     }
   }
@@ -124,8 +133,8 @@ export class RecorridoVendedorComponent implements OnInit {
         this.longitude = data.path[data.path.length - 1].location.lng;
         this.latActualRepartidor = data.path[data.path.length - 1].location.lat;
         this.lngActualRepartido = data.path[data.path.length - 1].location.lng;
-        console.log(this.latActualRepartidor);
-        console.log(this.lngActualRepartido);
+        // console.log(this.latActualRepartidor);
+        // console.log(this.lngActualRepartido);
         console.log(data);
         this.zoom = 20;
         data.path.map( (coordinate: Repartidor) => {
@@ -134,14 +143,16 @@ export class RecorridoVendedorComponent implements OnInit {
             this.dataTable = [...this.dataTable,  {
               cliente: coordinate.customer,
               empleado: coordinate.employe,
-              fecha: coordinate.date
+              fecha: coordinate.date,
+              matutino: coordinate.dateMorning,
+              vespertino: coordinate.dateAfternon
             }];
           }
         });
       });
       
       // console.log(this.showMarks);
-      // console.log(this.dataTable);
+      console.log(this.dataTable);
       this.dataSource = new MatTableDataSource(this.dataTable);
       this.dataSource.sort = this.sort;
       this.dataSource.paginator = this.paginator;

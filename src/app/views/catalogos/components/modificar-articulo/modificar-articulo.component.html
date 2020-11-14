@@ -41,6 +41,17 @@
           </div>
           <div class="pb-1">
             <mat-form-field class="full-width">
+              <input matInput name="cantidadCharola" formControlName="cantidadCharola" placeholder="Cantidad por Charola"  mask="separator.2" thousandSeparator=",">
+            </mat-form-field>
+            <div class="validaciones">
+              <small *ngIf="articuloForm.controls['cantidadCharola'].hasError('required') && articuloForm.controls['cantidadCharola'].touched"
+                class="form-error-msg">
+                Cantidad por charola es un campo requerido
+              </small>
+            </div>
+          </div>
+          <div class="pb-1">
+            <mat-form-field class="full-width">
               <mat-label>Familia</mat-label>
               <mat-select formControlName="familia" required>
                 <mat-option *ngFor="let familia of familias" [value]="familia.idFamilia">

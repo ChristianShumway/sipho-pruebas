@@ -1,0 +1,123 @@
+<div class="wrap-search">
+  <mat-card>
+    <mat-form-field class="search-form-field">
+      <mat-label>Buscar Artículos</mat-label>
+      <input matInput #search type="text" [(ngModel)]="dataSearch" (keyup)='searchArticles($event)'>
+      <button mat-button *ngIf="dataSearch" matSuffix mat-icon-button aria-label="Clear" (click)="cleanSearch()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </mat-form-field>
+
+    <div class="data-result">
+      <div *ngIf="searchNow">
+        <div class="wrap-loading-catalog">
+          <mat-spinner [diameter]="60"></mat-spinner>
+        </div>
+      </div>
+      <div class="no-data" *ngIf="noData">
+        <img src="assets/images/not-found.jpg" alt="no">
+      </div>
+
+      <ul *ngIf="articulos" class="data-coustomer">
+        <li (click)="setArticle(articulo)" *ngFor="let articulo of articulos">
+          <a title="Agregar Cliente">{{articulo.nombre}}</a>
+        </li>
+      </ul>
+    </div>
+  </mat-card>
+</div>
+
+<div class="wrap-result" *ngIf="articulosSeleccionados.length">
+  <mat-card>
+    <div class="coustomer-container mat-elevation-z8">
+      <mat-table #table [dataSource]="dataSource" [class.isMobile]="isMobile">
+
+        <ng-container matColumnDef="no">
+          <mat-header-cell *matHeaderCellDef>
+            <div class="align-center"> No. </div>
+          </mat-header-cell>
+          <mat-cell *matCellDef="let article; let i = index">
+            <span class="mobile-label">No:</span>
+            <div class="align-center">
+              {{i+1}}
+            </div>
+          </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="nombre">
+          <mat-header-cell *matHeaderCellDef>
+            <div class="align-center"> Nombre </div>
+          </mat-header-cell>
+          <mat-cell *matCellDef="let article">
+            <span class="mobile-label">Nombre:</span>
+            <div class="align-center">
+              {{article.articulo.nombre}}
+            </div>
+          </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="familia">
+          <mat-header-cell *matHeaderCellDef>
+            <div class="align-center"> Familia </div>
+          </mat-header-cell>
+          <mat-cell *matCellDef="let article">
+            <span class="mobile-label">Familia:</span>
+            <div class="align-center">
+              {{article.articulo.familia.descripcion}}
+            </div>
+          </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="grupo">
+          <mat-header-cell *matHeaderCellDef>
+            <div class="align-center"> Grupo </div>
+          </mat-header-cell>
+          <mat-cell *matCellDef="let article">
+            <span class="mobile-label">Grupo:</span>
+            <div class="align-center">
+              {{article.articulo.familia.vistaGrupo.descripcion}}
+            </div>
+          </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="cantidad">
+          <mat-header-cell *matHeaderCellDef>
+            <div class="align-center"> Cantidad </div>
+          </mat-header-cell>
+          <mat-cell *matCellDef="let article">
+            <span class="mobile-label">Cantidad:</span>
+            <div class="align-center">
+              <mat-form-field appearance="outline"  class="cantidad-seleccionada">
+                <mat-label>Cantidad</mat-label>
+                <input matInput type="number" placeholder="Cantidad" [(ngModel)] = "article.cantidad">
+                <!-- <mat-icon matSuffix>sentiment_very_satisfied</!--> 
+              </mat-form-field>
+            </div>
+          </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="accion">
+          <mat-header-cell *matHeaderCellDef>
+            <div class="align-center"> Acciones </div>
+          </mat-header-cell>
+          <mat-cell *matCellDef="let article; let i = index">
+            <span class="mobile-label">Acciones:</span>
+            <div class="align-center">
+              <button mat-mini-fab color="primary" (click)="deleteArticle(i)" matTooltip="Quitar Articulo" matTooltipPosition="left">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          </mat-cell>
+        </ng-container>
+
+        <mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+      </mat-table>
+    </div>
+    <mat-paginator [pageSizeOptions]="[10, 20,30, 100]"></mat-paginator>
+    <!-- <mat-paginator [pageSizeOptions]="[10]"></mat-paginator> -->
+    <div class="col-button" *ngIf="!isSave">
+      <button mat-raised-button color="primary" (click)="CrearDetallePedido()">Registrar</button>
+    </div>
+  </mat-card>
+</div>

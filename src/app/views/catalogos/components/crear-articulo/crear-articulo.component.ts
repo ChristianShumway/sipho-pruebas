@@ -5,7 +5,6 @@ import { Articulo, EstatusArticulo } from 'app/shared/models/articulo';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ArticuloService } from 'app/shared/services/articulo.service';
 import { AutenticacionService } from 'app/shared/services/autenticacion.service';
-import { DatePipe } from '@angular/common';
 import { FamiliaService } from 'app/shared/services/familia.service';
 import { Familia } from 'app/shared/models/familia';
 import { MatButton } from '@angular/material';
@@ -19,11 +18,8 @@ export class CrearArticuloComponent implements OnInit {
 
   articuloForm: FormGroup;
   idUsuarioLogeado;
-  hoy = new Date();
-  pipe = new DatePipe('en-US');
   familias: Familia[] = [];
   catalogEstatus: EstatusArticulo[] = [];
-  // @ViewChild('submitButton', {static:true}) submitButton:ElementRef; 
   @ViewChild(MatButton, {static: false}) submitButton: MatButton;
 
   constructor(
@@ -71,6 +67,9 @@ export class CrearArticuloComponent implements OnInit {
       ]),
       costo: new FormControl('', [
         Validators.required,
+      ]), 
+      cantidadCharola: new FormControl('', [
+        Validators.required,
       ]),
       materiaPrima: new FormControl('', [
         Validators.required,
@@ -79,16 +78,14 @@ export class CrearArticuloComponent implements OnInit {
   }
 
   createArticle() {
-    this.submitButton.disabled = true;
-    const format = 'yyyy/MM/dd';
-    const myFormatedDate = this.pipe.transform(this.hoy, format);
-
     if (this.articuloForm.valid) {
+      this.submitButton.disabled = true;
       const articulo: Articulo = {
         idArticulo: 0,
         idEmpleadoModifico: this.idUsuarioLogeado,
         ...this.articuloForm.value,
-        materiaPrima: parseInt(this.articuloForm.get('materiaPrima').value)
+        materiaPrima: parseInt(this.articuloForm.get('materiaPrima').value),
+        cantidadCharola: parseInt(this.articuloForm.get('cantidadCharola').value)
       };
 
       console.log(articulo);

@@ -10,6 +10,7 @@ export interface Articulo {
   idEmpleadoModifico?: number;
   imagenes: any[];
   materiaPrima: number;
+  cantidadCharola: number;
 }
 
 export interface ArticuloContent {

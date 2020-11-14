@@ -1,0 +1,151 @@
+<div class="wrap-pedidos">
+
+  <mat-card>
+    <form [formGroup]="searchOrderForm" (submit)="searchOrder()">
+      <div fxFlex="100" fxFlex.gt-md="100" fxFlex.gt-sm="100" class="container-order">
+        <div class="pb-1">
+          <mat-form-field class="full-width">
+            <input matInput [matDatepicker]="fechaBusqueda" formControlName="fechaBusqueda" name="date" placeholder="Fecha Busqueda"
+              (dateChange)="onFechaBusqueda($event)">
+            <mat-datepicker-toggle matSuffix [for]="fechaBusqueda"></mat-datepicker-toggle>
+            <mat-datepicker #fechaBusqueda (selectedChange)="onFechaBusqueda($event)"></mat-datepicker>
+          </mat-form-field>
+          <div class="validaciones">
+            <small *ngIf="searchOrderForm.controls['fechaBusqueda'].hasError('required') && searchOrderForm.controls['fechaBusqueda'].touched"
+              class="form-error-msg">
+              Fecha de busqueda es un campo requerido
+            </small>
+          </div>
+        </div>
+        <div class="wrap-button">
+          <button mat-raised-button color="primary" [disabled]="searchOrderForm.invalid" type="submit" class="btn-accept">Buscar</button>
+        </div>
+      </div>
+    </form>
+  </mat-card>
+
+  <mat-card class="mat-data" [ngStyle]="{'visibility': searchNow || noData || pedidos.length ? 'visible' : 'hidden' }" >
+    <div *ngIf="searchNow">
+      <div class="wrap-loading-catalog">
+        <mat-spinner [diameter]="60"></mat-spinner>
+      </div>
+    </div>
+
+    <div class="no-data" *ngIf="noData">
+      <img src="assets/images/not-found.jpg" alt="no">
+    </div>
+    
+    <div class="orders-container mat-elevation-z8" *ngIf="pedidos.length">
+      <table mat-table [dataSource]="dataSource" multiTemplateDataRows class="mat-elevation-z8">
+        <ng-container matColumnDef="no">
+          <mat-header-cell *matHeaderCellDef class="center-table"> No. </mat-header-cell>
+          <mat-cell *matCellDef="let element; let i = index" class="center-table">
+            <span class="mobile-label">No:</span>
+             {{element.idPedido}}
+          </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="propietario">
+          <mat-header-cell *matHeaderCellDef class="center-table"> Propietario </mat-header-cell>
+          <mat-cell *matCellDef="let element" class="center-table">
+            <span class="mobile-label">Propietario:</span>
+              {{element.vistaCliente.propietario}}
+          </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="razonSocial">
+          <mat-header-cell *matHeaderCellDef class="center-table"> Razón Social </mat-header-cell>
+          <mat-cell *matCellDef="let element" class="center-table">
+            <span class="mobile-label">Razón Social:</span>
+            {{element.vistaCliente.razonSocial}}
+          </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="direccion">
+          <mat-header-cell *matHeaderCellDef class="center-table"> Dirección </mat-header-cell>
+          <mat-cell *matCellDef="let element" class="center-table">
+            <span class="mobile-label">Dirección:</span>
+            {{element.vistaCliente.calle}}
+          </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="fechaSurtir">
+          <mat-header-cell *matHeaderCellDef class="center-table"> Fecha a Surtir </mat-header-cell>
+          <mat-cell *matCellDef="let element" class="center-table">
+            <span class="mobile-label">Fecha a Surtir:</span>
+            {{element.fechaSurtir | date}}
+          </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="acciones">
+          <mat-header-cell *matHeaderCellDef class="center-table"> Acciones </mat-header-cell>
+          <mat-cell *matCellDef="let element" class="center-table">
+            <span class="mobile-label">Acciones:</span>
+            <div class="wrap-actions">
+              <button mat-mini-fab color="warn" (click) = "deleteOrder()" matTooltip="Eliminar Pedido" matTooltipPosition="left">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="expandedDetail" class="show-button">
+          <mat-cell *matCellDef="let element" [attr.colspan]="columnsToDisplay.length">
+            <div class="order-element-detail" [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+              
+              <div class="order-element-description">
+                <div class="wrap-order-details">
+                  <div class="row-detail title">
+                    <div>Artículo</div>
+                    <div>Cantidad</div>
+                    <div>Acción</div>
+                    <div>
+                      <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+                        <mat-icon>more_vert</mat-icon>
+                      </button>
+                      <mat-menu #menu="matMenu">
+                        <button *ngIf="!element.detpedido.length" mat-menu-item [routerLink] = "['/pedidos/agregar-orden-pedido', element.idPedido]">
+                          <mat-icon>plus_one</mat-icon>
+                          <span>Agregar Lista de Productos</span>
+                        </button>
+                        <button *ngIf="element.detpedido.length" mat-menu-item (click)="deleteDetOrder()">
+                          <mat-icon>delete</mat-icon>
+                          <span>Eliminar Lista de Productos</span>
+                        </button>
+                      </mat-menu>
+                    </div>
+                  </div>
+                  <div class="scroll-products" *ngIf="element.detpedido.length">
+                    <div class="row-detail info" *ngFor = "let producto of element.detpedido">
+                      <div>{{producto.articulo.nombre}}</div>
+                      <div>{{producto.cantidad}}</div>
+                      <div>
+                        <button mat-mini-fab color="warn" (click) = "deleteOrder()" matTooltip="Eliminar Producto" matTooltipPosition="left">
+                          <mat-icon>delete</mat-icon>
+                        </button>
+                      </div>
+                      <div></div>
+                    </div>
+                  </div>
+                  <div class="no-products" *ngIf="!element.detpedido.length">
+                    <h3>NO SE HAN AGREGADO PRODUCTOS AÚN AL PEDIDO</h3>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </mat-cell>
+        </ng-container>
+
+        <mat-header-row *matHeaderRowDef="columnsToDisplay; sticky: true"></mat-header-row>
+        <mat-row *matRowDef="let element; columns: columnsToDisplay;" class="order-element-row" [class.order-expanded-row]="expandedElement === element" (click)="expandedElement = expandedElement === element ? null : element">
+        </mat-row>
+        <mat-row *matRowDef="let row; columns: ['expandedDetail']" class="order-detail-row show-row"></mat-row>
+        <mat-paginator [length]="20" [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+      </table>
+    </div>
+    <mat-paginator [pageSizeOptions]="[10]" (page)="pageEvent($event)"></mat-paginator>
+
+  </mat-card>
+
+</div>

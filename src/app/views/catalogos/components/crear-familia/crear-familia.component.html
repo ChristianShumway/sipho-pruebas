@@ -35,6 +35,17 @@
               </small>
             </div>
           </div>
+          <div class="pb-1">
+            <mat-form-field class="full-width">
+              <input matInput name="cantidadMinima" formControlName="cantidadMinima" placeholder="Cantidad Mínima" mask="separator.2" thousandSeparator=",">
+            </mat-form-field>
+            <div class="validaciones">
+              <small *ngIf="familiaForm.controls['cantidadMinima'].hasError('required') && familiaForm.controls['cantidadMinima'].touched"
+                class="form-error-msg">
+                Cantidad mínima de la familia es un campo requerido
+              </small>
+            </div>
+          </div>
         </div>
       </div>
 

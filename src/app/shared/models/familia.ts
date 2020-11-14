@@ -8,6 +8,7 @@ export interface Familia {
   fechaCreacion?: string;
   fechaModificacion?: string;
   vistaGrupo: Grupo;
+  cantidadMinima: number;
 }
 
 

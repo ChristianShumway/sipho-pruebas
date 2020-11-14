@@ -47,6 +47,9 @@ export class CrearFamiliaComponent implements OnInit {
       ]),
       vistaGrupo: new FormControl('', [
         Validators.required,
+      ]),
+      cantidadMinima: new FormControl('', [
+        Validators.required
       ])
     })
   }
@@ -71,6 +74,7 @@ export class CrearFamiliaComponent implements OnInit {
         idEmpleadoCreo: this.idUsuarioLogeado,
         fechaCreacion: myFormatedDate,
         ...this.familiaForm.value,
+        cantidadMinima: parseInt(this.familiaForm.value.cantidadMinima)
       };
 
       console.log(familia);

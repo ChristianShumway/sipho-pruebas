@@ -54,6 +54,11 @@ export const rootRouterConfig: Routes = [
         data: { title: 'Bitácora Checkin', breadcrumb: 'Bitácora Checkin'}
       },
       {
+        path: 'pedidos', 
+        loadChildren: () => import('./views/pedidos/pedidos.module').then(m => m.PedidosModule), 
+        data: { title: 'Pedidos', breadcrumb: 'Pedidos'}
+      },
+      {
         path: 'others', 
         loadChildren: () => import('./views/others/others.module').then(m => m.OthersModule), 
         data: { title: 'Others', breadcrumb: 'OTHERS'}

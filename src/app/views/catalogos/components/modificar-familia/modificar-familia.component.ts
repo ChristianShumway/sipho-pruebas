@@ -69,6 +69,9 @@ export class ModificarFamiliaComponent implements OnInit {
       ]),
       vistaGrupo: new FormControl('', [
         Validators.required,
+      ]),
+      cantidadMinima: new FormControl('', [
+        Validators.required
       ])
     })
   }
@@ -94,7 +97,8 @@ export class ModificarFamiliaComponent implements OnInit {
         idEmpleadoModifico: this.idUsuarioLogeado,
         fechaModificacion: myFormatedDate,
         ...this.familiaForm.value,
-        vistaGrupo: refreshGroup
+        vistaGrupo: refreshGroup,
+        cantidadMinima: parseInt(this.familiaForm.value.cantidadMinima)
       };
       console.log(familia);
 

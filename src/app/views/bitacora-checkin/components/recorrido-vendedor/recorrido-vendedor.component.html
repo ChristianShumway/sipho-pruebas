@@ -90,6 +90,16 @@
         <td mat-cell *matCellDef="let recorrido"> {{recorrido.fecha | date: 'dd/MM/yyyy HH:mm:ss'}} </td>
       </ng-container>
 
+      <ng-container matColumnDef="matutino">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Matutino </th>
+        <td mat-cell *matCellDef="let recorrido"> {{recorrido.matutino | date: 'dd/MM/yyyy HH:mm:ss' || '-'}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="vespertino">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Vespertino </th>
+        <td mat-cell *matCellDef="let recorrido"> {{recorrido.vespertino | date: 'dd/MM/yyyy HH:mm:ss' || '-'}} </td>
+      </ng-container>
+
       <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
     </table>

@@ -5,15 +5,13 @@ import { Articulo, EstatusArticulo } from 'app/shared/models/articulo';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ArticuloService } from 'app/shared/services/articulo.service';
 import { AutenticacionService } from 'app/shared/services/autenticacion.service';
-import { DatePipe } from '@angular/common';
 import { FamiliaService } from 'app/shared/services/familia.service';
 import { Familia } from 'app/shared/models/familia';
 import { environment } from './../../../../../environments/environment';
 import { MatDialog, MatButton } from '@angular/material';
 import { ModalEliminarComponent } from '../../../../shared/components/modal-eliminar/modal-eliminar.component';
-import { debounceTime } from 'rxjs/operators';
+import { switchMap } from 'rxjs/operators';
 import { FileUploader } from 'ng2-file-upload';
-import { parse } from 'querystring';
 import { ViewChild } from '@angular/core';
 
 @Component({
@@ -28,8 +26,6 @@ export class ModificarArticuloComponent implements OnInit {
   idArticulo;
   idUsuarioLogeado;
   articulo: Articulo;
-  hoy = new Date();
-  pipe = new DatePipe('en-US');
   familias: Familia[] = [];
   catalogEstatus: EstatusArticulo[] = [];
   urlImage = environment.urlImages;
@@ -61,26 +57,24 @@ export class ModificarArticuloComponent implements OnInit {
 
   getArticulo() {
     this.imgArticle = '';
-    this.activatedRoute.params.subscribe((data: Params) => {
-      this.idArticulo = data.idArticulo;
-      if (this.idArticulo) {
-        this.articuloService.getArticulo(this.idArticulo).subscribe(
-          (articulo: Articulo) => {
-            console.log(articulo);
-            if(articulo.imagenes.length > 0) {
-              this.imgArticle = `${this.urlImage}${articulo.imagenes[0].path}`;
-            }
-            this.articulo = articulo;
-            this.articuloForm.patchValue(articulo);
-            this.selectedVal = this.articulo.materiaPrima.toString();
-            console.log(this.selectedVal);
-            this.articuloForm.get('familia').setValue(articulo.familia.idFamilia);
-            this.articuloForm.get('estatusArticulo').setValue(articulo.estatusArticulo.idEstatusArticulo);
-          },
-          error => console.log(error)
-        );
-      }
-    });
+    this.activatedRoute.params.pipe( 
+      switchMap( (data: Params) => this.articuloService.getArticulo(data.idArticulo))
+    ).subscribe(
+      (articulo: Articulo) => {
+        console.log(articulo);
+        if(articulo.imagenes.length > 0) {
+          this.imgArticle = `${this.urlImage}${articulo.imagenes[0].path}`;
+        }
+        this.articulo = articulo;
+        this.idArticulo = articulo.idArticulo;
+        this.articuloForm.patchValue(articulo);
+        this.selectedVal = this.articulo.materiaPrima.toString();
+        // console.log(this.selectedVal);
+        this.articuloForm.get('familia').setValue(articulo.familia.idFamilia);
+        this.articuloForm.get('estatusArticulo').setValue(articulo.estatusArticulo.idEstatusArticulo);
+      },
+      error => console.log(error)
+    )
   }
 
 
@@ -116,6 +110,9 @@ export class ModificarArticuloComponent implements OnInit {
       costo: new FormControl('', [
         Validators.required,
       ]),
+      cantidadCharola: new FormControl('', [
+        Validators.required,
+      ])
       // materiaPrima: new FormControl('', [
       //   Validators.required,
       // ])
@@ -128,15 +125,10 @@ export class ModificarArticuloComponent implements OnInit {
   }
 
   updateArticle() {
-    this.submitButton.disabled = true;
     if (this.articuloForm.valid) {
-      const format = 'yyyy/MM/dd';
-      const myFormatedDate = this.pipe.transform(this.hoy, format);
-
+      this.submitButton.disabled = true;
       const refreshFamily: Familia = this.familias.find((familia: Familia) => familia.idFamilia === this.articuloForm.value.familia);
-      // console.log(refreshFamily);
       const refreshEstatus: EstatusArticulo = this.catalogEstatus.find((estatus: EstatusArticulo) => estatus.idEstatusArticulo === this.articuloForm.value.estatusArticulo);
-      // console.log(refreshEstatus);
 
       const articulo: Articulo = {
         idArticulo: parseInt(this.idArticulo),
@@ -144,7 +136,8 @@ export class ModificarArticuloComponent implements OnInit {
         ...this.articuloForm.value,
         familia: refreshFamily,
         estatusArticulo: refreshEstatus,
-        materiaPrima: parseInt(this.selectedVal)
+        materiaPrima: parseInt(this.selectedVal),
+        cantidadCharola: parseInt(this.articuloForm.get('cantidadCharola').value)
       };
       console.log(articulo);
 
