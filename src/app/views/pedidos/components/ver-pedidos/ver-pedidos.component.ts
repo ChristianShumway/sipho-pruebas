@@ -100,7 +100,7 @@ export class VerPedidosComponent implements OnInit, AfterViewInit {
           console.log(result);
           this.pedidos = result.content;
           this.paginator.length = result.totalItems;
-          this.totalItems = this.paginator.length;
+          this.totalItemsNow = this.paginator.length;
           this.dataSource = new MatTableDataSource(this.pedidos);
           if(this.pedidos.length === 0) {
             this.noData = true;

@@ -35,6 +35,10 @@
       <img src="assets/images/not-found.jpg" alt="no">
     </div>
     
+    <div class="wrap-button-new-order" *ngIf="!searchNow">
+      <a mat-raised-button color="primary" class="btn-accept" [routerLink] = "['/pedidos/realizar-pedido']">Agregar Pedido</a>
+    </div>
+
     <div class="orders-container mat-elevation-z8" *ngIf="pedidos.length">
       <table mat-table [dataSource]="dataSource" multiTemplateDataRows class="mat-elevation-z8">
         <ng-container matColumnDef="no">
