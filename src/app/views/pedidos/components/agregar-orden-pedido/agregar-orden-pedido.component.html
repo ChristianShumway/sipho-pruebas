@@ -1,8 +1,18 @@
 <div class="wrap-search">
+  <a *ngIf="!idPedido" class="btn-return" mat-mini-fab color="primary"  [routerLink]= "['/pedidos/ver-pedidos']" matTooltip="Regresar a lista de pedidos">
+    <mat-icon>keyboard_backspace</mat-icon>
+  </a>
+  <!-- <p class="data-order-coustomer" *ngIf="pedido">pedido <b>no. {{pedido.idPedido}}</b> para la razón social <b> {{pedido.vistaCliente.razonSocial}}</b></p> -->
+  <p class="data-order-coustomer" *ngIf="pedido && idPedido">
+    pedido <b>no. {{pedido.idPedido}}</b> para la razón social <b>{{pedido.vistaCliente.razonSocial}}</b>
+  </p>
+  <p class="data-order-coustomer" *ngIf="pedido && !idPedido">
+    pedido <b>no. {{pedido.idPedido}}</b> para la razón social <a title="Ir a modificar cliente" style="font-weight: bold" [routerLink] ="['/pedidos/modificar-pedido', pedido.idPedido]">{{pedido.vistaCliente.razonSocial}}</a>
+  </p>
   <mat-card>
     <mat-form-field class="search-form-field">
       <mat-label>Buscar Artículos</mat-label>
-      <input matInput #search type="text" [(ngModel)]="dataSearch" (keyup)='searchArticles($event)'>
+      <input matInput #search type="text" [(ngModel)]="dataSearch" (keyup)='searchArticles($event)' [readonly]="isReadOnly">
       <button mat-button *ngIf="dataSearch" matSuffix mat-icon-button aria-label="Clear" (click)="cleanSearch()">
         <mat-icon>close</mat-icon>
       </button>
@@ -27,8 +37,16 @@
   </mat-card>
 </div>
 
-<div class="wrap-result" *ngIf="articulosSeleccionados.length">
-  <mat-card>
+<div class="wrap-result"  [ngStyle]="{'visibility': detReload || articulosSeleccionados.length ? 'visible' : 'hidden' }">
+  <mat-card *ngIf="detReload">
+    <div class="wrap-loading-catalog">
+      <mat-spinner [diameter]="60"></mat-spinner>
+    </div>
+  </mat-card>
+  <mat-card [ngStyle]="{'visibility': !detReload ? 'visible' : 'hidden' }">
+    <div class="wrap-totales">
+      <p>Se han agregado: {{totalProductosAgregados}} artículos al pedido</p>
+    </div>
     <div class="coustomer-container mat-elevation-z8">
       <mat-table #table [dataSource]="dataSource" [class.isMobile]="isMobile">
 
@@ -68,19 +86,7 @@
           </mat-cell>
         </ng-container>
 
-        <ng-container matColumnDef="grupo">
-          <mat-header-cell *matHeaderCellDef>
-            <div class="align-center"> Grupo </div>
-          </mat-header-cell>
-          <mat-cell *matCellDef="let article">
-            <span class="mobile-label">Grupo:</span>
-            <div class="align-center">
-              {{article.articulo.familia.vistaGrupo.descripcion}}
-            </div>
-          </mat-cell>
-        </ng-container>
-
-        <ng-container matColumnDef="cantidad">
+        <ng-container matColumnDef="cantidadMatutina">
           <mat-header-cell *matHeaderCellDef>
             <div class="align-center"> Cantidad </div>
           </mat-header-cell>
@@ -88,9 +94,23 @@
             <span class="mobile-label">Cantidad:</span>
             <div class="align-center">
               <mat-form-field appearance="outline"  class="cantidad-seleccionada">
-                <mat-label>Cantidad</mat-label>
-                <input matInput type="number" placeholder="Cantidad" [(ngModel)] = "article.cantidad">
-                <!-- <mat-icon matSuffix>sentiment_very_satisfied</!--> 
+                <mat-label>Matutina</mat-label>
+                <input (keyup)="getTotalProductosAgregados()" matInput type="number" placeholder="Cantidad Matutina" [(ngModel)] = "article.cantidad" [readonly]="isReadOnlyCM">
+              </mat-form-field>
+            </div>
+          </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="cantidadVespertina">
+          <mat-header-cell *matHeaderCellDef>
+            <div class="align-center"> Cantidad </div>
+          </mat-header-cell>
+          <mat-cell *matCellDef="let article">
+            <span class="mobile-label">Cantidad:</span>
+            <div class="align-center">
+              <mat-form-field appearance="outline"  class="cantidad-seleccionada">
+                <mat-label>Vespertina</mat-label>
+                <input (keyup)="getTotalProductosAgregados()" matInput type="number" placeholder="Cantidad Vespertina" [(ngModel)] = "article.cantidadVespertino" [readonly]="isReadOnlyCV">
               </mat-form-field>
             </div>
           </mat-cell>
@@ -103,9 +123,10 @@
           <mat-cell *matCellDef="let article; let i = index">
             <span class="mobile-label">Acciones:</span>
             <div class="align-center">
-              <button mat-mini-fab color="primary" (click)="deleteArticle(i)" matTooltip="Quitar Articulo" matTooltipPosition="left">
-                <mat-icon>delete</mat-icon>
+              <button *ngIf="pedido.idEstatus === 1" mat-mini-fab color="primary" (click)="deleteArticle(i, article)" matTooltip="Quitar Articulo" matTooltipPosition="left"> 
+                <mat-icon>delete</mat-icon> 
               </button>
+              <button *ngIf="pedido.idEstatus === 0" mat-mini-fab disabled> <mat-icon>delete</mat-icon> </button>
             </div>
           </mat-cell>
         </ng-container>
@@ -114,10 +135,13 @@
         <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
       </mat-table>
     </div>
-    <mat-paginator [pageSizeOptions]="[10, 20,30, 100]"></mat-paginator>
-    <!-- <mat-paginator [pageSizeOptions]="[10]"></mat-paginator> -->
-    <div class="col-button">
-      <button #save mat-raised-button color="primary" (click)="CrearDetallePedido()">Registrar</button>
+    <!-- <mat-paginator [pageSizeOptions]="[10, 20,30, 100]"></mat-paginator> -->
+    <mat-paginator [pageSizeOptions]="[10]"></mat-paginator>
+    <div *ngIf="pedido">
+      <div class="col-button" *ngIf="pedido.idEstatus === 1">
+        <button  *ngIf="showClose" class="close-btn"  mat-raised-button color="warn" (click)="closeOrder()" matTooltip="Cerrar el pedido actual">Cerrar pedido</button>
+        <button #saveDet mat-raised-button color="primary" (click)="CrearDetallePedido()" matTooltip="Agregar artículos al pedido actual">Agregar Artículos</button>
+      </div>
     </div>
   </mat-card>
 </div>

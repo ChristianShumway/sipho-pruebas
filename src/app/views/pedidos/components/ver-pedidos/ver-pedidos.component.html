@@ -18,6 +18,7 @@
           </div>
         </div>
         <div class="wrap-button">
+          <a mat-raised-button [color]="'edit'" class="btn-accept" [routerLink] = "['/pedidos/realizar-pedido']">Agregar Pedido</a>
           <button mat-raised-button color="primary" [disabled]="searchOrderForm.invalid" type="submit" class="btn-accept">Buscar</button>
         </div>
       </div>
@@ -34,11 +35,11 @@
     <div class="no-data" *ngIf="noData">
       <img src="assets/images/not-found.jpg" alt="no">
     </div>
-    
-    <div class="wrap-button-new-order" *ngIf="!searchNow">
-      <a mat-raised-button color="primary" class="btn-accept" [routerLink] = "['/pedidos/realizar-pedido']">Agregar Pedido</a>
-    </div>
 
+    <div class="wrap-totales" *ngIf="pedidos.length">
+      <span>Total de artículos matutinos: <b>{{totales.totalMatutino}} piezas</b> </span>
+      <span>Total de artículos vespertinos: <b>{{totales.totalVespertino}} piezas</b> </span>
+    </div>
     <div class="orders-container mat-elevation-z8" *ngIf="pedidos.length">
       <table mat-table [dataSource]="dataSource" multiTemplateDataRows class="mat-elevation-z8">
         <ng-container matColumnDef="no">
@@ -86,7 +87,7 @@
           <mat-cell *matCellDef="let element; let i = index" class="center-table">
             <span class="mobile-label">Acciones:</span>
             <div class="wrap-actions">
-              <button *ngIf = "element.idEstatus === 1" mat-mini-fab color="primary" [routerLink] = "['/pedidos/modificar-pedido', element.idPedido]" matTooltip="Eliminar Pedido" >
+              <button *ngIf = "element.idEstatus === 1" mat-mini-fab color="primary" [routerLink] = "['/pedidos/modificar-pedido', element.idPedido]" matTooltip="Editar Pedido" >
                 <mat-icon>edit</mat-icon>
               </button>
               <button mat-mini-fab disabled *ngIf = "element.idEstatus === 0">
@@ -116,7 +117,8 @@
                 <div class="wrap-order-details">
                   <div class="row-detail title">
                     <div>Artículo</div>
-                    <div>Cantidad</div>
+                    <div>Cantidad Matutina</div>
+                    <div>Cantidad Vespertina</div>
                     <div>Acción</div>
                     <div>
                       <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
@@ -138,6 +140,7 @@
                     <div class="row-detail info" *ngFor = "let producto of element.detpedido; index as i">
                       <div>{{producto.articulo.nombre}}</div>
                       <div>{{producto.cantidad}}</div>
+                      <div>{{producto.cantidadVespertino}}</div>
                       <div>
                         <button mat-mini-fab *ngIf="element.idEstatus === 1" color="warn" (click) = "deleteDetOrder(i, producto, element)" matTooltip="Eliminar Producto" matTooltipPosition="left">
                           <mat-icon>delete</mat-icon>

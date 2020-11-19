@@ -1,5 +1,8 @@
 .wrap-button {
   text-align: right;
+  a {
+    margin-right: 10px;
+  }
 }
 
 .wrap-button-new-order {
@@ -16,6 +19,12 @@
   // min-width: 300px;
 }
 
+
+.wrap-totales {
+  padding: 0 10px 10px 3px;
+  display: grid;
+  grid-template-columns: auto auto;
+}
 
 table {
   width: 100%;
@@ -112,7 +121,7 @@ table {
   position: relative;
   .row-detail {
     display: grid;
-    grid-template-columns: 2fr .8fr .6fr 50px;
+    grid-template-columns: 2fr .8fr .8fr .8fr 50px;
     align-items: center;
     text-align: center;
     padding: 10px 5px;

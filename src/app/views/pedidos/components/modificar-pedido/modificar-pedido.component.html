@@ -1,119 +1,154 @@
-<div class="wrap-search">
-  <mat-card>
-    <mat-form-field class="search-form-field">
-      <mat-label>Buscar Cliente</mat-label>
-      <input matInput #search type="text" [(ngModel)]="dataSearch" (keyup)='searchCoustomers($event)' [readonly]="isReadOnly">
-      <button mat-button *ngIf="dataSearch" matSuffix mat-icon-button aria-label="Clear" (click)="cleanSearch()">
-        <mat-icon>close</mat-icon>
-      </button>
-    </mat-form-field>
+<div  class="btn-return">
+  <a  mat-mini-fab color="primary"  [routerLink]= "['/pedidos/ver-pedidos']" matTooltip="Regresar a lista de pedidos">
+    <mat-icon>keyboard_backspace</mat-icon>
+  </a>
+</div>
 
-    <div class="data-result">
-      <div *ngIf="searchNow">
-        <div class="wrap-loading-catalog">
-          <mat-spinner [diameter]="60"></mat-spinner>
+<mat-accordion>
+  <!--AGREGAR CLIENTE AL PEDIDO -->
+  <mat-expansion-panel [expanded]="expansionCoustomer" >
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        Pedido
+      </mat-panel-title>
+      <mat-panel-description>
+        Agregar cliente al pedido
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+    <div class="wrap-search">
+      <mat-card>
+        <mat-form-field class="search-form-field">
+          <mat-label>Buscar Cliente</mat-label>
+          <input matInput #search type="text" [(ngModel)]="dataSearch" (keyup)='searchCoustomers($event)' [readonly]="isReadOnly">
+          <button mat-button *ngIf="dataSearch" matSuffix mat-icon-button aria-label="Clear" (click)="cleanSearch()">
+            <mat-icon>close</mat-icon>
+          </button>
+        </mat-form-field>
+    
+        <div class="data-result">
+          <div *ngIf="searchNow">
+            <div class="wrap-loading-catalog">
+              <mat-spinner [diameter]="60"></mat-spinner>
+            </div>
+          </div>
+          <div class="no-data" *ngIf="noData">
+            <img src="assets/images/not-found.jpg" alt="no">
+          </div>
+    
+          <ul *ngIf="clientes" class="data-coustomer">
+            <li (click)="setCoustomer(cliente)" *ngFor="let cliente of clientes">
+              <a title="Agregar Cliente">{{cliente.razonSocial}}</a>
+            </li>
+          </ul>
         </div>
+      </mat-card>
+    </div>
+    
+    <div class="wrap-result" *ngIf="cliente.length; else loading">
+      <mat-card>
+        <agm-map [latitude]="cliente[0].latitud" [longitude]="cliente[0].longitud" [zoom]="16" [scrollwheel]="null" [gestureHandling]="'cooperative'"
+          [mapTypeControl]='true'>
+          <agm-marker [latitude]="cliente[0].latitud" [longitude]="cliente[0].longitud" [iconUrl]="pin"></agm-marker>
+        </agm-map>
+        <p class="dir">
+          <b>Dirección: </b> {{cliente[0].calle}} {{cliente[0].numero}} {{cliente[0].colonia}}, CP {{cliente[0].codigoPostal}} </p>
+        <div class="coustomer-container mat-elevation-z8">
+          <mat-table #table [dataSource]="dataSource" [class.isMobile]="isMobile">
+    
+            <ng-container matColumnDef="propietario">
+              <mat-header-cell *matHeaderCellDef>
+                <div class="align-center"> Propietario </div>
+              </mat-header-cell>
+              <mat-cell *matCellDef="let coustomer">
+                <span class="mobile-label">Propietario:</span>
+                <div class="align-center">
+                  {{coustomer.propietario}}
+                </div>
+              </mat-cell>
+            </ng-container>
+    
+            <ng-container matColumnDef="razonSocial">
+              <mat-header-cell *matHeaderCellDef>
+                <div class="align-center"> Razón Social </div>
+              </mat-header-cell>
+              <mat-cell *matCellDef="let coustomer">
+                <span class="mobile-label">Razón Social:</span>
+                <div class="align-center">
+                  {{coustomer.razonSocial}}
+                </div>
+              </mat-cell>
+            </ng-container>
+    
+            <ng-container matColumnDef="rfc">
+              <mat-header-cell *matHeaderCellDef>
+                <div class="align-center"> RFC </div>
+              </mat-header-cell>
+              <mat-cell *matCellDef="let coustomer">
+                <span class="mobile-label">RFC:</span>
+                <div class="align-center">
+                  {{coustomer.rfc}}
+                </div>
+              </mat-cell>
+            </ng-container>
+    
+            <ng-container matColumnDef="telefono">
+              <mat-header-cell *matHeaderCellDef>
+                <div class="align-center"> Teléfono </div>
+              </mat-header-cell>
+              <mat-cell *matCellDef="let coustomer">
+                <span class="mobile-label">Teléfono:</span>
+                <div class="align-center">
+                  {{coustomer.telefono}}
+                </div>
+              </mat-cell>
+            </ng-container>
+    
+            <ng-container matColumnDef="accion">
+              <mat-header-cell *matHeaderCellDef>
+                <div class="align-center"> Acciones </div>
+              </mat-header-cell>
+              <mat-cell *matCellDef="let coustomer">
+                <span class="mobile-label">Acciones:</span>
+                <div class="align-center">
+                  <button *ngIf="pedido.idEstatus === 1" #btnDelete mat-mini-fab color="primary" (click)="deleteCoustomer()" matTooltip="Quitar Cliente" matTooltipPosition="left">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                  <button *ngIf="pedido.idEstatus !== 1"  mat-mini-fab disabled>
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </div>
+              </mat-cell>
+            </ng-container>
+    
+            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+          </mat-table>
+        </div>
+        <div class="col-button" >
+          <button #save mat-raised-button color="primary" (click)="CrearPedido()" *ngIf="pedido.idEstatus === 1">Agregar cliente</button>
+        </div>
+      </mat-card>
+    </div>
+    
+    <div *ngIf="!cliente.length && isLoadingData">
+      <div class="wrap-loading-catalog">
+        <mat-spinner [diameter]="60"></mat-spinner>
       </div>
-      <div class="no-data" *ngIf="noData">
-        <img src="assets/images/not-found.jpg" alt="no">
-      </div>
-
-      <ul *ngIf="clientes" class="data-coustomer">
-        <li (click)="setCoustomer(cliente)" *ngFor="let cliente of clientes">
-          <a title="Agregar Cliente">{{cliente.razonSocial}}</a>
-        </li>
-      </ul>
     </div>
-  </mat-card>
-</div>
+  </mat-expansion-panel>
 
-<div class="wrap-result" *ngIf="cliente.length; else loading">
-  <mat-card>
-    <agm-map [latitude]="cliente[0].latitud" [longitude]="cliente[0].longitud" [zoom]="16" [scrollwheel]="null" [gestureHandling]="'cooperative'"
-      [mapTypeControl]='true'>
-      <agm-marker [latitude]="cliente[0].latitud" [longitude]="cliente[0].longitud" [iconUrl]="pin"></agm-marker>
-    </agm-map>
-    <p class="dir">
-      <b>Dirección: </b> {{cliente[0].calle}} {{cliente[0].numero}} {{cliente[0].colonia}}, CP {{cliente[0].codigoPostal}} </p>
-    <div class="coustomer-container mat-elevation-z8">
-      <mat-table #table [dataSource]="dataSource" [class.isMobile]="isMobile">
 
-        <ng-container matColumnDef="propietario">
-          <mat-header-cell *matHeaderCellDef>
-            <div class="align-center"> Propietario </div>
-          </mat-header-cell>
-          <mat-cell *matCellDef="let coustomer">
-            <span class="mobile-label">Propietario:</span>
-            <div class="align-center">
-              {{coustomer.propietario}}
-            </div>
-          </mat-cell>
-        </ng-container>
-
-        <ng-container matColumnDef="razonSocial">
-          <mat-header-cell *matHeaderCellDef>
-            <div class="align-center"> Razón Social </div>
-          </mat-header-cell>
-          <mat-cell *matCellDef="let coustomer">
-            <span class="mobile-label">Razón Social:</span>
-            <div class="align-center">
-              {{coustomer.razonSocial}}
-            </div>
-          </mat-cell>
-        </ng-container>
-
-        <ng-container matColumnDef="rfc">
-          <mat-header-cell *matHeaderCellDef>
-            <div class="align-center"> RFC </div>
-          </mat-header-cell>
-          <mat-cell *matCellDef="let coustomer">
-            <span class="mobile-label">RFC:</span>
-            <div class="align-center">
-              {{coustomer.rfc}}
-            </div>
-          </mat-cell>
-        </ng-container>
-
-        <ng-container matColumnDef="telefono">
-          <mat-header-cell *matHeaderCellDef>
-            <div class="align-center"> Teléfono </div>
-          </mat-header-cell>
-          <mat-cell *matCellDef="let coustomer">
-            <span class="mobile-label">Teléfono:</span>
-            <div class="align-center">
-              {{coustomer.telefono}}
-            </div>
-          </mat-cell>
-        </ng-container>
-
-        <ng-container matColumnDef="accion">
-          <mat-header-cell *matHeaderCellDef>
-            <div class="align-center"> Acciones </div>
-          </mat-header-cell>
-          <mat-cell *matCellDef="let coustomer">
-            <span class="mobile-label">Acciones:</span>
-            <div class="align-center">
-              <button mat-mini-fab color="primary" (click)="deleteCoustomer()" matTooltip="Quitar Cliente" matTooltipPosition="left">
-                <mat-icon>delete</mat-icon>
-              </button>
-            </div>
-          </mat-cell>
-        </ng-container>
-
-        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
-      </mat-table>
-    </div>
-    <div class="col-button" >
-      <button #save mat-raised-button color="primary" (click)="CrearPedido()">Modificar</button>
-    </div>
-  </mat-card>
-</div>
-
-<div *ngIf="!cliente.length && isLoadingData">
-  <div class="wrap-loading-catalog">
-    <mat-spinner [diameter]="60"></mat-spinner>
-  </div>
-</div>
+    <!--AGREGAR ARTICULOS AL PEDIDO -->
+  <mat-expansion-panel [expanded]="expansionDetailOrder" *ngIf = "showDetailOrder" style="margin-bottom: 15px;">
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        Detalle Pedido
+      </mat-panel-title>
+      <mat-panel-description>
+        Agregar artículos al pedido
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+    <app-modificar-orden-pedido [idPedido] = "idPedidoCreado" (orderClosed) = "showEstatus($event)" ></app-modificar-orden-pedido>
+  </mat-expansion-panel>
 
 

@@ -16,6 +16,7 @@ export interface DetallesPedido {
   articulo: Articulo;
   cantidad: number;
   idEmpleadoModifico: number;
+  cantidadVespertino: number;
 }
 
 export interface PedidoContent {
@@ -23,4 +24,5 @@ export interface PedidoContent {
   totalPages: number;
   totalItems: number;
   content: Pedido[];
+  totalPedido: any[];
 }

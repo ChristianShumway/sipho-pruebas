@@ -38,9 +38,9 @@ export class PerfilesComponent implements OnInit {
 
   ngOnInit() {
     this.getPerfiles(this.paginaActual);
-    // this.changeDetectorRef.detectChanges();
+    this.changeDetectorRef.detectChanges();
     // this.dataSource.paginator = this.paginator;
-    // this.obs$ = this.dataSource.connect();
+    this.obs$ = this.dataSource.connect();
     this.idUsuarioLogeado = this.autenticacionService.currentUserValue;
     this.modifPaginator();
   }

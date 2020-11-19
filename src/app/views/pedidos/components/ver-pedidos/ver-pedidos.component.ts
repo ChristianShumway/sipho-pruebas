@@ -29,6 +29,7 @@ import { ModalCerrarPedidoComponent } from '../modal-cerrar-pedido/modal-cerrar-
 export class VerPedidosComponent implements OnInit, AfterViewInit {
 
   idUsuarioLogeado;
+  perfil;
   searchOrderForm: FormGroup;
   fechaBusqueda;
   pipe = new DatePipe('en-US');
@@ -43,6 +44,7 @@ export class VerPedidosComponent implements OnInit, AfterViewInit {
   columnsToDisplay =   ['no','propietario','razonSocial','direccion','fechaSurtir','acciones'];
   expandedElement: any | null;
   totalItemsNow;
+  totales: any[] = [];
 
   constructor(
     private autenticacionService: AutenticacionService,
@@ -54,10 +56,13 @@ export class VerPedidosComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     this.idUsuarioLogeado = this.autenticacionService.currentUserValue;
+    this.perfil = this.autenticacionService.currentProfileValue;
+    console.log(this.perfil);
     this.getValidations();
     this.changeDetectorRef.detectChanges();
     this.fechaBusqueda = new Date(this.searchOrderForm.controls['fechaBusqueda'].value);
     this.fechaBusqueda.setDate(this.fechaBusqueda.getDate());
+    this.searchOrder();
   }
   
   ngAfterViewInit() {
@@ -74,11 +79,15 @@ export class VerPedidosComponent implements OnInit, AfterViewInit {
 
   public onFechaBusqueda(event): void {
     this.fechaBusqueda = event.value;
+    console.log(this.fechaBusqueda);
+    
   }
+
 
   searchOrder(){
     if(this.searchOrderForm.valid) {
       this.pedidos = [];
+      this.totales = [];
       this.submitButton.disabled = true;
       this.searchNow = true;
       this.noData = false;
@@ -99,6 +108,8 @@ export class VerPedidosComponent implements OnInit, AfterViewInit {
         (result: PedidoContent) => {
           console.log(result);
           this.pedidos = result.content;
+          this.totales = result.totalPedido;
+          console.log(this.totales);
           this.paginator.length = result.totalItems;
           this.totalItemsNow = this.paginator.length;
           this.dataSource = new MatTableDataSource(this.pedidos);

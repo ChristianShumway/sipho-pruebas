@@ -38,4 +38,5 @@ export class RutaService {
     const headerss = new HttpHeaders({'Content-Type': 'application/json'});
     return this.http.post<any>(`${environment.apiURL}/catalog/deleteRuta`, JSON.stringify(ruta), { headers: headerss});
   }
+  
 }

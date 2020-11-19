@@ -6,6 +6,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { RutaService } from 'app/shared/services/ruta.service';
 import { AutenticacionService } from 'app/shared/services/autenticacion.service';
 import { MatButton } from '@angular/material';
+import { EmpleadoService } from '../../../../shared/services/empleado.service';
+import { Empleado } from 'app/shared/models/empleado';
 
 @Component({
   selector: 'app-crear-ruta',
@@ -17,25 +19,45 @@ export class CrearRutaComponent implements OnInit {
   rutaForm: FormGroup;
   idUsuarioLogeado;
   @ViewChild(MatButton, {static: false}) submitButton: MatButton;
+  empleados: Empleado[] = [];
+  idPerfilEmploye: number = 1;
 
   constructor(
     private router: Router,
     private snackBar: MatSnackBar,
     private rutaService: RutaService,
-    private autenticacionService: AutenticacionService
+    private autenticacionService: AutenticacionService,
+    private empleadoService: EmpleadoService
   ) { }
 
   ngOnInit() {
     this.getValidations();
     this.idUsuarioLogeado = this.autenticacionService.currentUserValue;
+    this.getEmployes();
   }
 
   getValidations() {
     this.rutaForm = new FormGroup({
       descripcion: new FormControl('', [
         Validators.required,
+      ]),
+      encargado: new FormControl('', [
+        Validators.required,
+      ]),
+      coEncargado: new FormControl('', [
+        Validators.required,
       ])
     })
+  }
+
+  getEmployes() {
+    this.empleadoService.getEmployeByPerfil(this.idPerfilEmploye).subscribe(
+      (empleados: Empleado[]) => {
+        console.log(empleados);
+        this.empleados = empleados;
+      },
+      error => console.log(error)
+    );
   }
 
   createRuta() {

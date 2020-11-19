@@ -18,6 +18,38 @@
               </small>
             </div>
           </div>
+          <div class="pb-1">
+            <mat-form-field class="full-width">
+              <mat-label>Encargado</mat-label>
+              <mat-select formControlName="encargado" required>
+                <mat-option *ngFor="let empleado of empleados" [value]="empleado">
+                  {{empleado.nombre}} {{empleado.apellidoPaterno}} {{empleado.apellidoMaterno}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+            <div class="validaciones">
+              <small *ngIf="rutaForm.controls['encargado'].hasError('required') && rutaForm.controls['encargado'].touched"
+                class="form-error-msg">
+                Encargado de la ruta es un campo requerido
+              </small>
+            </div>
+          </div>
+          <div class="pb-1">
+            <mat-form-field class="full-width">
+              <mat-label>Coencargado</mat-label>
+              <mat-select formControlName="coEncargado" required>
+                <mat-option *ngFor="let empleado of empleados" [value]="empleado">
+                  {{empleado.nombre}} {{empleado.apellidoPaterno}} {{empleado.apellidoMaterno}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+            <div class="validaciones">
+              <small *ngIf="rutaForm.controls['coEncargado'].hasError('required') && rutaForm.controls['coEncargado'].touched"
+                class="form-error-msg">
+                Coencargado de la ruta es un campo requerido
+              </small>
+            </div>
+          </div>
         </div>
       </div>
 

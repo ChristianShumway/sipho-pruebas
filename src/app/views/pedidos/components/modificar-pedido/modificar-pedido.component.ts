@@ -17,6 +17,7 @@ import { switchMap } from 'rxjs/operators';
 export class ModificarPedidoComponent implements OnInit {
 
   @ViewChild('save', {static: false}) submitButton: MatButton;
+  @ViewChild('btnDelete', {static: false}) deleteArticle: MatButton;
   idUsuarioLogeado;
   clientes: Cliente[] = [];
   cliente: Cliente[] = [];
@@ -30,6 +31,10 @@ export class ModificarPedidoComponent implements OnInit {
   displayedColumns: string[] = ['propietario', 'razonSocial', 'rfc', 'telefono', 'accion'];
   dataSource: MatTableDataSource<Cliente>;
   pin = '/assets/images/mark.png';
+  expansionCoustomer: boolean = true;
+  expansionDetailOrder: boolean = false;
+  idPedidoCreado: number;
+  showDetailOrder: boolean = false;
 
   constructor(
     private autenticacionService: AutenticacionService,
@@ -52,6 +57,8 @@ export class ModificarPedidoComponent implements OnInit {
       (pedido: Pedido) => {
         this.pedido = pedido;
         this.setCoustomer(pedido.vistaCliente);
+        this.idPedidoCreado = this.pedido.idPedido;
+        this.showDetailOrder = true;
       },
       error => {
         console.log(error);
@@ -100,6 +107,7 @@ export class ModificarPedidoComponent implements OnInit {
   deleteCoustomer() {
     this.cliente = [];
     this.isReadOnly = !this.isReadOnly;
+    this.showDetailOrder = false;
   }
 
   CrearPedido() {
@@ -113,9 +121,12 @@ export class ModificarPedidoComponent implements OnInit {
     this.pedidoService.updatePedido(this.pedido).subscribe(
       response => {
         if(response.estatus === '05'){
-          this.router.navigate(['/pedidos/ver-pedidos']);
+          // this.router.navigate(['/pedidos/ver-pedidos']);
           this.useAlerts(response.mensaje, ' ', 'success-dialog');
           this.submitButton.disabled = false;
+          this.expansionCoustomer = false;
+          this.expansionDetailOrder = true;
+          this.showDetailOrder = true;
         } else {
           this.useAlerts(response.mensaje, ' ', 'error-dialog');
           this.submitButton.disabled = false;
@@ -127,6 +138,12 @@ export class ModificarPedidoComponent implements OnInit {
         this.submitButton.disabled = false;
       }
     );
+  }
+
+  showEstatus(event):void{
+    console.log(event);
+    this.submitButton.disabled = true;
+    this.deleteArticle.disabled = true;
   }
   
   useAlerts(message, action, className){

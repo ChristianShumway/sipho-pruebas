@@ -17,6 +17,7 @@ import { Pedido } from 'app/shared/models/pedido';
 export class RealizarPedidoComponent implements OnInit {
 
   @ViewChild('save', {static: false}) submitButton: MatButton;
+  @ViewChild('btnDelete', {static: false}) deleteArticle: MatButton;
   idUsuarioLogeado;
   hoy = new Date();
   pipe = new DatePipe('en-US');
@@ -30,6 +31,10 @@ export class RealizarPedidoComponent implements OnInit {
   displayedColumns: string[] = ['propietario', 'razonSocial', 'rfc', 'telefono', 'accion'];
   dataSource: MatTableDataSource<Cliente>;
   pin = '/assets/images/mark.png';
+  idPedidoCreado: number = 0;
+  pedidoCreado: Pedido;
+  expansionCoustomer:boolean = true;
+  expansionDetailOrder:boolean = false;
 
   constructor(
     private autenticacionService: AutenticacionService,
@@ -82,6 +87,7 @@ export class RealizarPedidoComponent implements OnInit {
   deleteCoustomer() {
     this.cliente = [];
     this.isReadOnly = !this.isReadOnly;
+    this.pedidoCreado = null;
   }
 
   CrearPedido() {
@@ -90,7 +96,7 @@ export class RealizarPedidoComponent implements OnInit {
     const myFormatedDate = this.pipe.transform(this.hoy, format);
     const cliente = this.cliente[0];
     const pedido: Pedido = {
-      idPedido: 0,
+      idPedido: this.idPedidoCreado,
       vistaCliente: cliente,
       fechaSurtir: myFormatedDate,
       idEstatus: 1,
@@ -100,10 +106,16 @@ export class RealizarPedidoComponent implements OnInit {
 
     this.pedidoService.updatePedido(pedido).subscribe(
       response => {
+        console.log(response);
         if(response.estatus === '05'){
-          this.router.navigate(['/pedidos/ver-pedidos']);
+          // this.router.navigate(['/pedidos/ver-pedidos']);
           this.useAlerts(response.mensaje, ' ', 'success-dialog');
+          this.idPedidoCreado = response.response.idPedido;
+          this.pedidoCreado = response.response;
+          this.expansionCoustomer = false;
+          this.expansionDetailOrder = true;
           this.submitButton.disabled = false;
+          console.log(this.pedidoCreado);
         } else {
           this.useAlerts(response.mensaje, ' ', 'error-dialog');
           this.submitButton.disabled = false;
@@ -116,6 +128,13 @@ export class RealizarPedidoComponent implements OnInit {
       }
     );
   }
+
+  showEstatus(event):void{
+    console.log(event);
+    this.submitButton.disabled = true;
+    this.deleteArticle.disabled = true;
+  }
+
   
   useAlerts(message, action, className){
     this.snackBar.open(message, action, {

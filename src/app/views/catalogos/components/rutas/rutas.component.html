@@ -30,10 +30,17 @@
 
         <mat-card-content>
           <div class="wrap-details">
-            <!-- <p class="p-info-catalogss" matTooltip="Color" matTooltipPosition="below">
-              <mat-icon class="text-muted">color_lens</mat-icon>
-              <span>{{vitrina.color}}</span>
-            </p> -->
+            <div class="info">
+              <p class="p-info-catalogss" matTooltip="encargado" matTooltipPosition="right">
+                <mat-icon class="text-muted">person</mat-icon>
+                <span>{{ruta.encargado.nombre}} {{ruta.encargado.apellidoPaterno}} {{ruta.encargado.apellidoMaterno}}</span>
+              </p>
+              <p class="p-info-catalogss" matTooltip="Coencargado" matTooltipPosition="right">
+                <mat-icon class="text-muted">people</mat-icon>
+                <span>{{ruta.coEncargado.nombre}} {{ruta.coEncargado.apellidoPaterno}} {{ruta.coEncargado.apellidoMaterno}}</span>
+              </p>
+
+            </div>
           </div>
         </mat-card-content>
       </mat-card>

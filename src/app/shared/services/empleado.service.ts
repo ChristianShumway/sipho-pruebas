@@ -50,5 +50,10 @@ export class EmpleadoService {
     return this.http.post<any>(`${environment.apiURL}/catalog/uploadPhotoEmploye`, JSON.stringify(data), { headers: headerss});
   }
 
+  getEmployeByPerfil(idPerfil: number): Observable<Empleado[]> {
+    return this.http.get<Empleado[]>(`${environment.apiURL}/catalog/getSelectEmployeByPerfil/${idPerfil}`);
+  }
+
+
 
 }

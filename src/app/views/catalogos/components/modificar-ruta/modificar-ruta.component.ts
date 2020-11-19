@@ -9,6 +9,8 @@ import { MatDialog, MatButton } from '@angular/material';
 import { switchMap } from 'rxjs/operators';
 import { ViewChild } from '@angular/core';
 import { Observable } from 'rxjs';
+import { EmpleadoService } from 'app/shared/services/empleado.service';
+import { Empleado } from 'app/shared/models/empleado';
 
 @Component({
   selector: 'app-modificar-ruta',
@@ -22,6 +24,8 @@ export class ModificarRutaComponent implements OnInit {
   idRuta;
   idUsuarioLogeado;
   ruta: Ruta;
+  empleados: Empleado[] = [];
+  idPerfilEmploye: number = 1;
 
   constructor(
     private router: Router,
@@ -29,13 +33,15 @@ export class ModificarRutaComponent implements OnInit {
     private autenticacionService: AutenticacionService,
     private activatedRoute: ActivatedRoute,
     private rutaService: RutaService,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    private empleadoService: EmpleadoService
   ) { }
 
   ngOnInit() {
     this.getValidations();
     this.getRuta();
     this.idUsuarioLogeado = this.autenticacionService.currentUserValue;
+    this.getEmployes();
   }
 
   getRuta() {
@@ -47,6 +53,18 @@ export class ModificarRutaComponent implements OnInit {
         this.ruta = ruta;
         this.idRuta = ruta.idRuta;
         this.rutaForm.patchValue(ruta);
+        this.rutaForm.get('encargado').setValue(ruta.encargado.idEmpleado);
+        this.rutaForm.get('coEncargado').setValue(ruta.coEncargado.idEmpleado);
+      },
+      error => console.log(error)
+    );
+  }
+
+  getEmployes() {
+    this.empleadoService.getEmployeByPerfil(this.idPerfilEmploye).subscribe(
+      (empleados: Empleado[]) => {
+        console.log(empleados);
+        this.empleados = empleados;
       },
       error => console.log(error)
     );
@@ -57,6 +75,12 @@ export class ModificarRutaComponent implements OnInit {
     this.rutaForm = new FormGroup({
       descripcion: new FormControl('', [
         Validators.required,
+      ]),
+      encargado: new FormControl('', [
+        Validators.required,
+      ]),
+      coEncargado: new FormControl('', [
+        Validators.required,
       ])
     })
   }
@@ -66,10 +90,15 @@ export class ModificarRutaComponent implements OnInit {
     if (this.rutaForm.valid) {
       this.submitButton.disabled = true;
 
+      const encargado: Empleado = this.empleados.find( (empleado: Empleado) => empleado.idEmpleado === this.rutaForm.value.encargado);
+      const coEncargado: Empleado = this.empleados.find( (empleado: Empleado) => empleado.idEmpleado === this.rutaForm.value.coEncargado);
+
       const ruta: Ruta = {
         idRuta: parseInt(this.idRuta),
         idEmpleadoModifico: this.idUsuarioLogeado,
         ...this.rutaForm.value,
+        encargado: encargado,
+        coEncargado: coEncargado
       };
       console.log(ruta);
 

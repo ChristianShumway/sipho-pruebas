@@ -59,11 +59,4 @@ export class PedidoService {
 
 }
 
-// delivery/updateOrder  -post  pedido
-// getOrderByDate/{date}/{page}  -get
-// updateDetOrder -post detpedido
-// deleteorder- post pedido
-// deleteDetOrder- post detpedido
-
-// deleteorder-´pst detpedido
-
+// getSelectEmployeByPerfil/{idPerfil}
