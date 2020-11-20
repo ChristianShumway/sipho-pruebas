@@ -1,28 +1,51 @@
 <div class="wrap-pedidos">
 
   <mat-card>
-    <form [formGroup]="searchOrderForm" (submit)="searchOrder()">
-      <div fxFlex="100" fxFlex.gt-md="100" fxFlex.gt-sm="100" class="container-order">
-        <div class="pb-1">
-          <mat-form-field class="full-width">
-            <input matInput [matDatepicker]="fechaBusqueda" formControlName="fechaBusqueda" name="date" placeholder="Fecha Busqueda"
-              (dateChange)="onFechaBusqueda($event)">
-            <mat-datepicker-toggle matSuffix [for]="fechaBusqueda"></mat-datepicker-toggle>
-            <mat-datepicker #fechaBusqueda (selectedChange)="onFechaBusqueda($event)"></mat-datepicker>
-          </mat-form-field>
-          <div class="validaciones">
-            <small *ngIf="searchOrderForm.controls['fechaBusqueda'].hasError('required') && searchOrderForm.controls['fechaBusqueda'].touched"
-              class="form-error-msg">
-              Fecha de busqueda es un campo requerido
-            </small>
+    <div *ngIf="rutas.length">
+      <form [formGroup]="searchOrderForm" (submit)="searchOrder()">
+        <div fxFlex="100" fxFlex.gt-md="100" fxFlex.gt-sm="100" class="container-order">
+          <div class="pb-1">
+            <mat-form-field class="full-width">
+              <input matInput [matDatepicker]="fechaBusqueda" formControlName="fechaBusqueda" name="date" placeholder="Fecha Busqueda"
+                (dateChange)="onFechaBusqueda($event)">
+              <mat-datepicker-toggle matSuffix [for]="fechaBusqueda"></mat-datepicker-toggle>
+              <mat-datepicker #fechaBusqueda (selectedChange)="onFechaBusqueda($event)"></mat-datepicker>
+            </mat-form-field>
+            <div class="validaciones">
+              <small *ngIf="searchOrderForm.controls['fechaBusqueda'].hasError('required') && searchOrderForm.controls['fechaBusqueda'].touched"
+                class="form-error-msg">
+                Fecha de busqueda es un campo requerido
+              </small>
+            </div>
+          </div>
+          <div class="pb-1">
+            <mat-form-field class="full-width">
+              <mat-label>Rutas</mat-label>
+              <mat-select formControlName="idRuta" required>
+                <mat-option *ngFor="let ruta of rutas" [value]="ruta.idRuta">
+                  {{ruta.descripcion}} 
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+            <div class="validaciones">
+              <small *ngIf="searchOrderForm.controls['idRuta'].hasError('required') && searchOrderForm.controls['idRuta'].touched"
+                class="form-error-msg">
+                La ruta es un campo requerido
+              </small>
+            </div>
+          </div>
+          <div class="wrap-button">
+            <a mat-raised-button [color]="'edit'" class="btn-accept" [routerLink] = "['/pedidos/realizar-pedido']">Agregar Pedido</a>
+            <button mat-raised-button color="primary" [disabled]="searchOrderForm.invalid" type="submit" class="btn-accept">Buscar</button>
           </div>
         </div>
-        <div class="wrap-button">
-          <a mat-raised-button [color]="'edit'" class="btn-accept" [routerLink] = "['/pedidos/realizar-pedido']">Agregar Pedido</a>
-          <button mat-raised-button color="primary" [disabled]="searchOrderForm.invalid" type="submit" class="btn-accept">Buscar</button>
-        </div>
+      </form>
+    </div>
+    <div *ngIf="!rutas.length">
+      <div class="wrap-loading-catalog">
+        <mat-spinner [diameter]="60"></mat-spinner>
       </div>
-    </form>
+    </div>
   </mat-card>
 
   <mat-card class="mat-data" [ngStyle]="{'visibility': searchNow || noData || pedidos.length ? 'visible' : 'hidden' }" >

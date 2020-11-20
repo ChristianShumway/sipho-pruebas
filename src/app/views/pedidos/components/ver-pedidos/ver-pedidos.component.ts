@@ -12,6 +12,10 @@ import {MatTableDataSource} from '@angular/material/table';
 import { forkJoin } from 'rxjs';
 import { ModalEliminarComponent } from 'app/shared/components/modal-eliminar/modal-eliminar.component';
 import { ModalCerrarPedidoComponent } from '../modal-cerrar-pedido/modal-cerrar-pedido.component';
+import { environment } from 'environments/environment';
+import { NavigationService } from 'app/shared/services/navigation.service';
+import { Ruta } from 'app/shared/models/ruta';
+import { RutaService } from 'app/shared/services/ruta.service';
 
 @Component({
   selector: 'app-ver-pedidos',
@@ -34,6 +38,7 @@ export class VerPedidosComponent implements OnInit, AfterViewInit {
   fechaBusqueda;
   pipe = new DatePipe('en-US');
   pedidos: Pedido[] = [];
+  rutas: Ruta[] = [];
   noData: boolean = false;
   searchNow: boolean = false;
   pageActual = 0;
@@ -45,6 +50,10 @@ export class VerPedidosComponent implements OnInit, AfterViewInit {
   expandedElement: any | null;
   totalItemsNow;
   totales: any[] = [];
+  rutaSeleccionada: Ruta;
+  nombrePermiso = 'ver-pedidos';
+  permisosEspecialesPermitidos: any[] = []; //array donde se agrega el nombre de las opciones a las cuales el usuario si tiene permiso
+
 
   constructor(
     private autenticacionService: AutenticacionService,
@@ -52,17 +61,35 @@ export class VerPedidosComponent implements OnInit, AfterViewInit {
     private snackBar: MatSnackBar,
     private changeDetectorRef: ChangeDetectorRef,
     public dialog: MatDialog,
+    private navigationService: NavigationService,
+    private rutaService: RutaService
   ) { }
 
   ngOnInit() {
     this.idUsuarioLogeado = this.autenticacionService.currentUserValue;
     this.perfil = this.autenticacionService.currentProfileValue;
-    console.log(this.perfil);
+    // console.log(this.perfil);
     this.getValidations();
     this.changeDetectorRef.detectChanges();
     this.fechaBusqueda = new Date(this.searchOrderForm.controls['fechaBusqueda'].value);
     this.fechaBusqueda.setDate(this.fechaBusqueda.getDate());
-    this.searchOrder();
+    // this.searchOrder();
+    this.getPermisosEspeciales();
+    this.getRutas();
+  }
+
+  getRutas() {
+    this.rutaService.getSelectRuta().subscribe(
+      (rutas: Ruta[]) => {
+        console.log(rutas);
+        this.rutas = rutas;
+        this.rutaSeleccionada = this.rutas[0];
+        // console.log(this.rutaSeleccionada);
+        this.searchOrderForm.get('idRuta').setValue(this.rutaSeleccionada.idRuta);
+        setTimeout( () => this.searchOrder(), 100);
+      },
+      error => console.log(error)
+    );
   }
   
   ngAfterViewInit() {
@@ -73,7 +100,8 @@ export class VerPedidosComponent implements OnInit, AfterViewInit {
 
   getValidations(){
     this.searchOrderForm = new FormGroup({
-      fechaBusqueda: new FormControl(new Date(), Validators.required)
+      fechaBusqueda: new FormControl(new Date(), Validators.required),
+      idRuta: new FormControl('', Validators.required)
     })
   }
 
@@ -82,7 +110,6 @@ export class VerPedidosComponent implements OnInit, AfterViewInit {
     console.log(this.fechaBusqueda);
     
   }
-
 
   searchOrder(){
     if(this.searchOrderForm.valid) {
@@ -93,7 +120,9 @@ export class VerPedidosComponent implements OnInit, AfterViewInit {
       this.noData = false;
       const format = 'yyyy-MM-dd';
       this.fechaBusqueda = this.pipe.transform(this.fechaBusqueda, format);
-      console.log(this.fechaBusqueda);
+      // console.log(this.fechaBusqueda);
+      this.rutaSeleccionada = this.rutas.find((ruta: Ruta) => ruta.idRuta = this.searchOrderForm.value.idRuta);
+      console.log(this.rutaSeleccionada);
 
       // forkJoin({
       //   sendData: this.pedidoService.getDataPedidos(nuevaFechaBusqueda, this.pageActual),
@@ -272,7 +301,7 @@ export class VerPedidosComponent implements OnInit, AfterViewInit {
   }
 
   modifPaginator() {
-    console.log(this.paginator);
+    // console.log(this.paginator);
     this.paginator._intl.itemsPerPageLabel ="items por pagina"
     this.paginator._intl.getRangeLabel = (page: number, pageSize: number, length: number) => {
       const start = page * pageSize + 1;
@@ -281,5 +310,28 @@ export class VerPedidosComponent implements OnInit, AfterViewInit {
     };
   }
 
+  getPermisosEspeciales() {
+    const permisos = environment.permisosEspeciales.filter( permiso => permiso.activo === 1);
+    // console.log(permisos);
+    const permisosEspecialesComponente = permisos.filter( permiso => permiso.nombre === this.nombrePermiso);
+    // console.log(permisosEspecialesComponente);
+    permisosEspecialesComponente.map( permisoExistente => {
+      this.navigationService.validatePermissions(this.perfil.idPerfil, permisoExistente.idOpcion).subscribe(
+        (result:any) => {
+          console.log(result);
+          if(result.estatus === '05'){
+            this.permisosEspecialesPermitidos.push(permisoExistente.nombre);
+          }
+        },
+        error => console.log(error)
+      );
+    });
+  }
+
 
 }
+
+
+// <div id="modificar-reporte" #myIdM>
+//   <a mat-menu-item routerLink="modificar-reporte-conceptos-ejecutados/{{reporte.idConceptoEjecutado}}" *ngIf= "permisosEspecialesPermitidos.includes(myIdM?.id) && obra.cierre===0">Modificar Reporte</a>
+// </div>

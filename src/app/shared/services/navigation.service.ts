@@ -64,111 +64,20 @@ export class NavigationService {
     return this.http.get<IMenuItem[]>(`${environment.apiURL}/dashboard/getMenu/${id}`);
   }
 
-  // iconMenu: IMenuItem[] = [
-  //   {
-  //     name: "HOME",
-  //     type: "icon",
-  //     tooltip: "Home",
-  //     icon: "home",
-  //     state: "home"
-  //   },
-  //   {
-  //     name: "PROFILE",
-  //     type: "icon",
-  //     tooltip: "Profile",
-  //     icon: "person",
-  //     state: "profile/overview"
-  //   },
-   
-  //   {
-  //     type: "separator",
-  //     name: "Main Items"
-  //   },
-  //   {
-  //     name: "DASHBOARD",
-  //     type: "dropDown",
-  //     tooltip: "Dashboard",
-  //     icon: "dashboard",
-  //     state: "dashboard",
-  //     sub: [
-  //       { name: "Default", state: "default" },
-  //       { name: "Analytics", state: "analytics" },
-  //       { name: "Cryptocurrency", state: "crypto" },
-  //       { name: "Dark Cards", state: "dark" }
-  //     ]
-  //   },
-  //   {
-  //     name: "PROFILE",
-  //     type: "dropDown",
-  //     tooltip: "Profile",
-  //     icon: "person",
-  //     state: "profile",
-  //     badges: [{ color: "primary", value: "2" }],
-  //     sub: [
-  //       { name: "OVERVIEW", state: "overview" },
-  //       { name: "SETTINGS", state: "settings" },
-  //       { name: "BLANK", state: "blank" }
-  //     ]
-  //   },
-  //   {
-  //     name: "CHARTS",
-  //     type: "dropDown",
-  //     tooltip: "Charts",
-  //     icon: "show_chart",
-  //     sub: [
-  //       { name: "Chart js", state: "charts" }
-  //     ]
-  //   },
-   
-  //   {
-  //     name: "SESSIONS",
-  //     type: "dropDown",
-  //     tooltip: "Pages",
-  //     icon: "view_carousel",
-  //     state: "sessions",
-  //     sub: [
-  //       { name: "SIGNUP", state: "signup" },
-  //       { name: "Signup 2", state: "signup2" },
-  //       { name: "Signup 3", state: "signup3" },
-  //       { name: "Signup 4", state: "signup4" },
-  //       { name: "SIGNIN", state: "signin" },
-  //       { name: "Signin 2", state: "signin2" },
-  //       { name: "Signin 3", state: "signin3" },
-  //       { name: "Signin 4", state: "signin4" },
-  //       { name: "FORGOT", state: "forgot-password" },
-  //       { name: "LOCKSCREEN", state: "lockscreen" },
-  //       { name: "NOTFOUND", state: "404" },
-  //       { name: "ERROR", state: "error" }
-  //     ]
-  //   },
-  //   {
-  //     name: "OTHERS",
-  //     type: "dropDown",
-  //     tooltip: "Others",
-  //     icon: "blur_on",
-  //     state: "others",
-  //     sub: [
-  //       { name: "GALLERY", state: "gallery" },
-  //       { name: "PRICINGS", state: "pricing" },
-  //       { name: "USERS", state: "users" },
-  //       { name: "BLANK", state: "blank" }
-  //     ]
-  //   },
-  //   {
-  //     name: "DOC",
-  //     type: "extLink",
-  //     tooltip: "Documentation",
-  //     icon: "library_books",
-  //     state: "http://demos.ui-lib.com/egret-doc/"
-  //   }
-  // ];
-
   getPermisosMenu() {
     return this.http.get<any[]>(`${environment.apiURL}/config/getAuthorizedProfiles/7`);
   }
 
   getOptionsMenu(){
     return this.http.get<any[]>(`${environment.apiURL}/config/getOptionsMenu/`);
+  }
+
+  getOptionsToPermisosEspeciales(idPerfil, tipo) {
+    return this.http.get<IMenuItem[]>(`${environment.apiURL}/dashboard/getConfiguration/${idPerfil}/${tipo}`);
+  }
+
+  validatePermissions(idPerfil: number, idOpcion: number) {
+    return this.http.get<any[]>(`${environment.apiURL}/config/isAuthenticated/${idPerfil}/${idOpcion}`);
   }
 
   separatorMenu: IMenuItem[] = [

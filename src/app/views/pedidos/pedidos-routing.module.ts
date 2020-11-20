@@ -6,6 +6,7 @@ import { VerPedidosComponent } from './components/ver-pedidos/ver-pedidos.compon
 import { AgregarOrdenPedidoComponent } from './components/agregar-orden-pedido/agregar-orden-pedido.component';
 import { ModificarPedidoComponent } from './components/modificar-pedido/modificar-pedido.component';
 import { ModificarOrdenPedidoComponent } from './components/modificar-orden-pedido/modificar-orden-pedido.component';
+import { DevolucionPedidoComponent } from './components/devolucion-pedido/devolucion-pedido.component';
 
 const routes: Routes = [
   {
@@ -36,6 +37,12 @@ const routes: Routes = [
     path: 'modificar-orden-pedido/:idPedido',
     component: ModificarOrdenPedidoComponent,
     data: { title: 'Modificar Orden al Pedido', breadcrumb: 'Modificar Orden al Pedido'},
+    // canActivate: [AuthModuleGuard],
+  },
+  {
+    path: 'devolucion-pedido',
+    component: DevolucionPedidoComponent,
+    data: { title: 'Devolución Pedido', breadcrumb: 'Devolución Pedido'},
     // canActivate: [AuthModuleGuard],
   },
   

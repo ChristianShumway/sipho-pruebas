@@ -1,0 +1,84 @@
+<mat-card>
+  <div *ngIf="rutas.length">
+    <form [formGroup]="searchDeliveryForm" (submit)="searchDelivery()">
+      <div fxFlex="100" fxFlex.gt-md="100" fxFlex.gt-sm="100" class="container-order">
+        <div class="pb-1">
+          <mat-form-field class="full-width">
+            <input matInput [matDatepicker]="fechaBusqueda" formControlName="fechaBusqueda" name="date" placeholder="Fecha Busqueda"
+              (dateChange)="onFechaBusqueda($event)">
+            <mat-datepicker-toggle matSuffix [for]="fechaBusqueda"></mat-datepicker-toggle>
+            <mat-datepicker #fechaBusqueda (selectedChange)="onFechaBusqueda($event)"></mat-datepicker>
+          </mat-form-field>
+          <div class="validaciones">
+            <small *ngIf="searchDeliveryForm.controls['fechaBusqueda'].hasError('required') && searchDeliveryForm.controls['fechaBusqueda'].touched"
+              class="form-error-msg">
+              Fecha de busqueda es un campo requerido
+            </small>
+          </div>
+        </div>
+        <div class="pb-1">
+          <mat-form-field class="full-width">
+            <mat-label>Rutas</mat-label>
+            <mat-select formControlName="idRuta" required>
+              <mat-option *ngFor="let ruta of rutas" [value]="ruta.idRuta">
+                {{ruta.descripcion}} 
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <div class="validaciones">
+            <small *ngIf="searchDeliveryForm.controls['idRuta'].hasError('required') && searchDeliveryForm.controls['idRuta'].touched"
+              class="form-error-msg">
+              La ruta es un campo requerido
+            </small>
+          </div>
+        </div>
+        <div class="wrap-button">
+          <button #search mat-raised-button color="primary" [disabled]="searchDeliveryForm.invalid" type="submit" class="btn-accept">Buscar</button>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div *ngIf="!rutas.length">
+    <div class="wrap-loading-catalog">
+      <mat-spinner [diameter]="60"></mat-spinner>
+    </div>
+  </div>
+</mat-card>
+
+<mat-card *ngIf="entrega || searchNow || noData">
+ 
+  <div *ngIf="searchNow || isSave">
+    <div class="wrap-loading-catalog">
+      <mat-spinner [diameter]="60"></mat-spinner>
+    </div>
+  </div>
+
+  <div class="no-data" *ngIf="noData">
+    <img src="assets/images/not-found.jpg" alt="no">
+  </div>
+
+  <div class="wrap-delivery" *ngIf="entrega">
+    <div *ngIf="!isSave">
+      <app-form-devolucion-pedido [entrega] = "entrega" (saveClicked) = "saveDelivery($event)"></app-form-devolucion-pedido>
+    </div>
+  </div>
+
+</mat-card>
+
+<mat-card *ngIf="respuestaEntrega">
+  <p class="legend">El índice de devolución el día {{fechaBusqueda | date}} para la ruta {{ruta.descripcion}} es del {{respuestaEntrega.indiceDevolucion}}%</p>
+  <div class="wrap-level-index" [matTooltip]="[respuestaEntrega.indiceDevolucion, '%']">
+    <div 
+    [ngStyle]="{'width.%': respuestaEntrega.indiceDevolucion}" 
+    [class.total-level-success]="respuestaEntrega.indiceDevolucion <= 3"
+    [class.total-level-danger]="respuestaEntrega.indiceDevolucion > 3"
+    class="level">
+    </div>
+    <div 
+    [ngStyle]="{'width.%': 100 - respuestaEntrega.indiceDevolucion}" 
+    [class.rest-level-success]="respuestaEntrega.indiceDevolucion <= 3"
+    [class.rest-level-danger]="respuestaEntrega.indiceDevolucion > 3"
+    class="level">
+    </div>
+  </div>
+</mat-card>

@@ -18,5 +18,10 @@
     "target": "http://4485949.online-server.cloud:8080/Sipho/",
     "secure": false,
     "logLevel": "debug"
+  },
+  "/production/*": {
+    "target": "http://4485949.online-server.cloud:8080/Sipho/",
+    "secure": false,
+    "logLevel": "debug"
   }
 }

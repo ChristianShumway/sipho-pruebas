@@ -21,6 +21,8 @@ import { AgregarOrdenPedidoComponent } from './components/agregar-orden-pedido/a
 import { ModificarPedidoComponent } from './components/modificar-pedido/modificar-pedido.component';
 import { ModificarOrdenPedidoComponent } from './components/modificar-orden-pedido/modificar-orden-pedido.component';
 import { ModalCerrarPedidoComponent } from './components/modal-cerrar-pedido/modal-cerrar-pedido.component';
+import { DevolucionPedidoComponent } from './components/devolucion-pedido/devolucion-pedido.component';
+import { FormDevolucionPedidoComponent } from './components/form-devolucion-pedido/form-devolucion-pedido.component';
 
 export let options: Partial<IConfig> | (() => Partial<IConfig>);
 
@@ -31,7 +33,9 @@ export let options: Partial<IConfig> | (() => Partial<IConfig>);
     AgregarOrdenPedidoComponent,
     ModificarPedidoComponent,
     ModificarOrdenPedidoComponent,
-    ModalCerrarPedidoComponent
+    ModalCerrarPedidoComponent,
+    DevolucionPedidoComponent,
+    FormDevolucionPedidoComponent
   ],
   imports: [
     CommonModule,

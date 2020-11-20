@@ -1,0 +1,48 @@
+<p class="legend"> Fecha a surtir: {{entrega.fechaSurtir | date}}</p>
+<form [formGroup]="deliveryForm" (submit)="saveDelivery()">
+  <div fxLayout="row wrap">
+    <div fxFlex="100" fxFlex.gt-xs="100">
+      <div class="pb-1">
+        <mat-form-field class="full-width">
+          <input matInput name="cantidadDevuelta" formControlName="cantidadDevuelta" placeholder="Cantidad Devuelta" mask="separator.2"
+            thousandSeparator=",">
+        </mat-form-field>
+        <div class="validaciones">
+          <small *ngIf="deliveryForm.controls['cantidadDevuelta'].hasError('required') && deliveryForm.controls['cantidadDevuelta'].touched"
+            class="form-error-msg">
+            Cantidad devuelta es un campo requerido
+          </small>
+        </div>
+      </div>
+      <div class="pb-1">
+        <mat-form-field class="full-width">
+          <input matInput name="cantidadVendida" formControlName="cantidadVendida" placeholder="Cantidad Vendida" mask="separator.2"
+            thousandSeparator=",">
+        </mat-form-field>
+        <div class="validaciones">
+          <small *ngIf="deliveryForm.controls['cantidadVendida'].hasError('required') && deliveryForm.controls['cantidadVendida'].touched"
+            class="form-error-msg">
+            Cantidad vendida es un campo requerido
+          </small>
+        </div>
+      </div>
+      <div class="pb-1">
+        <mat-form-field class="full-width">
+          <input matInput name="cantidadPedida" formControlName="cantidadPedida" placeholder="Cantidad Pedida" readonly>
+        </mat-form-field>
+        <div class="validaciones">
+          <small *ngIf="deliveryForm.controls['cantidadPedida'].hasError('required') && deliveryForm.controls['cantidadPedida'].touched"
+            class="form-error-msg">
+            Cantidad pedida es un campo requerido
+          </small>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="wrap-button">
+    <button #save mat-raised-button color="primary" [disabled]="deliveryForm.invalid" type="submit">Guardar</button>
+    <!-- <button mat-raised-button [routerLink]="'/catalogos/rutas'">Cancelar</button> -->
+  </div>
+</form>

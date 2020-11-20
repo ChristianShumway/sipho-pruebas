@@ -32,20 +32,20 @@ export class PermisosComponent implements OnInit {
 
   ngOnInit() {
     this.navigation();
-    // this.getOptionsToPermisosEspeciales();
+    this.getOptionsToPermisosEspeciales();
   }
 
   navigation() {
     const currentProfile =   this.autenticacionService.currentProfileValue;
     this.navigationService.getMenuLoad(currentProfile.idPerfil).subscribe(
       menu => {
-        console.log(menu);
+        // console.log(menu);
         this.menu = menu.filter( opcion => opcion.type == 'dropDown' || opcion.type == 'link' || opcion.type == 'icon');
         console.log(this.menu);
         //  OBTENEMOS PERFILES
         this.perfilesService.getPerfiles(0).subscribe(
           (perfiles => {
-            console.log(perfiles)
+            // console.log(perfiles)
             this.perfiles = perfiles.content;
           }),
           (error => console.log(error))
@@ -55,7 +55,7 @@ export class PermisosComponent implements OnInit {
         this.navigationService.getPermisosMenu().subscribe(
           modulosPermisos => {
             this.permisos = modulosPermisos;
-            console.log(this.permisos);
+            // console.log(this.permisos);
           },
           error => console.log(error)
         );
@@ -67,12 +67,18 @@ export class PermisosComponent implements OnInit {
     );
   }
 
-  // getOptionsToPermisosEspeciales(){
-  //   this.navigationService.getOptionsToPermisosEspeciales(1, 2).subscribe(
-  //     options => this.listaPermisosEspeciales = options,
-  //     error => console.log(error)
-  //   );
-  // }
+  getOptionsToPermisosEspeciales(){
+    // idPerfil, tipo
+    this.navigationService.getOptionsToPermisosEspeciales(1, 2).subscribe(
+      options => {
+        console.log(options);
+        this.listaPermisosEspeciales = options;
+      },
+      error => {
+        console.log(error);
+      }
+    );
+  }
 
   openModalPermisos(idModulo) {
     this.perfilesService.getAuthorizedProfiles(idModulo).subscribe(
