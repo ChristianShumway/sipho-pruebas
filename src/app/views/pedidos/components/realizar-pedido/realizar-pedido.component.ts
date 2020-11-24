@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { DatePipe } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router, Params } from '@angular/router';
 import { MatButton, MatTableDataSource } from '@angular/material';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import { AutenticacionService } from 'app/shared/services/autenticacion.service';
@@ -8,6 +8,10 @@ import { PedidoService } from 'app/shared/services/pedido.service';
 import { ClienteService } from 'app/shared/services/cliente.service';
 import { Cliente } from 'app/shared/models/cliente';
 import { Pedido } from 'app/shared/models/pedido';
+import { ActivatedRoute } from '@angular/router';
+import { switchMap } from 'rxjs/operators';
+import { RutaService } from 'app/shared/services/ruta.service';
+import { Ruta } from 'app/shared/models/ruta';
 
 @Component({
   selector: 'app-realizar-pedido',
@@ -19,6 +23,8 @@ export class RealizarPedidoComponent implements OnInit {
   @ViewChild('save', {static: false}) submitButton: MatButton;
   @ViewChild('btnDelete', {static: false}) deleteArticle: MatButton;
   idUsuarioLogeado;
+  idRuta;
+  ruta: Ruta;
   hoy = new Date();
   pipe = new DatePipe('en-US');
   clientes: Cliente[] = [];
@@ -42,10 +48,21 @@ export class RealizarPedidoComponent implements OnInit {
     private pedidoService: PedidoService,
     private router: Router,
     private snackBar: MatSnackBar,
+    private activatedRoute: ActivatedRoute,
+    private rutaService: RutaService
   ) { }
 
   ngOnInit() {
     this.idUsuarioLogeado = this.autenticacionService.currentUserValue;
+    this.activatedRoute.params.pipe( 
+      switchMap( (params: Params) => this.rutaService.getRuta(params.idRuta))
+    ).subscribe(
+      (ruta: Ruta) => {
+        this.ruta = ruta;
+        this.idRuta = ruta.idRuta
+        console.log(this.ruta);
+      }
+    );
   }
 
   searchCoustomers(event) {
@@ -55,7 +72,7 @@ export class RealizarPedidoComponent implements OnInit {
     this.clientes = [];
     this.selected = -1;
     if(data) {
-      this.clienteService.getClientesFiltro(data).subscribe(
+      this.clienteService.getClientesFiltro(data, this.idRuta).subscribe(
         (clientes: Cliente[]) => {
           clientes.length > 0 ? this.noData = false : this.noData = true;
           this.clientes = clientes;

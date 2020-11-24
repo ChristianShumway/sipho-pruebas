@@ -34,8 +34,8 @@ export class PedidoService {
     return this.http.post<any>(`${environment.apiURL}/delivery/updateOrder`, JSON.stringify(pedido), { headers: headerss});
   }
   
-  getPedidos(date: string, page: number): Observable<PedidoContent>  {
-    return this.http.get<PedidoContent>(`${environment.apiURL}/delivery/getOrderByDate/${date}/${page}`); 
+  getPedidos(date: string, page: number, idRoute: number): Observable<PedidoContent>  {
+    return this.http.get<PedidoContent>(`${environment.apiURL}/delivery/getOrderByDate/${date}/${page}/${idRoute}`); 
   }
   
   getPedido(idPedido) {

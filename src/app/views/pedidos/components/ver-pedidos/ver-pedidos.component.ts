@@ -79,7 +79,7 @@ export class VerPedidosComponent implements OnInit, AfterViewInit {
   }
 
   getRutas() {
-    this.rutaService.getSelectRuta().subscribe(
+    this.rutaService.getSelectRutaByEmploye(this.idUsuarioLogeado).subscribe(
       (rutas: Ruta[]) => {
         console.log(rutas);
         this.rutas = rutas;
@@ -122,7 +122,7 @@ export class VerPedidosComponent implements OnInit, AfterViewInit {
       this.fechaBusqueda = this.pipe.transform(this.fechaBusqueda, format);
       // console.log(this.fechaBusqueda);
       this.rutaSeleccionada = this.rutas.find((ruta: Ruta) => ruta.idRuta = this.searchOrderForm.value.idRuta);
-      console.log(this.rutaSeleccionada);
+      // console.log(this.rutaSeleccionada);
 
       // forkJoin({
       //   sendData: this.pedidoService.getDataPedidos(nuevaFechaBusqueda, this.pageActual),
@@ -133,12 +133,12 @@ export class VerPedidosComponent implements OnInit, AfterViewInit {
       //   console.log(getData);
 
       // });
-      this.pedidoService.getPedidos(this.fechaBusqueda, this.pageActual).subscribe(
+      this.pedidoService.getPedidos(this.fechaBusqueda, this.pageActual, this.rutaSeleccionada.idRuta).subscribe(
         (result: PedidoContent) => {
           console.log(result);
           this.pedidos = result.content;
           this.totales = result.totalPedido;
-          console.log(this.totales);
+          // console.log(this.totales);
           this.paginator.length = result.totalItems;
           this.totalItemsNow = this.paginator.length;
           this.dataSource = new MatTableDataSource(this.pedidos);
@@ -158,6 +158,11 @@ export class VerPedidosComponent implements OnInit, AfterViewInit {
         }
       );
     }
+  }
+
+  selectRoute(idRuta) {
+    console.log(idRuta);
+    this.rutaSeleccionada = this.rutas.find((ruta: Ruta) => ruta.idRuta = idRuta);
   }
 
   public pageEvent(event?:PageEvent){
@@ -272,7 +277,8 @@ export class VerPedidosComponent implements OnInit, AfterViewInit {
 
   getOnlyOrders() {
     this.pedidos = [];
-    this.pedidoService.getPedidos(this.fechaBusqueda, this.pageActual).subscribe(
+    this.rutaSeleccionada = this.rutas.find((ruta: Ruta) => ruta.idRuta = this.searchOrderForm.value.idRuta);
+    this.pedidoService.getPedidos(this.fechaBusqueda, this.pageActual, this.rutaSeleccionada.idRuta).subscribe(
       (result: PedidoContent) => {
         console.log(result);
         this.paginator.length = result.totalItems;

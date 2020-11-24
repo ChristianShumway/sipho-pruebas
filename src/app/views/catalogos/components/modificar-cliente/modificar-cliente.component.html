@@ -148,7 +148,9 @@
       </div>
 
       <div class="cont-btns">
-        <button mat-raised-button color="primary" [disabled]="clienteForm.invalid" type="submit">Modificar</button>
+        <div id="accion-clientes" #myIdButton>
+          <button mat-raised-button color="primary" [disabled]="clienteForm.invalid" type="submit" *ngIf= "permisosEspecialesPermitidos.includes(myIdButton?.id)">Modificar</button>
+        </div>
         <a mat-raised-button [routerLink]="'/catalogos/clientes'">Cancelar</a>
         <a mat-raised-button color="primary" (click)="viewMap()">Mapa</a>
       </div>

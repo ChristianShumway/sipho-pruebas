@@ -29,6 +29,10 @@ export class RutaService {
     return this.http.get<Ruta[]>(`${environment.apiURL}/catalog/getSelectRuta`); 
   }
 
+  getSelectRutaByEmploye(idEmploye): Observable<Ruta[]>  {
+    return this.http.get<Ruta[]>(`${environment.apiURL}/catalog/getSelectRuta/${idEmploye}`); 
+  }
+
   updateRuta(ruta: Partial<Ruta>): Observable<any>{
     const headerss = new HttpHeaders({'Content-Type': 'application/json'});
     return this.http.post<any>(`${environment.apiURL}/catalog/updateRuta`, JSON.stringify(ruta), { headers: headerss});

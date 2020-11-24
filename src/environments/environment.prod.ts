@@ -5,8 +5,9 @@ export const environment = {
   rutaServer: 'http://4485949.online-server.cloud:8080/Sipho/',
   permisosEspeciales: [
     {
-      idOpcion: 43,
-      nombre: 'ver-pedidos',
+      idOpcion: 23,
+      nombre: 'crud-clientes',
+      tooltip: 'accion-clientes',
       activo: 1
     },
   ]

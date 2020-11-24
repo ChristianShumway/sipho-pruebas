@@ -47,8 +47,11 @@ export class DevolucionPedidoComponent implements OnInit {
   }
 
   gerRoutes() {
-    this.rutaService.getSelectRuta().subscribe(
-      (rutas: Ruta[]) => this.rutas = rutas, 
+    this.rutaService.getSelectRutaByEmploye(this.idUsuarioLogeado).subscribe(
+      (rutas: Ruta[]) => {
+        this.rutas = rutas;
+        console.log(rutas);
+      }, 
       error => console.log(error)
     );
   }
@@ -79,7 +82,7 @@ export class DevolucionPedidoComponent implements OnInit {
       this.devolucionPedidoService.getLogDelivery(this.fechaBusqueda, this.searchDeliveryForm.value.idRuta).subscribe(
         (result: DevolucionPedido) => {
           this.entrega = result;
-          // console.log(this.entrega);
+          console.log(this.entrega);
           this.submitButton.disabled = false;
           this.searchNow = false;
 
@@ -89,9 +92,9 @@ export class DevolucionPedidoComponent implements OnInit {
           } else {
             this.noData = false;
             console.log(this.entrega);
+            this.ruta = this.rutas.find((ruta: Ruta) => ruta.idRuta === this.searchDeliveryForm.value.idRuta);
             if( this.entrega.idBitacoraEntrega !== 0) {
               this.respuestaEntrega = this.entrega;
-              this.ruta = this.rutas.find((ruta: Ruta) => ruta.idRuta === this.searchDeliveryForm.value.idRuta);
             }
           }
           

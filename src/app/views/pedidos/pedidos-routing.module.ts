@@ -10,7 +10,7 @@ import { DevolucionPedidoComponent } from './components/devolucion-pedido/devolu
 
 const routes: Routes = [
   {
-    path: 'realizar-pedido',
+    path: 'realizar-pedido/:idRuta',
     component: RealizarPedidoComponent,
     data: { title: 'Realizar Pedido', breadcrumb: 'Realizar Pedido'},
     // canActivate: [AuthModuleGuard],
@@ -22,19 +22,19 @@ const routes: Routes = [
     // canActivate: [AuthModuleGuard],
   },
   {
-    path: 'agregar-orden-pedido/:idPedido',
+    path: 'agregar-orden-pedido/:idPedido/:idRuta',
     component: AgregarOrdenPedidoComponent,
     data: { title: 'Agregar Orden al Pedido', breadcrumb: 'Agregar Orden al Pedido'},
     // canActivate: [AuthModuleGuard],
   },
   {
-    path: 'modificar-pedido/:idPedido',
+    path: 'modificar-pedido/:idPedido/:idRuta',
     component: ModificarPedidoComponent,
     data: { title: 'Modificar Pedido', breadcrumb: 'Modificar Pedido'},
     // canActivate: [AuthModuleGuard],
   },
   {
-    path: 'modificar-orden-pedido/:idPedido',
+    path: 'modificar-orden-pedido/:idPedido/:idRuta',
     component: ModificarOrdenPedidoComponent,
     data: { title: 'Modificar Orden al Pedido', breadcrumb: 'Modificar Orden al Pedido'},
     // canActivate: [AuthModuleGuard],

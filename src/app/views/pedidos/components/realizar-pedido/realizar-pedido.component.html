@@ -16,6 +16,7 @@
       </mat-panel-description>
     </mat-expansion-panel-header>
     <div class="wrap-search">
+      <div *ngIf="ruta" class="text-route">Ruta: <span>{{ ruta.descripcion }}</span> </div>
       <mat-card>
         <mat-form-field class="search-form-field">
           <mat-label>Buscar Cliente</mat-label>

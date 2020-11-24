@@ -10,8 +10,9 @@ export const environment = {
   rutaServer: '',
   permisosEspeciales: [
     {
-      idOpcion: 43,
-      nombre: 'ver-pedidos',
+      idOpcion: 23,
+      nombre: 'crud-clientes',
+      tooltip: 'accion-clientes',
       activo: 1
     },
   ]

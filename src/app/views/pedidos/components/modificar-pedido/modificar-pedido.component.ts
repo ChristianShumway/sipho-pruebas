@@ -8,6 +8,8 @@ import { ClienteService } from 'app/shared/services/cliente.service';
 import { Cliente } from 'app/shared/models/cliente';
 import { Pedido } from 'app/shared/models/pedido';
 import { switchMap } from 'rxjs/operators';
+import { Ruta } from 'app/shared/models/ruta';
+import { RutaService } from 'app/shared/services/ruta.service';
 
 @Component({
   selector: 'app-modificar-pedido',
@@ -19,6 +21,8 @@ export class ModificarPedidoComponent implements OnInit {
   @ViewChild('save', {static: false}) submitButton: MatButton;
   @ViewChild('btnDelete', {static: false}) deleteArticle: MatButton;
   idUsuarioLogeado;
+  idRuta;
+  ruta: Ruta;
   clientes: Cliente[] = [];
   cliente: Cliente[] = [];
   pedido: Pedido;
@@ -42,7 +46,8 @@ export class ModificarPedidoComponent implements OnInit {
     private pedidoService: PedidoService,
     private router: Router,
     private snackBar: MatSnackBar,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private rutaService: RutaService
   ) { }
 
   ngOnInit() {
@@ -51,20 +56,49 @@ export class ModificarPedidoComponent implements OnInit {
   }
 
   getOrder() {
-    this.activatedRoute.params.pipe(
-      switchMap((params: Params) => this.pedidoService.getPedido(params.idPedido))
-    ).subscribe(
-      (pedido: Pedido) => {
-        this.pedido = pedido;
-        this.setCoustomer(pedido.vistaCliente);
-        this.idPedidoCreado = this.pedido.idPedido;
-        this.showDetailOrder = true;
-      },
-      error => {
-        console.log(error);
-        this.useAlerts(error.message, ' ', 'error-dialog');
-      }
-    );
+    this.activatedRoute.params.subscribe( (params: Params) => {
+      console.log(params);
+      this.idRuta = params.idRuta;
+      const idPedido = params.idPedido;
+      this.pedidoService.getPedido(idPedido).subscribe(
+        (pedido: Pedido) => {
+          console.log(pedido);
+          this.pedido = pedido;
+          this.setCoustomer(pedido.vistaCliente);
+          this.idPedidoCreado = this.pedido.idPedido;
+          this.showDetailOrder = true;
+        },
+        error => {
+          console.log(error);
+          this.useAlerts(error.message, ' ', 'error-dialog');
+        }
+      );
+      this.rutaService.getRuta(params.idRuta).subscribe(
+        (ruta: Ruta) => {
+          this.ruta = ruta;
+          this.idRuta = ruta.idRuta
+          console.log(this.ruta);
+        }, error => console.log(error)
+      );
+    });
+
+    // this.activatedRoute.params.pipe(
+    //   switchMap((params: Params) => { 
+    //     this.pedidoService.getPedido(params.idPedido);
+    //   })
+    // ).subscribe(
+    //   (pedido: Pedido) => {
+    //     console.log(pedido);
+    //     this.pedido = pedido;
+    //     this.setCoustomer(pedido.vistaCliente);
+    //     this.idPedidoCreado = this.pedido.idPedido;
+    //     this.showDetailOrder = true;
+    //   },
+    //   error => {
+    //     console.log(error);
+    //     this.useAlerts(error.message, ' ', 'error-dialog');
+    //   }
+    // );
   }
 
   searchCoustomers(event) {
@@ -74,7 +108,7 @@ export class ModificarPedidoComponent implements OnInit {
     this.clientes = [];
     this.selected = -1;
     if(data) {
-      this.clienteService.getClientesFiltro(data).subscribe(
+      this.clienteService.getClientesFiltro(data, this.idRuta).subscribe(
         (clientes: Cliente[]) => {
           clientes.length > 0 ? this.noData = false : this.noData = true;
           this.clientes = clientes;

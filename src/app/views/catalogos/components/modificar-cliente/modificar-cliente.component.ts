@@ -10,6 +10,8 @@ import { VerMapaComponent } from '../ver-mapa/ver-mapa.component';
 import { Ruta } from 'app/shared/models/ruta';
 import { RutaService } from 'app/shared/services/ruta.service';
 import { switchMap } from 'rxjs/operators';
+import { environment } from './../../../../../environments/environment';
+import { NavigationService } from 'app/shared/services/navigation.service';
 
 @Component({
   selector: 'app-modificar-cliente',
@@ -24,6 +26,9 @@ export class ModificarClienteComponent implements OnInit {
   cliente: Cliente;
   rutas: Ruta[] = [];
   @ViewChild(MatButton, {static: false}) submitButton: MatButton;
+  perfil;
+  nombrePermiso = 'crud-clientes';
+  permisosEspecialesPermitidos: any[] = []; //array donde se agrega el nombre de las opciones a las cuales el usuario si tiene permiso
 
   constructor(
     private router: Router,
@@ -32,14 +37,17 @@ export class ModificarClienteComponent implements OnInit {
     private autenticacionService: AutenticacionService,
     private activatedRoute: ActivatedRoute,
     private bottomSheet: MatBottomSheet,
-    private rutaService: RutaService
+    private rutaService: RutaService,
+    private navigationService: NavigationService
   ) { }
 
   ngOnInit() {
+    this.idUsuarioLogeado = this.autenticacionService.currentUserValue;
+    this.perfil = this.autenticacionService.currentProfileValue;
     this.getValidations();
     this.getCliente();
     this.getCatalogo();
-    this.idUsuarioLogeado = this.autenticacionService.currentUserValue;
+    this.getPermisosEspeciales();
   }
 
   getCliente() {
@@ -58,10 +66,29 @@ export class ModificarClienteComponent implements OnInit {
   }
 
   getCatalogo() {
-    this.rutaService.getSelectRuta().subscribe(
+    this.rutaService.getSelectRutaByEmploye(this.idUsuarioLogeado).subscribe(
       (rutas: Ruta[]) => this.rutas = rutas, 
       error => console.log(error)
     );
+  }
+
+  getPermisosEspeciales() {
+    const permisos = environment.permisosEspeciales.filter( permiso => permiso.activo === 1);
+    // console.log(permisos);
+    const permisosEspecialesComponente = permisos.filter( permiso => permiso.nombre === this.nombrePermiso);
+    // console.log(permisosEspecialesComponente);
+    permisosEspecialesComponente.map( permisoExistente => {
+      this.navigationService.validatePermissions(this.perfil.idPerfil, permisoExistente.idOpcion).subscribe(
+        (result:any) => {
+          console.log(result);
+          if(result.estatus === '05'){
+            this.permisosEspecialesPermitidos.push(permisoExistente.tooltip);
+          }
+        },
+        error => console.log(error)
+      );
+    });
+    console.log(this.permisosEspecialesPermitidos);
   }
 
   getValidations() {

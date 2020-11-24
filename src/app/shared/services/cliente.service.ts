@@ -22,8 +22,8 @@ export class ClienteService {
     return this.http.get<Cliente>(`${environment.apiURL}/catalog/getCustomerById/${idCliente}`); 
   }
 
-  getClientesFiltro(texto: string): Observable<Cliente[]>  {
-    return this.http.get<Cliente[]>(`${environment.apiURL}/catalog/getCustomerByFilter/${texto}`); 
+  getClientesFiltro(texto: string, idRuta: number): Observable<Cliente[]>  {
+    return this.http.get<Cliente[]>(`${environment.apiURL}/catalog/getCustomerByFilter/${texto}/${idRuta}`); 
   }
 
   updateCliente(cliente: Partial<Cliente>): Observable<any>{

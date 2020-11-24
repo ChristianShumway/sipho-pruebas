@@ -75,7 +75,7 @@ export class ClientesComponent implements OnInit {
     const val = event.target.value.toLowerCase();
     this.dataSerach = val;
     if(val) {
-      this.clienteService.getClientesFiltro(val).subscribe(
+      this.clienteService.getClientesFiltro(val, 0).subscribe(
         result => {
           if(result.length > 0) {
             console.log(result);

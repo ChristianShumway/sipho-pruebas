@@ -23,6 +23,7 @@ export class AgregarOrdenPedidoComponent implements OnInit {
   @Output() orderClosed: EventEmitter<any> = new EventEmitter();
   @ViewChild('saveDet', {static: false}) submitButton: MatButton;
   idUsuarioLogeado;
+  idRuta;
   hoy = new Date();
   pipe = new DatePipe('en-US');
   articulos: Articulo[] = [];
@@ -56,7 +57,7 @@ export class AgregarOrdenPedidoComponent implements OnInit {
   ngOnInit() {
     this.idUsuarioLogeado = this.autenticacionService.currentUserValue;
     this.getPedido();
-    console.log(this.paginator);
+    // console.log(this.paginator);
   }
 
   getPedido() {
@@ -81,27 +82,55 @@ export class AgregarOrdenPedidoComponent implements OnInit {
         error => console.log(error)
       );
     } else {
-      this.activatedRoute.params.pipe(
-        switchMap((params: Params) => this.pedidoService.getPedido(params.idPedido))
-      ).subscribe(
-        (result: Pedido) => {
-          this.detReload = false;
-          this.pedido = result;
-          this.articulosSeleccionados = result.detpedido;
-          console.log(this.pedido);
-          console.log(this.articulosSeleccionados);
-          if( this.articulosSeleccionados.length > 0) {
-            this.refreshDatasource();
-            this.showClose = true;
+      this.activatedRoute.params.subscribe( (params: Params) => {
+        console.log(params);
+        this.idRuta = params.idRuta;
+        const idPedido = params.idPedido;
+        this.pedidoService.getPedido(idPedido).subscribe(
+          (result: Pedido) => {
+            this.detReload = false;
+            this.pedido = result;
+            this.articulosSeleccionados = result.detpedido;
+            console.log(this.pedido);
+            console.log(this.articulosSeleccionados);
+            if( this.articulosSeleccionados.length > 0) {
+              this.refreshDatasource();
+              this.showClose = true;
+            }
+            if(this.pedido.idEstatus === 0) {
+              this.isReadOnly = !this.isReadOnly;
+              this.isReadOnlyCM = !this.isReadOnlyCM;
+              this.isReadOnlyCV = !this.isReadOnlyCV;
+            }
+          },
+          error => {
+            console.log(error);
+            this.useAlerts(error.message, ' ', 'error-dialog');
           }
-          if(this.pedido.idEstatus === 0) {
-            this.isReadOnly = !this.isReadOnly;
-            this.isReadOnlyCM = !this.isReadOnlyCM;
-            this.isReadOnlyCV = !this.isReadOnlyCV;
-          }
-        },
-        error => console.log(error)
-      );
+        );  
+      });
+
+      // this.activatedRoute.params.pipe(
+      //   switchMap((params: Params) => this.pedidoService.getPedido(params.idPedido))
+      // ).subscribe(
+      //   (result: Pedido) => {
+      //     this.detReload = false;
+      //     this.pedido = result;
+      //     this.articulosSeleccionados = result.detpedido;
+      //     console.log(this.pedido);
+      //     console.log(this.articulosSeleccionados);
+      //     if( this.articulosSeleccionados.length > 0) {
+      //       this.refreshDatasource();
+      //       this.showClose = true;
+      //     }
+      //     if(this.pedido.idEstatus === 0) {
+      //       this.isReadOnly = !this.isReadOnly;
+      //       this.isReadOnlyCM = !this.isReadOnlyCM;
+      //       this.isReadOnlyCV = !this.isReadOnlyCV;
+      //     }
+      //   },
+      //   error => console.log(error)
+      // );
     }
   }
 

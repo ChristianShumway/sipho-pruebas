@@ -22,6 +22,7 @@ export class ModificarOrdenPedidoComponent implements OnInit, AfterViewInit {
   @Output() orderClosed: EventEmitter<any> = new EventEmitter();
   @ViewChild('save', {static: false}) submitButton: MatButton;
   idUsuarioLogeado;
+  idRuta;
   hoy = new Date();
   pipe = new DatePipe('en-US');
   articulos: Articulo[] = [];
@@ -65,24 +66,49 @@ export class ModificarOrdenPedidoComponent implements OnInit, AfterViewInit {
 
   getPedido() {
     console.log(this.idPedido);
-    this.activatedRoute.params.pipe(
-      switchMap((params: Params) => this.pedidoService.getPedido(params.idPedido))
-    ).subscribe(
-      (result: Pedido) => {
-        this.pedido = result;
-        this.articulosSeleccionados = result.detpedido;
-        console.log(this.articulosSeleccionados);
-        this.showClose = true;
-        this.isLoadingData = false;
-        this.refreshDatasource();
-        if(this.pedido.idEstatus === 0) {
-          this.isReadOnly = !this.isReadOnly;
-          this.isReadOnlyCM = !this.isReadOnlyCM;
-          this.isReadOnlyCV = !this.isReadOnlyCV;
+    this.activatedRoute.params.subscribe( (params: Params) => {
+      console.log(params);
+      this.idRuta = params.idRuta;
+      const idPedido = params.idPedido;
+      this.pedidoService.getPedido(idPedido).subscribe(
+        (result: Pedido) => {
+          this.pedido = result;
+          this.articulosSeleccionados = result.detpedido;
+          console.log(this.articulosSeleccionados);
+          this.showClose = true;
+          this.isLoadingData = false;
+          this.refreshDatasource();
+          if(this.pedido.idEstatus === 0) {
+            this.isReadOnly = !this.isReadOnly;
+            this.isReadOnlyCM = !this.isReadOnlyCM;
+            this.isReadOnlyCV = !this.isReadOnlyCV;
+          }
+        },
+        error => {
+          console.log(error);
+          this.useAlerts(error.message, ' ', 'error-dialog');
         }
-      },
-      error => console.log(error)
-    );
+      );  
+    });
+
+    // this.activatedRoute.params.pipe(
+    //   switchMap((params: Params) => this.pedidoService.getPedido(params.idPedido))
+    // ).subscribe(
+    //   (result: Pedido) => {
+    //     this.pedido = result;
+    //     this.articulosSeleccionados = result.detpedido;
+    //     console.log(this.articulosSeleccionados);
+    //     this.showClose = true;
+    //     this.isLoadingData = false;
+    //     this.refreshDatasource();
+    //     if(this.pedido.idEstatus === 0) {
+    //       this.isReadOnly = !this.isReadOnly;
+    //       this.isReadOnlyCM = !this.isReadOnlyCM;
+    //       this.isReadOnlyCV = !this.isReadOnlyCV;
+    //     }
+    //   },
+    //   error => console.log(error)
+    // );
   }
 
   getTotalProductosAgregados() {

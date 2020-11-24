@@ -49,7 +49,7 @@
               <mat-icon class="text-muted">store</mat-icon> 
               <span>{{cliente.calle}} No. {{cliente.numero}}, Colonia {{cliente.colonia}}, {{cliente.codigoPostal}} {{cliente.ciudad}}, México.</span>
             </p>
-            <p class="p-info-catalogss " matTooltip="Ruta" matTooltipPosition="below">
+            <p class="p-info-catalogss " matTooltip="Ruta" matTooltipPosition="below" *ngIf="cliente.vistaRuta">
               <mat-icon class="text-muted">local_shipping</mat-icon> 
               <span>{{cliente.vistaRuta.descripcion}}</span>
             </p>

@@ -21,7 +21,7 @@
           <div class="pb-1">
             <mat-form-field class="full-width">
               <mat-label>Rutas</mat-label>
-              <mat-select formControlName="idRuta" required>
+              <mat-select formControlName="idRuta" (selectionChange)="selectRoute($event.value)" required>
                 <mat-option *ngFor="let ruta of rutas" [value]="ruta.idRuta">
                   {{ruta.descripcion}} 
                 </mat-option>
@@ -35,7 +35,7 @@
             </div>
           </div>
           <div class="wrap-button">
-            <a mat-raised-button [color]="'edit'" class="btn-accept" [routerLink] = "['/pedidos/realizar-pedido']">Agregar Pedido</a>
+            <a mat-raised-button [color]="'edit'" class="btn-accept" [routerLink] = "['/pedidos/realizar-pedido', rutaSeleccionada.idRuta]">Agregar Pedido</a>
             <button mat-raised-button color="primary" [disabled]="searchOrderForm.invalid" type="submit" class="btn-accept">Buscar</button>
           </div>
         </div>
@@ -110,7 +110,7 @@
           <mat-cell *matCellDef="let element; let i = index" class="center-table">
             <span class="mobile-label">Acciones:</span>
             <div class="wrap-actions">
-              <button *ngIf = "element.idEstatus === 1" mat-mini-fab color="primary" [routerLink] = "['/pedidos/modificar-pedido', element.idPedido]" matTooltip="Editar Pedido" >
+              <button *ngIf = "element.idEstatus === 1" mat-mini-fab color="primary" [routerLink] = "['/pedidos/modificar-pedido', element.idPedido, rutaSeleccionada.idRuta]" matTooltip="Editar Pedido" >
                 <mat-icon>edit</mat-icon>
               </button>
               <button mat-mini-fab disabled *ngIf = "element.idEstatus === 0">
@@ -148,11 +148,11 @@
                         <mat-icon>more_vert</mat-icon>
                       </button>
                       <mat-menu #menu="matMenu">
-                        <button *ngIf="!element.detpedido.length && element.idEstatus === 1" mat-menu-item [routerLink] = "['/pedidos/agregar-orden-pedido', element.idPedido]">
+                        <button *ngIf="!element.detpedido.length && element.idEstatus === 1" mat-menu-item [routerLink] = "['/pedidos/agregar-orden-pedido', element.idPedido, rutaSeleccionada.idRuta]">
                           <mat-icon>plus_one</mat-icon>
                           <span>Agregar Lista de Productos</span>
                         </button>
-                        <button *ngIf="element.detpedido.length && element.idEstatus === 1" mat-menu-item [routerLink] = "['/pedidos/modificar-orden-pedido', element.idPedido]">
+                        <button *ngIf="element.detpedido.length && element.idEstatus === 1" mat-menu-item [routerLink] = "['/pedidos/modificar-orden-pedido', element.idPedido, rutaSeleccionada.idRuta]">
                           <mat-icon>edit</mat-icon>
                           <span>Modificar Lista de Productos</span>
                         </button>

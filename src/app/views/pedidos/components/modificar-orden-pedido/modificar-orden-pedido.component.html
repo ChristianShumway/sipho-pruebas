@@ -35,7 +35,7 @@
     pedido <b>no. {{pedido.idPedido}}</b> para la razón social <b>{{pedido.vistaCliente.razonSocial}}</b>
   </p>
   <p class="data-order-coustomer" *ngIf="pedido && !idPedido">
-    pedido <b>no. {{pedido.idPedido}}</b> para la razón social <a title="Ir a modificar cliente" style="font-weight: bold" [routerLink] ="['/pedidos/modificar-pedido', pedido.idPedido]">{{pedido.vistaCliente.razonSocial}}</a>
+    pedido <b>no. {{pedido.idPedido}}</b> para la razón social <a title="Ir a modificar cliente" style="font-weight: bold" [routerLink] ="['/pedidos/modificar-pedido', pedido.idPedido, idRuta]">{{pedido.vistaCliente.razonSocial}}</a>
   </p>
   <mat-card>
     <div *ngIf="isLoadingData">

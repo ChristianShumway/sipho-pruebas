@@ -17,6 +17,7 @@
     </mat-expansion-panel-header>
     <div class="wrap-search">
       <mat-card>
+        <div *ngIf="ruta" class="text-route">Ruta: <span>{{ ruta.descripcion }}</span> </div>
         <mat-form-field class="search-form-field">
           <mat-label>Buscar Cliente</mat-label>
           <input matInput #search type="text" [(ngModel)]="dataSearch" (keyup)='searchCoustomers($event)' [readonly]="isReadOnly">
