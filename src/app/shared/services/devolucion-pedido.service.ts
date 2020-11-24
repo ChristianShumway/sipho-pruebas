@@ -23,5 +23,12 @@ export class DevolucionPedidoService {
     return this.http.post<any>(`${environment.apiURL}/production/saveBitacoraDelivery`, JSON.stringify(delivery), { headers: headerss});
   }
 
+  generateReportByRoute(date: string, route: number): Observable<DevolucionPedido>  {
+    return this.http.get<DevolucionPedido>(`${environment.apiURL}/production/exportArticleByRoute/${date}/${route}`); 
+  }
+
+  generateReportByTurn(date: string, turn: number): Observable<DevolucionPedido>  {
+    return this.http.get<DevolucionPedido>(`${environment.apiURL}/production/exportArticleByDate/${date}/${turn}`); 
+  }
 
 }

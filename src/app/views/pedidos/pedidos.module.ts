@@ -23,6 +23,7 @@ import { ModificarOrdenPedidoComponent } from './components/modificar-orden-pedi
 import { ModalCerrarPedidoComponent } from './components/modal-cerrar-pedido/modal-cerrar-pedido.component';
 import { DevolucionPedidoComponent } from './components/devolucion-pedido/devolucion-pedido.component';
 import { FormDevolucionPedidoComponent } from './components/form-devolucion-pedido/form-devolucion-pedido.component';
+import { ReportesComponent } from './components/reportes/reportes.component';
 
 export let options: Partial<IConfig> | (() => Partial<IConfig>);
 
@@ -35,7 +36,8 @@ export let options: Partial<IConfig> | (() => Partial<IConfig>);
     ModificarOrdenPedidoComponent,
     ModalCerrarPedidoComponent,
     DevolucionPedidoComponent,
-    FormDevolucionPedidoComponent
+    FormDevolucionPedidoComponent,
+    ReportesComponent
   ],
   imports: [
     CommonModule,

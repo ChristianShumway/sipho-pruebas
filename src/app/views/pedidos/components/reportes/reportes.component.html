@@ -1,0 +1,42 @@
+<mat-card>
+  <form [formGroup]="searchReportRouteForm" (submit)="searchOrder()">
+    <div fxFlex="100" fxFlex.gt-md="100" fxFlex.gt-sm="100" class="container-order">
+      <div class="pb-1">
+        <mat-form-field class="full-width">
+          <input matInput [matDatepicker]="fechaBusqueda" formControlName="fechaBusqueda" name="date" placeholder="Fecha Busqueda"
+            (dateChange)="onFechaBusquedaRuta($event)">
+          <mat-datepicker-toggle matSuffix [for]="fechaBusqueda"></mat-datepicker-toggle>
+          <mat-datepicker #fechaBusqueda (selectedChange)="onFechaBusquedaRuta($event)"></mat-datepicker>
+        </mat-form-field>
+        <div class="validaciones">
+          <small *ngIf="searchReportRouteForm.controls['fechaBusqueda'].hasError('required') && searchReportRouteForm.controls['fechaBusqueda'].touched"
+            class="form-error-msg">
+            Fecha de busqueda es un campo requerido
+          </small>
+        </div>
+      </div>
+      <div class="pb-1">
+        <mat-form-field class="full-width">
+          <mat-label>Rutas</mat-label>
+          <mat-select formControlName="idRuta"  required>
+            <mat-option *ngFor="let ruta of rutas" [value]="ruta.idRuta">
+              {{ruta.descripcion}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <div class="validaciones">
+          <small *ngIf="searchReportRouteForm.controls['idRuta'].hasError('required') && searchReportRouteForm.controls['idRuta'].touched" class="form-error-msg">
+            La ruta es un campo requerido
+          </small>
+        </div>
+      </div>
+      <div class="wrap-button">
+        <button #seacrhRoute mat-raised-button color="primary" [disabled]="searchReportRouteForm.invalid" type="submit" class="btn-accept">Buscar</button>
+      </div>
+    </div>
+  </form>
+</mat-card>
+
+<mat-card>
+
+</mat-card>

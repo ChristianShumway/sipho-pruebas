@@ -58,5 +58,3 @@ export class PedidoService {
   }
 
 }
-
-// getSelectEmployeByPerfil/{idPerfil}
