@@ -7,7 +7,7 @@ import { AgregarOrdenPedidoComponent } from './components/agregar-orden-pedido/a
 import { ModificarPedidoComponent } from './components/modificar-pedido/modificar-pedido.component';
 import { ModificarOrdenPedidoComponent } from './components/modificar-orden-pedido/modificar-orden-pedido.component';
 import { DevolucionPedidoComponent } from './components/devolucion-pedido/devolucion-pedido.component';
-import { ReportesComponent } from './components/reportes/reportes.component';
+import { GenerarReporteComponent } from './components/generar-reporte/generar-reporte.component';
 
 const routes: Routes = [
   {
@@ -48,7 +48,7 @@ const routes: Routes = [
   },
   {
     path: 'reportes',
-    component: ReportesComponent,
+    component: GenerarReporteComponent,
     data: { title: 'Reporte Acumulado por Ruta y Turno', breadcrumb: 'Reporte Acumulado por Ruta y Turno'},
     // canActivate: [AuthModuleGuard],
   },

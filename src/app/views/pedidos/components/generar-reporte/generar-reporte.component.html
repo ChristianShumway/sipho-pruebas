@@ -1,0 +1,93 @@
+<mat-card>
+  <div *ngIf="rutas.length">
+    <p>Reporte acumulado por ruta</p>
+    <form [formGroup]="searchReportRouteForm" (submit)="generateReportRoute()">
+      <div fxFlex="100" fxFlex.gt-md="100" fxFlex.gt-sm="100" class="container-order">
+        <div class="pb-1">
+          <mat-form-field class="full-width">
+            <input matInput [matDatepicker]="fechaBusqueda" formControlName="fechaBusqueda" name="date" placeholder="Fecha Busqueda"
+              (dateChange)="onFechaBusquedaRuta($event)">
+            <mat-datepicker-toggle matSuffix [for]="fechaBusqueda"></mat-datepicker-toggle>
+            <mat-datepicker #fechaBusqueda (selectedChange)="onFechaBusquedaRuta($event)"></mat-datepicker>
+          </mat-form-field>
+          <div class="validaciones">
+            <small *ngIf="searchReportRouteForm.controls['fechaBusqueda'].hasError('required') && searchReportRouteForm.controls['fechaBusqueda'].touched"
+              class="form-error-msg">
+              Fecha de busqueda es un campo requerido
+            </small>
+          </div>
+        </div>
+        <div class="pb-1">
+          <mat-form-field class="full-width">
+            <mat-label>Rutas</mat-label>
+            <mat-select formControlName="idRuta" required>
+              <mat-option *ngFor="let ruta of rutas" [value]="ruta.idRuta">
+                {{ruta.descripcion}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <div class="validaciones">
+            <small *ngIf="searchReportRouteForm.controls['idRuta'].hasError('required') && searchReportRouteForm.controls['idRuta'].touched"
+              class="form-error-msg">
+              La ruta es un campo requerido
+            </small>
+          </div>
+        </div>
+        <div class="wrap-button">
+          <button #seacrhRoute mat-raised-button color="primary" [disabled]="searchReportRouteForm.invalid" type="submit" class="btn-accept">Buscar</button>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div *ngIf="!rutas.length || searchNowRoute">
+    <div class="wrap-loading-catalog">
+      <mat-spinner [diameter]="60"></mat-spinner>
+    </div>
+  </div>
+</mat-card>
+
+<mat-card>
+  <div  *ngIf="turnos.length">
+    <p>Reporte acumulado por turno</p>
+    <form [formGroup]="searchReportTurnForm" (submit)="generateReportTurn()">
+      <div fxFlex="100" fxFlex.gt-md="100" fxFlex.gt-sm="100" class="container-order">
+        <div class="pb-1">
+          <mat-form-field class="full-width">
+            <input matInput [matDatepicker]="fechaBusquedaT" formControlName="fechaBusqueda" name="date" placeholder="Fecha Busqueda"
+              (dateChange)="onFechaBusquedaTurno($event)">
+            <mat-datepicker-toggle matSuffix [for]="fechaBusquedaT"></mat-datepicker-toggle>
+            <mat-datepicker #fechaBusquedaT (selectedChange)="onFechaBusquedaTurno($event)"></mat-datepicker>
+          </mat-form-field>
+          <div class="validaciones">
+            <small *ngIf="searchReportTurnForm.controls['fechaBusqueda'].hasError('required') && searchReportTurnForm.controls['fechaBusqueda'].touched"
+              class="form-error-msg">
+              Fecha de busqueda es un campo requerido
+            </small>
+          </div>
+        </div>
+        <div class="pb-1">
+          <mat-form-field class="full-width">
+            <mat-label>Turnos</mat-label>
+            <mat-select formControlName="idTurno" required>
+              <mat-option *ngFor="let turno of turnos" [value]="turno.idTurno">{{turno.descripcion}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <div class="validaciones">
+            <small *ngIf="searchReportTurnForm.controls['idTurno'].hasError('required') && searchReportTurnForm.controls['idTurno'].touched"
+              class="form-error-msg">
+              El turno es un campo requerido
+            </small>
+          </div>
+        </div>
+        <div class="wrap-button">
+          <button #seacrhTurn mat-raised-button color="primary" [disabled]="searchReportTurnForm.invalid" type="submit" class="btn-accept">Buscar</button>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div *ngIf="!turnos.length || searchNowTurn">
+    <div class="wrap-loading-catalog">
+      <mat-spinner [diameter]="60"></mat-spinner>
+    </div>
+  </div>
+</mat-card>

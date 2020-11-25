@@ -20,7 +20,7 @@ export class CrearRutaComponent implements OnInit {
   idUsuarioLogeado;
   @ViewChild(MatButton, {static: false}) submitButton: MatButton;
   empleados: Empleado[] = [];
-  idPerfilEmploye: number = 1;
+  idPerfilEmploye: number = 3;
 
   constructor(
     private router: Router,

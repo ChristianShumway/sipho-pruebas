@@ -25,7 +25,7 @@ export class ModificarRutaComponent implements OnInit {
   idUsuarioLogeado;
   ruta: Ruta;
   empleados: Empleado[] = [];
-  idPerfilEmploye: number = 1;
+  idPerfilEmploye: number = 3;
 
   constructor(
     private router: Router,

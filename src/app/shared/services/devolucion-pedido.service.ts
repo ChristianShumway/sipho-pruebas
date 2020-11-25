@@ -23,12 +23,14 @@ export class DevolucionPedidoService {
     return this.http.post<any>(`${environment.apiURL}/production/saveBitacoraDelivery`, JSON.stringify(delivery), { headers: headerss});
   }
 
-  generateReportByRoute(date: string, route: number): Observable<DevolucionPedido>  {
-    return this.http.get<DevolucionPedido>(`${environment.apiURL}/production/exportArticleByRoute/${date}/${route}`); 
+  generateReportByRoute(date: string, route: number): Observable<any>  {
+    const headerss = new HttpHeaders({'Content-Type': '"application/x-www-form-urlencoded'});
+    return this.http.get(`${environment.apiURL}/production/exportArticleByRoute/${date}/${route}`, {headers: headerss, responseType: 'blob',}); 
   }
 
-  generateReportByTurn(date: string, turn: number): Observable<DevolucionPedido>  {
-    return this.http.get<DevolucionPedido>(`${environment.apiURL}/production/exportArticleByDate/${date}/${turn}`); 
+  generateReportByTurn(date: string, turn: number): Observable<any>  {
+    const headerss = new HttpHeaders({'Content-Type': '"application/x-www-form-urlencoded'});
+    return this.http.get(`${environment.apiURL}/production/exportArticleByDate/${date}/${turn}`, {headers: headerss, responseType: 'blob',}); 
   }
 
 }
