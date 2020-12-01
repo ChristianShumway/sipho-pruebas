@@ -3,7 +3,12 @@ import { ActivatedRoute, Params, Router } from '@angular/router';
 import { AutenticacionService } from 'app/shared/services/autenticacion.service';
 import { EmpleadoService } from 'app/shared/services/empleado.service';
 import { MatSnackBar } from '@angular/material';
+import { FileUploader } from 'ng2-file-upload';
+import { switchMap } from 'rxjs/operators';
+
 // import { MatBottomSheetRef, MAT_BOTTOM_SHEET_DATA } from '@angular/material/bottom-sheet';
+import { Empleado } from 'app/shared/models/empleado';
+import { environment } from 'environments/environment';
 
 @Component({
   selector: 'app-foto-gafete',
@@ -15,9 +20,19 @@ export class FotoGafeteComponent implements OnInit, AfterViewInit {
   @ViewChild("video", {static: false}) public video: ElementRef;
   @ViewChild("canvas", {static: false}) public canvas: ElementRef;
   idEmpleado;
+  empleado: Empleado;
   idUsuarioLogeado;
   public captures: Array<any> = [];
   public pictureCapture;
+
+  public uploaderProfile: FileUploader = new FileUploader({ url: '' });
+  public hasBaseDropZoneOver: boolean = false;
+  rutaImg: string;
+  rutaServe: string;
+  loadingFile = false;
+
+  linkPicture: string = '';
+  timeStamp: any;
  
   constructor(
     // private bottomSheetRef: MatBottomSheetRef<FotoGafeteComponent>,
@@ -30,10 +45,20 @@ export class FotoGafeteComponent implements OnInit, AfterViewInit {
   ) {}
 
   ngOnInit() {
+    this.rutaServe =environment.apiURL;
+    this.rutaImg = environment.urlImages;
     this.idUsuarioLogeado = this.autenticacionService.currentUserValue;
-    this.route.params.subscribe( (data:Params) => {
-      this.idEmpleado = data.idEmpleado;
-    });
+    this.route.params.pipe( 
+      switchMap ((data:Params) => this.empleadoService.getEmpleado(data.idEmpleado))
+    ).subscribe( 
+      (empleado: Empleado) => {
+        this.empleado = empleado;
+        this.idEmpleado = empleado.idEmpleado;
+        this.setLinkPicture(empleado.imagen);
+      },
+      error => console.log(error)
+    );
+    this.initUploadImage();
   }
 
   ngAfterViewInit() {
@@ -92,6 +117,52 @@ export class FotoGafeteComponent implements OnInit, AfterViewInit {
   public otherPicture() {
     this.pictureCapture = "";
     this.showCamera();
+  }
+
+
+  initUploadImage(){
+    const headers = [{name: 'Accept', value: 'application/json'}];
+    this.uploaderProfile = new FileUploader({ url: this.rutaServe+'/catalog/uploadImageEmploye' , autoUpload: true, headers: headers});
+    this.uploaderProfile.onBuildItemForm = (fileItem: any, form: any) => {
+      form.append('idEmploye' , this.idEmpleado);
+      form.append('idEmployeModified ' , this.idUsuarioLogeado);
+      this.loadingFile = true;
+     };
+    this.uploaderProfile.uploadAll();
+    this.uploaderProfile.onCompleteItem =  (item:any, response:any, status:any, headers:any) => {
+      this.loadingFile = false;
+      console.log(status);
+      if(status === 0) {
+        this.useAlerts('Ocurrio un error, favor de reportar', ' ', 'error-dialog');
+      } else {
+        const result = JSON.parse(response);
+        console.log(result);
+  
+        if (result != undefined) {
+          if(result.noEstatus === 5) {
+            // this.autenticacionService.getEmpleadoLogeado(result.response.idEmpleado);
+            this.useAlerts(result.mensaje, ' ', 'success-dialog');
+            this.empleado.imagen = result.response.imagen;
+            this.setLinkPicture(result.response.imagen);
+          } else {
+            console.log('aqui');
+            if(result.status === 500) {
+              this.useAlerts('Imágen excede el tamaño, favor de reportar', ' ', 'error-dialog');   
+            } else {
+              this.useAlerts(result.message, ' ', 'error-dialog');
+            }
+          }
+        } else {
+          this.useAlerts('Ocurrio un error, favor de reportar', ' ', 'error-dialog');
+        }
+       
+      }
+    };
+  }
+
+  public setLinkPicture(img: string) {
+    this.linkPicture = `${this.rutaImg}/employe/photo/${img}?timeStamp=${Date.now()}`;
+    // this.timeStamp = (new Date()).getTime();
   }
 
   useAlerts(message, action, className) {
