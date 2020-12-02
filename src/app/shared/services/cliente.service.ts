@@ -26,6 +26,10 @@ export class ClienteService {
     return this.http.get<Cliente[]>(`${environment.apiURL}/catalog/getCustomerByFilter/${texto}/${idRuta}`); 
   }
 
+  getClientesPorRuta(idRuta: number): Observable<Cliente[]>  {
+    return this.http.get<Cliente[]>(`${environment.apiURL}/catalog/getCustomerByRoute/${idRuta}`); 
+  }
+
   updateCliente(cliente: Partial<Cliente>): Observable<any>{
     const headerss = new HttpHeaders({'Content-Type': 'application/json'});
     return this.http.post<any>(`${environment.apiURL}/catalog/updateCustomer`, JSON.stringify(cliente), { headers: headerss});

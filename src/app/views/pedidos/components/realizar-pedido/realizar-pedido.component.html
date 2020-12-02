@@ -17,10 +17,10 @@
     </mat-expansion-panel-header>
     <div class="wrap-search">
       <div *ngIf="ruta" class="text-route">Ruta: <span>{{ ruta.descripcion }}</span> </div>
-      <mat-card>
+      <!-- <mat-card>
         <mat-form-field class="search-form-field">
           <mat-label>Buscar Cliente</mat-label>
-          <input matInput #search type="text" [(ngModel)]="dataSearch" (keyup)='searchCoustomers($event)' [readonly]="isReadOnly">
+          <input matInput #search type="text" [(ngModel)]="dataSearch" (keyup)='searchCustomers($event)' [readonly]="isReadOnly">
           <button mat-button *ngIf="dataSearch" matSuffix mat-icon-button aria-label="Clear" (click)="cleanSearch()">
             <mat-icon>close</mat-icon>
           </button>
@@ -37,7 +37,24 @@
           </div>
     
           <ul *ngIf="clientes" class="data-coustomer">
-            <li (click)="setCoustomer(cliente)"  *ngFor="let cliente of clientes">
+            <li (click)="setCustomer(cliente)"  *ngFor="let cliente of clientes">
+              <a title="Agregar Cliente">{{cliente.razonSocial}}</a>
+            </li>
+          </ul>
+        </div>
+      </mat-card> -->
+      <mat-card *ngIf="!cliente.length">
+        <div class="data-result">
+          <div *ngIf="searchNow">
+            <div class="wrap-loading-catalog">
+              <mat-spinner [diameter]="60"></mat-spinner>
+            </div>
+          </div>
+          <div class="no-data" *ngIf="noData">
+            <img src="assets/images/not-found.jpg" alt="no">
+          </div>
+          <ul *ngIf="clientes" class="data-coustomer">
+            <li (click)="setCustomer(cliente)"  *ngFor="let cliente of clientes">
               <a title="Agregar Cliente">{{cliente.razonSocial}}</a>
             </li>
           </ul>
@@ -110,7 +127,7 @@
               <mat-cell *matCellDef="let coustomer">
                 <span class="mobile-label">Acciones:</span>
                 <div class="align-center">
-                  <button #btnDelete mat-mini-fab color="primary" (click) = "deleteCoustomer()" matTooltip="Quitar Cliente" matTooltipPosition="left">
+                  <button #btnDelete mat-mini-fab color="primary" (click) = "deleteCustomer()" matTooltip="Quitar Cliente" matTooltipPosition="left">
                     <mat-icon>delete</mat-icon>
                   </button>
                 </div>
