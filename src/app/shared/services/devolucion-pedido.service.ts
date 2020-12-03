@@ -33,4 +33,12 @@ export class DevolucionPedidoService {
     return this.http.get(`${environment.apiURL}/production/exportArticleByDate/${date}/${turn}`, {headers: headerss, responseType: 'blob',}); 
   }
 
+  getValidateExportRoute(date: string, route: number): Observable<any>  {
+    return this.http.get<any>(`${environment.apiURL}/production/getValidationForExportByRoute/${date}/${route}`); 
+  }
+
+  getValidateExport(date: string): Observable<any>  {
+    return this.http.get<any>(`${environment.apiURL}/production/getValidationForExport/${date}`); 
+  }
+
 }

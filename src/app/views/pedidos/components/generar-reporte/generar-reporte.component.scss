@@ -16,3 +16,15 @@ p {
 mat-card {
   margin-bottom: 20px;
 }
+
+.info-order {
+  span:first-child {
+    margin-right: 10px;
+  }
+  .positive {
+    color: green;
+  }
+  .negative {
+    color: red;
+  }
+}

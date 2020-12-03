@@ -20,7 +20,7 @@
         <div class="pb-1">
           <mat-form-field class="full-width">
             <mat-label>Rutas</mat-label>
-            <mat-select formControlName="idRuta" required>
+            <mat-select formControlName="idRuta" required (selectionChange)="selectRoute($event.value)">
               <mat-option *ngFor="let ruta of rutas" [value]="ruta.idRuta">
                 {{ruta.descripcion}}
               </mat-option>
@@ -35,6 +35,10 @@
         </div>
         <div class="wrap-button">
           <button #seacrhRoute mat-raised-button color="primary" [disabled]="searchReportRouteForm.invalid" type="submit" class="btn-accept">Buscar</button>
+        </div>
+        <div class="info-order" *ngIf="dataExportReportRoute">
+          <span>Total de pedido(s) cerrado(s): <b class="positive">{{dataExportReportRoute.totalPedidoCerrado}}</b></span>
+          <span>Total de pedido(s) abierto(s): <b class="negative">{{dataExportReportRoute.totalPedidoAbierto}}</b></span>
         </div>
       </div>
     </form>
@@ -81,6 +85,10 @@
         </div>
         <div class="wrap-button">
           <button #seacrhTurn mat-raised-button color="primary" [disabled]="searchReportTurnForm.invalid" type="submit" class="btn-accept">Buscar</button>
+        </div>
+        <div class="info-order" *ngIf="dataExportReportTurn">
+          <span>Total de pedido(s) cerrado(s): <b class="positive">{{dataExportReportTurn.totalPedidoCerrado}}</b></span>
+          <span>Total de pedido(s) abierto(s): <b class="negative">{{dataExportReportTurn.totalPedidoAbierto}}</b></span>
         </div>
       </div>
     </form>
