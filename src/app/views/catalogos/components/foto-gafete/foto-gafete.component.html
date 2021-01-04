@@ -7,34 +7,71 @@
   </button>
 </div>
 
-<div id="app">
-  <div class="wrap-video" *ngIf="!pictureCapture">
-    <video #video id="video" width="640" height="480" autoplay></video>
-    <!-- <button id="snap" (click)="capture()">Snap Photo</!--> 
-    <div class="wrap-button">
-      <button id="snap" (click)="capture()" mat-fab color="warn" matTooltip="Tomar Foto" matTooltipPosition="below">
-        <mat-icon>camera_alt</mat-icon>
-      </button>
-    </div>
-  </div>
-  <canvas #canvas id="canvas" width="640" height="480"></canvas>
+<mat-card>
+  <mat-tab-group>
+    <mat-tab label="Tomar Fotografía"> 
+      <div id="app">
+        <div class="wrap-video" *ngIf="!pictureCapture">
+          <video #video id="video" width="640" height="480" autoplay></video>
+          <!-- <button id="snap" (click)="capture()">Snap Photo</!--> 
+          <div class="wrap-button">
+            <button id="snap" (click)="capture()" mat-fab color="warn" matTooltip="Tomar Foto" matTooltipPosition="below">
+              <mat-icon>camera_alt</mat-icon>
+            </button>
+          </div>
+        </div>
+        <canvas #canvas id="canvas" width="640" height="480"></canvas>
+      
+        <div class="wrap-picture" *ngIf="pictureCapture">
+          <img [src]="pictureCapture" alt="picture">
+          <div class="wrap-button">
+            <button (click)="otherPicture()" mat-fab color="warn" matTooltip="Eliminar" matTooltipPosition="below">
+              <mat-icon>delete</mat-icon>
+            </button>
+            <button  (click)="savePicture()" mat-fab color="primary" matTooltip="Guardar" matTooltipPosition="below">
+              <mat-icon>save</mat-icon>
+            </button>
+            <button [routerLink]= "['/catalogos/gafete', idEmpleado]"  mat-fab  matTooltip="Regresar" matTooltipPosition="below">
+              <mat-icon>keyboard_backspace</mat-icon>
+            </button>
+          </div>
+        </div>
+        <!-- <ul>
+          <li *ngFor="let c of captures">
+            <img src="{{ c }}" />
+          </li>
+        </ul> -->
+      </div>
+    </mat-tab>
+    <mat-tab label="Subir Fotografía"> 
+      <div class="upload-i">
+        <div class="mb-1">
+          <input style="visibility: hidden;" type="file" #fileInput ng2FileSelect [uploader]="uploaderProfile" />
+          <div ng2FileDrop (click)="fileInput.click()" [ngClass]="{'dz-file-over': hasBaseDropZoneOver}" [uploader]="uploaderProfile"
+            (fileOver)="fileOverBase($event)" class="fileupload-drop-zone-logo-div">
+            <p>Imágen de Perfil</p>
+            <p>Arrastra o click sobre la imágen la zona punteada</p>
 
-  <div class="wrap-picture" *ngIf="pictureCapture">
-    <img [src]="pictureCapture" alt="picture">
-    <div class="wrap-button">
-      <button (click)="otherPicture()" mat-fab color="warn" matTooltip="Eliminar" matTooltipPosition="below">
-        <mat-icon>delete</mat-icon>
-      </button>
-      <button  (click)="savePicture()" mat-fab color="primary" matTooltip="Guardar" matTooltipPosition="below">
-        <mat-icon>save</mat-icon>
-      </button>
-      <button [routerLink]= "['/catalogos/gafete', idEmpleado]"  mat-fab  matTooltip="Regresar" matTooltipPosition="below">
-        <mat-icon>keyboard_backspace</mat-icon>
-      </button>
-  </div>
-  <!-- <ul>
-    <li *ngFor="let c of captures">
-      <img src="{{ c }}" />
-    </li>
-  </ul> -->
-</div>
+            <div *ngIf="uploaderProfile.queue.length; else tableNoData">
+              <div *ngFor="let item of uploaderProfile.queue ">
+                <div *ngIf="!item.isSuccess" class="progress" style="margin-bottom: 0;">
+                  <div class="progress-bar" role="progressbar" [ngStyle]="{ 'width': item.progress + '%' }"></div>
+                  <mat-progress-bar class="" color="primary" mode="determinate" [value]="item.progress">
+                  </mat-progress-bar>
+                </div>
+              </div>
+            </div>
+
+            <div *ngIf = "!empleado">
+              <div class="wrap-loading-catalog">
+                <mat-spinner [diameter]="40"></mat-spinner>
+              </div>
+            </div>
+
+            <img *ngIf = "empleado" class="fileupload-drop-zone-logo show-picture" [src]="linkPicture" alt="">
+          </div>
+        </div>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+</mat-card>

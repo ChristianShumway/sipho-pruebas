@@ -12,6 +12,7 @@ import { ActivatedRoute } from '@angular/router';
 import { switchMap } from 'rxjs/operators';
 import { RutaService } from 'app/shared/services/ruta.service';
 import { Ruta } from 'app/shared/models/ruta';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-realizar-pedido',
@@ -61,11 +62,26 @@ export class RealizarPedidoComponent implements OnInit {
         this.ruta = ruta;
         this.idRuta = ruta.idRuta
         console.log(this.ruta);
+        this.getCustomers();
       }
     );
   }
 
-  searchCoustomers(event) {
+  getCustomers() {
+    this.searchNow = true;
+    this.noData = false;
+    this.clienteService.getClientesPorRuta(this.idRuta).subscribe(
+      (clientes: Cliente[]) => {
+        console.log(clientes);
+        this.searchNow = false;
+        this.clientes = clientes;
+        clientes.length > 0 ? this.noData = false : this.noData = true;
+      },
+      error => console.log(error)
+    );
+  }
+
+  searchCustomers(event) {
     const data = event.target.value.toLowerCase();
     this.searchNow = true;
     this.noData = false;
@@ -82,18 +98,17 @@ export class RealizarPedidoComponent implements OnInit {
       );
     } else {
       this.searchNow = false;
-      // this.useAlerts('No se encontraron clientes con este nombre', ' ', 'error-dialog');
     }
   }
 
   cleanSearch() {
     this.dataSearch = '';
-    this.clientes = [];
+    // this.clientes = [];
     this.noData = false;
     this.searchNow = false;
   }
 
-  setCoustomer(coustomer) {
+  setCustomer(coustomer) {
     this.cliente = [...this.cliente, coustomer];
     console.log(this.cliente);
     this.dataSource = new MatTableDataSource(this.cliente);
@@ -101,7 +116,7 @@ export class RealizarPedidoComponent implements OnInit {
     this.cleanSearch();
   }
 
-  deleteCoustomer() {
+  deleteCustomer() {
     this.cliente = [];
     this.isReadOnly = !this.isReadOnly;
     this.pedidoCreado = null;

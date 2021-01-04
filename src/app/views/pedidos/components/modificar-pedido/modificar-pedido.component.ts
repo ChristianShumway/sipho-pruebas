@@ -22,6 +22,7 @@ export class ModificarPedidoComponent implements OnInit {
   @ViewChild('btnDelete', {static: false}) deleteArticle: MatButton;
   idUsuarioLogeado;
   idRuta;
+  idPedido;
   ruta: Ruta;
   clientes: Cliente[] = [];
   cliente: Cliente[] = [];
@@ -59,12 +60,13 @@ export class ModificarPedidoComponent implements OnInit {
     this.activatedRoute.params.subscribe( (params: Params) => {
       console.log(params);
       this.idRuta = params.idRuta;
-      const idPedido = params.idPedido;
-      this.pedidoService.getPedido(idPedido).subscribe(
+      this.idPedido = params.idPedido;
+      this.getCustomers();
+      this.pedidoService.getPedido(this.idPedido).subscribe(
         (pedido: Pedido) => {
           console.log(pedido);
           this.pedido = pedido;
-          this.setCoustomer(pedido.vistaCliente);
+          this.setCustomer(pedido.vistaCliente);
           this.idPedidoCreado = this.pedido.idPedido;
           this.showDetailOrder = true;
         },
@@ -73,35 +75,32 @@ export class ModificarPedidoComponent implements OnInit {
           this.useAlerts(error.message, ' ', 'error-dialog');
         }
       );
-      this.rutaService.getRuta(params.idRuta).subscribe(
+      this.rutaService.getRuta(this.idRuta).subscribe(
         (ruta: Ruta) => {
           this.ruta = ruta;
-          this.idRuta = ruta.idRuta
+          // this.idRuta = ruta.idRuta
           console.log(this.ruta);
         }, error => console.log(error)
       );
     });
-
-    // this.activatedRoute.params.pipe(
-    //   switchMap((params: Params) => { 
-    //     this.pedidoService.getPedido(params.idPedido);
-    //   })
-    // ).subscribe(
-    //   (pedido: Pedido) => {
-    //     console.log(pedido);
-    //     this.pedido = pedido;
-    //     this.setCoustomer(pedido.vistaCliente);
-    //     this.idPedidoCreado = this.pedido.idPedido;
-    //     this.showDetailOrder = true;
-    //   },
-    //   error => {
-    //     console.log(error);
-    //     this.useAlerts(error.message, ' ', 'error-dialog');
-    //   }
-    // );
   }
 
-  searchCoustomers(event) {
+  getCustomers() {
+    this.searchNow = true;
+    this.noData = false;
+    this.clienteService.getClientesPorRuta(this.idRuta).subscribe(
+      (clientes: Cliente[]) => {
+        console.log(clientes);
+        this.searchNow = false;
+        this.clientes = clientes;
+        clientes.length > 0 ? this.noData = false : this.noData = true;
+      },
+      error => console.log(error)
+    );
+  }
+
+
+  searchCustomers(event) {
     const data = event.target.value.toLowerCase();
     this.searchNow = true;
     this.noData = false;
@@ -123,13 +122,13 @@ export class ModificarPedidoComponent implements OnInit {
 
   cleanSearch() {
     this.dataSearch = '';
-    this.clientes = [];
+    // this.clientes = [];
     this.noData = false;
     this.searchNow = false;
     this.isLoadingData = false;
   }
 
-  setCoustomer(coustomer) {
+  setCustomer(coustomer) {
     this.isLoadingData = true;
     this.cliente = [...this.cliente, coustomer];
     console.log(this.cliente);
@@ -138,7 +137,7 @@ export class ModificarPedidoComponent implements OnInit {
     this.cleanSearch();
   }
 
-  deleteCoustomer() {
+  deleteCustomer() {
     this.cliente = [];
     this.isReadOnly = !this.isReadOnly;
     this.showDetailOrder = false;

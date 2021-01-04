@@ -7,6 +7,7 @@ import { DevolucionPedido } from 'app/shared/models/devolucion-pedido';
 import { DevolucionPedidoService } from 'app/shared/services/devolucion-pedido.service';
 import { AutenticacionService } from 'app/shared/services/autenticacion.service';
 import { RutaService } from './../../../../shared/services/ruta.service';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-generar-reporte',
@@ -22,6 +23,7 @@ export class GenerarReporteComponent implements OnInit {
   fechaBusquedaTurno;
   pipe = new DatePipe('en-US');
   rutas: Ruta[] = [];
+  idRutaSeleccionada;
   noData: boolean = false;
   searchNowRoute: boolean = false;
   searchNowTurn: boolean = false;
@@ -37,6 +39,8 @@ export class GenerarReporteComponent implements OnInit {
       descripcion: 'Vespertino'
     }
   ];
+  dataExportReportRoute;
+  dataExportReportTurn;
 
 
   constructor(
@@ -51,11 +55,70 @@ export class GenerarReporteComponent implements OnInit {
     this.getValidationsRoute();
     this.getValidationsTurn();
     this.getRutas();
+    this.fechaBusquedaRuta = new Date(this.searchReportRouteForm.controls['fechaBusqueda'].value);
+    this.fechaBusquedaRuta.setDate(this.fechaBusquedaRuta.getDate());
+    this.fechaBusquedaTurno = new Date(this.searchReportTurnForm.controls['fechaBusqueda'].value);
+    this.fechaBusquedaTurno.setDate(this.fechaBusquedaTurno.getDate());
   }
 
   getRutas() {
     this.rutaService.getSelectRutaByEmploye(this.idUsuarioLogeado).subscribe(
-      (rutas: Ruta[]) => this.rutas = rutas,
+      (rutas: Ruta[]) => {
+        this.rutas = rutas;
+        console.log(this.rutas);
+        this.idRutaSeleccionada = rutas[0].idRuta;
+        this.searchReportRouteForm.get('idRuta').setValue(this.idRutaSeleccionada);
+        this.searchReportTurnForm.get('idTurno').setValue(this.turnos[0].idTurno)
+        this.getStatusValidationRoute();
+        this.getStatusValidationTurn();
+      },
+      error => console.log(error)
+    );
+    
+  }
+  
+  getStatusValidations() {
+    const format = 'yyyy-MM-dd';
+    this.fechaBusquedaRuta = this.pipe.transform(this.fechaBusquedaRuta, format);
+    forkJoin({
+      // getRoutes: this.rutaService.getSelectRutaByEmploye(this.idUsuarioLogeado),
+      dataValitadionRoute:  this.devolucionPedidoService.getValidateExportRoute(this.fechaBusquedaRuta, this.idRutaSeleccionada),
+      dataValitadionTurn:  this.devolucionPedidoService.getValidateExport(this.fechaBusquedaRuta)
+      }).subscribe( ({dataValitadionRoute, dataValitadionTurn}) => {
+        this.dataExportReportRoute =  dataValitadionRoute;
+        this.dataExportReportTurn = dataValitadionTurn;
+        console.log(dataValitadionRoute);
+        console.log(dataValitadionTurn);
+        this.dataExportReportRoute.listo === true ? this.submitButtonRoute.disabled = false : this.submitButtonRoute.disabled = true;
+        this.dataExportReportTurn.listo === true ? this.submitButtonTurn.disabled = false : this.submitButtonTurn.disabled = true;
+    });
+  }
+
+  getStatusValidationRoute() {
+    const format = 'yyyy-MM-dd';
+    this.fechaBusquedaRuta = this.pipe.transform(this.fechaBusquedaRuta, format);
+    console.log(this.fechaBusquedaRuta);
+    console.log(this.idRutaSeleccionada);
+    this.devolucionPedidoService.getValidateExportRoute(this.fechaBusquedaRuta, this.idRutaSeleccionada).subscribe( 
+      data => {
+        this.dataExportReportRoute =  data;
+        console.log(this.dataExportReportRoute);
+        this.dataExportReportRoute.listo === true ? this.submitButtonRoute.disabled = false : this.submitButtonRoute.disabled = true;
+      },
+      error => console.log(error)
+    );
+  }
+
+  getStatusValidationTurn() {
+    const format = 'yyyy-MM-dd';
+    this.fechaBusquedaTurno = this.pipe.transform(this.fechaBusquedaTurno, format);
+    console.log(this.fechaBusquedaTurno);
+    this.devolucionPedidoService.getValidateExport(this.fechaBusquedaTurno).subscribe( 
+      data => {
+        this.dataExportReportTurn =  data;
+        console.log(this.dataExportReportTurn);
+        this.dataExportReportTurn.listo === true ? this.submitButtonTurn.disabled = false : this.submitButtonTurn.disabled = true;
+      },
       error => console.log(error)
     );
   }
@@ -76,12 +139,22 @@ export class GenerarReporteComponent implements OnInit {
 
   public onFechaBusquedaRuta(event): void {
     this.fechaBusquedaRuta = event.value;
-    console.log(this.fechaBusquedaRuta);
+    // console.log(this.fechaBusquedaRuta);
+    this.getStatusValidationRoute();
   }
 
   public onFechaBusquedaTurno(event): void {
     this.fechaBusquedaTurno = event.value;
-    console.log(this.fechaBusquedaTurno);
+    // console.log(this.fechaBusquedaTurno);
+    this.getStatusValidationTurn();
+  }
+
+  selectRoute(idRuta) {
+    console.log(idRuta);
+    this.idRutaSeleccionada = idRuta;
+    // this.ruta = this.rutas.find((ruta: Ruta) => ruta.idRuta = idRuta);
+    // console.log(this.ruta);
+    this.getStatusValidationRoute();
   }
 
   generateReportRoute(){
