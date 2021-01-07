@@ -29,6 +29,7 @@ export class DevolucionPedidoService {
   }
 
   generateReportByTurn(date: string, turn: number): Observable<any>  {
+    console.log(date);
     const headerss = new HttpHeaders({'Content-Type': '"application/x-www-form-urlencoded'});
     return this.http.get(`${environment.apiURL}/production/exportArticleByDate/${date}/${turn}`, {headers: headerss, responseType: 'blob',}); 
   }

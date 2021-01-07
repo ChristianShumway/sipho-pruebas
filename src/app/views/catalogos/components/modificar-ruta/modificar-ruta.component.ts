@@ -24,8 +24,10 @@ export class ModificarRutaComponent implements OnInit {
   idRuta;
   idUsuarioLogeado;
   ruta: Ruta;
-  empleados: Empleado[] = [];
+  encargados: Empleado[] = [];
+  coEncargados: Empleado[] = [];
   idPerfilEmploye: number = 3;
+  idPerfilEmployeCoEncargado: number = 8;
 
   constructor(
     private router: Router,
@@ -63,13 +65,21 @@ export class ModificarRutaComponent implements OnInit {
   getEmployes() {
     this.empleadoService.getEmployeByPerfil(this.idPerfilEmploye).subscribe(
       (empleados: Empleado[]) => {
-        console.log(empleados);
-        this.empleados = empleados;
+        this.encargados = empleados;
+        this.getEmployesCoEncargados();
       },
       error => console.log(error)
     );
   }
 
+  getEmployesCoEncargados() {
+    this.empleadoService.getEmployeByPerfil(this.idPerfilEmployeCoEncargado).subscribe(
+      (empleados: Empleado[]) => {
+        this.coEncargados = empleados;
+      },
+      error => console.log(error)
+    );
+  }
 
   getValidations() {
     this.rutaForm = new FormGroup({
@@ -90,8 +100,8 @@ export class ModificarRutaComponent implements OnInit {
     if (this.rutaForm.valid) {
       this.submitButton.disabled = true;
 
-      const encargado: Empleado = this.empleados.find( (empleado: Empleado) => empleado.idEmpleado === this.rutaForm.value.encargado);
-      const coEncargado: Empleado = this.empleados.find( (empleado: Empleado) => empleado.idEmpleado === this.rutaForm.value.coEncargado);
+      const encargado: Empleado = this.encargados.find( (empleado: Empleado) => empleado.idEmpleado === this.rutaForm.value.encargado);
+      const coEncargado: Empleado = this.coEncargados.find( (empleado: Empleado) => empleado.idEmpleado === this.rutaForm.value.coEncargado);
 
       const ruta: Ruta = {
         idRuta: parseInt(this.idRuta),

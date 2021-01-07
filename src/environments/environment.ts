@@ -6,6 +6,7 @@
 export const environment = {
   production: false,
   apiURL: '',
+  //apiURL: 'http://4485949.online-server.cloud:8080/Sipho',
   urlImages: 'http://4485949.online-server.cloud:8080/Sipho/files',
   rutaServer: '',
   permisosEspeciales: [

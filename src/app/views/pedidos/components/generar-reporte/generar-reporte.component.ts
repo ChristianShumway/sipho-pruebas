@@ -200,7 +200,7 @@ export class GenerarReporteComponent implements OnInit {
     console.log(this.searchReportTurnForm.value.idTurno);
     console.log(this.fechaBusquedaTurno);
 
-    this.devolucionPedidoService.generateReportByTurn(this.fechaBusquedaRuta, this.searchReportRouteForm.value.idTurno).subscribe(
+    this.devolucionPedidoService.generateReportByTurn(this.fechaBusquedaTurno, this.searchReportTurnForm.value.idTurno).subscribe(
       response => {
         this.submitButtonTurn.disabled = false;
         this.searchNowTurn = false;
@@ -211,7 +211,7 @@ export class GenerarReporteComponent implements OnInit {
         var link = document.createElement("a");
         link.setAttribute("target", "_blank");
         link.setAttribute("href", obj_url);
-        link.setAttribute("download",`${this.fechaBusquedaRuta}-${this.searchReportRouteForm.value.idTurno}.pdf`);
+        link.setAttribute("download",`${this.fechaBusquedaTurno}-${this.searchReportTurnForm.value.idTurno}.pdf`);
           
         link.style.visibility = "hidden";
         document.body.appendChild(link);

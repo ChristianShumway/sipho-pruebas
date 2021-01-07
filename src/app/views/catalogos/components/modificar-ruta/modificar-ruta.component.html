@@ -22,7 +22,7 @@
             <mat-form-field class="full-width">
               <mat-label>Encargado</mat-label>
               <mat-select formControlName="encargado" required>
-                <mat-option *ngFor="let empleado of empleados" [value]="empleado.idEmpleado">
+                <mat-option *ngFor="let empleado of encargados" [value]="empleado.idEmpleado">
                   {{empleado.nombre}} {{empleado.apellidoPaterno}} {{empleado.apellidoMaterno}}
                 </mat-option>
               </mat-select>
@@ -38,7 +38,7 @@
             <mat-form-field class="full-width">
               <mat-label>Coencargado</mat-label>
               <mat-select formControlName="coEncargado" required>
-                <mat-option *ngFor="let empleado of empleados" [value]="empleado.idEmpleado">
+                <mat-option *ngFor="let empleado of coEncargados" [value]="empleado.idEmpleado">
                   {{empleado.nombre}} {{empleado.apellidoPaterno}} {{empleado.apellidoMaterno}}
                 </mat-option>
               </mat-select>
