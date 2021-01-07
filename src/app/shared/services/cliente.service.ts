@@ -4,6 +4,8 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { BehaviorSubject } from 'rxjs';
 import { environment } from './../../../environments/environment';
+import { catchError, retry } from 'rxjs/operators';
+import { HandleHttpResponseError } from 'app/shared/utils/handleError';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +17,11 @@ export class ClienteService {
   ) {}
 
   getClientes(paginator: number): Observable<ClienteContent>  {
-    return this.http.get<ClienteContent>(`${environment.apiURL}/catalog/getAllCustomer/${paginator}`); 
+    return this.http.get<ClienteContent>(`${environment.apiURL}/catalog/getAllCustomer/${paginator}`)
+    .pipe(
+      retry(2),
+      catchError(HandleHttpResponseError)
+    ); 
   }
 
   getCliente(idCliente: number): Observable<Cliente>  {
