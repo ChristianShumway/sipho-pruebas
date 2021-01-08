@@ -1,0 +1,65 @@
+<div class="container-remision" *ngIf="dataRemision">
+  <mat-card class="wrap-data-remision">
+    <div class="col-dates">
+      <p><b>Fecha Creación:</b> {{dataRemision.fechaCreacion | date}}</p>
+      <p><b>Fecha Termino:</b> {{dataRemision.fechaTermino | date}}</p>
+    </div>
+    <div class="col-folio">
+      <p><b>Folio Venta:</b> <span>{{dataRemision.folioVenta}}</span></p>
+    </div>
+    <div class="col-observations" *ngIf="dataRemision.observaciones">
+      <p><b>Observaciones:</b></p>
+      <p>{{dataRemision.observaciones}}</p>
+    </div>
+  </mat-card>
+
+  <mat-card class="wrap-customer">
+    <h5>CLIENTE</h5>
+    <p><b>Razón Social:</b> {{dataRemision.cliente.razonSocial}}</p>
+  </mat-card>
+
+  
+  <mat-card class="wrap-sale">
+    <h4>Venta</h4>
+    <div class="scroll-sale">
+      <div class="details-sale">
+        <div class="detail-sale" *ngFor = "let detalle of dataRemision.viewDetVenta; index as i">
+          <div class="name-article">{{i + 1}}. {{detalle.articulo.nombre}}</div>
+          <div class="detail-article">
+            <p>{{detalle.cantidad}} <b>X</b> {{detalle.precio | transformCurrency}}</p>
+            <p>{{detalle.cantidad * detalle.precio | transformCurrency}}</p>
+            <p class="desc title" *ngIf = "detalle.descuento > 0"><b>Descuento:</b></p>
+            <p class="desc cant" *ngIf = "detalle.descuento > 0">({{detalle.descuento | transformCurrency}})</p>
+            <p><b>Total:</b></p>
+            <p class="total">{{detalle.total | transformCurrency}}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="total-sale">
+      <b>Total Venta:</b> {{totalVenta | transformCurrency}}
+    </div>
+  </mat-card>
+
+  <mat-card class="wrap-employe">
+    <div>
+      <h5>EMPLEADO</h5>
+      <p><b>Nombre:</b> {{dataRemision.empleado.nombre}} {{dataRemision.empleado.apellidoPaterno}} {{dataRemision.empleado.apellidoMaterno}}</p>
+    </div>
+    <div>
+      <h5>FORMA DE PAGO</h5>
+      <p><b>Descripción:</b> {{dataRemision.viewDetPago.descripcion}}</p>
+    </div>
+  </mat-card>
+
+</div>
+
+<div class="wrap-button" *ngIf="activeSearch">
+  <a mat-raised-button matTooltip="Nueva Busqueda" matTooltipPosition="left" color="primary" (click) = "newSearch()">Nueva Busqueda</a>
+</div>
+
+<div *ngIf = "dataSearching">
+  <div class="wrap-loading-catalog">
+    <mat-spinner [diameter]="60"></mat-spinner>
+  </div>
+</div>

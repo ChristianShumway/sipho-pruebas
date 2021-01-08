@@ -59,6 +59,11 @@ export const rootRouterConfig: Routes = [
         data: { title: 'Pedidos', breadcrumb: 'Pedidos'}
       },
       {
+        path: 'ventas', 
+        loadChildren: () => import('./views/ventas/ventas.module').then(m => m.VentasModule), 
+        data: { title: 'Ventas', breadcrumb: 'Ventas'}
+      },
+      {
         path: 'others', 
         loadChildren: () => import('./views/others/others.module').then(m => m.OthersModule), 
         data: { title: 'Others', breadcrumb: 'OTHERS'}

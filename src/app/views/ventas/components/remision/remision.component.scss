@@ -1,0 +1,137 @@
+p {
+  margin: 0;
+}
+
+.container-remision {
+  .wrap-data-remision {
+    display: grid;
+    grid-template-areas: "date folio" "observations observations";
+    grid-gap: 5px;
+    font-size: 13px;
+    // grid-template-columns: 50px 200px;
+    // grid-auto-rows: 100px;
+    .col-dates {
+      display: grid;
+      grid-template-columns: auto auto;
+      grid-gap: 5px;
+    }
+    .col-folio {
+      text-align: right;
+      span {
+        margin-left: 5px;
+        color: green;
+      }
+    }
+  }
+
+  .wrap-customer, .wrap-employe {
+    font-size: 13px;
+    h5 {
+      color: green;
+      font-weight: 500;
+    }
+  }
+
+  .wrap-employe {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .wrap-sale {
+    // overflow: hidden;
+    h4 {
+      text-align: center;
+      text-transform: uppercase;
+      color: green;
+      font-weight: 500; 
+      margin-bottom: 10px;   
+    }
+    .scroll-sale {
+      .details-sale {
+        margin-top: 20px;
+        padding: 5px;
+        max-height: 400px;
+        overflow-y: auto;
+        height: auto;
+        font-size: 13px;
+        .detail-sale {
+          display: grid;
+          grid-template-columns:1fr auto;
+          grid-gap: 0 5px;
+          padding: 10px 5px;
+          &:nth-child(even){
+            background: aliceblue;
+          }
+          .name-article {
+            font-weight: 500;
+          }
+          .detail-article {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-gap: 5px 15px;
+            justify-items: end;
+            .desc {
+              &.cant {
+                color: red;
+              }
+            }
+            .total {
+              font-weight: 600;
+              border-top: 1px solid;
+              width: 100%;
+              text-align: right;
+            }
+          }
+        }
+      }
+    }
+    .total-sale {
+      text-align: right;
+      margin: 10px 7px;
+      font-size: larger;
+      color: green;
+    }
+  }
+
+}
+.wrap-button {
+  text-align: right;
+  margin: 15px 6px 0;
+}
+
+@media screen and (max-width: 768px) {
+  .container-remision {
+    .wrap-data-remision {
+      .col-dates {
+        grid-template-columns: auto;
+      }
+      .col-folio {
+        text-align: left;
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .container-remision {
+    .wrap-data-remision {
+      grid-template-areas: "date" "folio" "observations";
+    }
+
+    .wrap-employe {
+      grid-template-columns: 1fr;
+      div {
+        margin-bottom: 10px;
+      }
+    }
+
+    .wrap-sale {
+      .scroll-sale {
+        overflow-x: auto;
+        .details-sale {
+          width: 700px;
+        }
+      }
+    }
+  }
+}

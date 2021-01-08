@@ -1,0 +1,31 @@
+<mat-card class="p-0 container-create-user">
+  <mat-card-title class="">
+    <div class="card-title-text">Formulario para la busqueda de remisiones</div>
+    <mat-divider></mat-divider>
+  </mat-card-title>
+
+  <mat-card-content>
+    <form [formGroup]="searchForm" (submit)="searchRemision()">
+      <div fxLayout="row wrap">
+        <div fxFlex="100" fxFlex.gt-xs="100">
+          <div class="pb-1">
+            <mat-form-field class="full-width">
+              <input matInput name="transaccion" formControlName="transaccion" placeholder="Transacción">
+            </mat-form-field>
+            <div class="validaciones">
+              <small *ngIf="searchForm.controls['transaccion'].hasError('required') && searchForm.controls['transaccion'].touched" class="form-error-msg">
+                Número de transacción es un campo requerido
+              </small>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="cont-btns">
+        <div>
+          <button mat-raised-button color="primary" [disabled]="searchForm.invalid" type="submit" >Buscar</button>
+        </div>
+      </div>
+    </form>
+  </mat-card-content>
+</mat-card>
