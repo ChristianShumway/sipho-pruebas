@@ -1,0 +1,22 @@
+.wrap-button {
+  text-align: right;
+}
+
+.wrap-arqueo {
+  padding: 5px;
+  .result {
+    font-size: 13px;
+    display: grid;
+    grid-template-columns: 140px auto;
+    margin-bottom: 7px;
+    padding: 6px 10px;
+    &.negative {
+      span {
+        color: red;
+      }
+    }
+    &:nth-child(even){
+      background: aliceblue;
+    }
+  }
+}

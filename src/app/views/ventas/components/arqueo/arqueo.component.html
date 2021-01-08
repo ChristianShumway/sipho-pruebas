@@ -1,0 +1,97 @@
+<mat-card>
+  <div *ngIf="rutas.length">
+    <p>Seleccione una Ruta</p>
+    <form [formGroup]="searchRouteForm" (submit)="searchArqueo()">
+      <div fxFlex="100" fxFlex.gt-md="100" fxFlex.gt-sm="100" class="container-order">
+
+        <div class="pb-1">
+          <mat-form-field class="full-width">
+            <mat-label>Rutas</mat-label>
+            <mat-select formControlName="idRuta" required>
+              <mat-option *ngFor="let ruta of rutas" [value]="ruta.idRuta">
+                {{ruta.descripcion}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <div class="validaciones">
+            <small *ngIf="searchRouteForm.controls['idRuta'].hasError('required') && searchRouteForm.controls['idRuta'].touched"
+              class="form-error-msg">
+              La ruta es un campo requerido
+            </small>
+          </div>
+        </div>
+
+        <div class="wrap-button">
+          <button #searchRoute mat-raised-button color="primary" [disabled]="searchRouteForm.invalid" type="submit" class="btn-accept">Buscar</button>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div *ngIf="!rutas.length">
+    <div class="wrap-loading-catalog">
+      <mat-spinner [diameter]="60"></mat-spinner>
+    </div>
+  </div>
+</mat-card>
+
+<mat-card *ngIf="dataArqueo || searchNowRoute">
+  <div class="wrap-arqueo" *ngIf="dataArqueo">
+    <div class="result">
+      <b>Importe:</b>
+      <span>{{dataArqueo.importe | transformCurrency}}</span>
+    </div>
+    <div class="result">
+      <b>Transacción:</b>
+      <span>{{dataArqueo.transaccion | transformCurrency}}</span>
+    </div>
+    <div class="result">
+      <b>Retiro:</b>
+      <span>{{dataArqueo.retiro | transformCurrency}}</span>
+    </div>
+    <div class="result">
+      <b>Incremento:</b>
+      <span>{{dataArqueo.incremento | transformCurrency}}</span>
+    </div>
+    <div class="result negative">
+      <b>Devolución:</b>
+      <span>{{dataArqueo.devolucion | transformCurrency}}</span>
+    </div>
+    <div class="result">
+      <b>Excento:</b>
+      <span>{{dataArqueo.excento | transformCurrency}}</span>
+    </div>
+    <div class="result">
+      <b>Grabado:</b>
+      <span>{{dataArqueo.grabado | transformCurrency}}</span>
+    </div>
+    <div class="result negative">
+      <b>Descuento:</b>
+      <span>{{dataArqueo.descuento | transformCurrency}}</span>
+    </div>
+    <div class="result">
+      <b>Abono Credito:</b>
+      <span>{{dataArqueo.abonoCredito | transformCurrency}}</span>
+    </div>
+    <div class="result negative">
+      <b>Vales de Caja:</b>
+      <span>{{dataArqueo.valeCaja | transformCurrency}}</span>
+    </div>
+    <div class="result negative">
+      <b>Pagos Personales:</b>
+      <span>{{dataArqueo.pagosPersonales | transformCurrency}}</span>
+    </div>
+    <div class="result">
+      <b>Promociones:</b>
+      <span>{{dataArqueo.promociones | transformCurrency}}</span>
+    </div>
+    <div class="result">
+      <b>Total:</b>
+      <span> <b>{{dataArqueo.total | transformCurrency}}</b></span>
+    </div>
+  </div>
+  <div *ngIf="searchNowRoute">
+    <div class="wrap-loading-catalog">
+      <mat-spinner [diameter]="60"></mat-spinner>
+    </div>
+  </div>
+</mat-card>

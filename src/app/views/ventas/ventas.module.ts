@@ -16,13 +16,15 @@ import { NgxMaskModule, IConfig } from 'ngx-mask';
 import { VentasRoutingModule } from './ventas-routing.module';
 import { RemisionComponent } from './components/remision/remision.component';
 import { ModalSearchRemisionComponent } from './components/modal-search-remision/modal-search-remision.component';
+import { ArqueoComponent } from './components/arqueo/arqueo.component';
 
 export let options: Partial<IConfig> | (() => Partial<IConfig>);
 
 @NgModule({
   declarations: [
     RemisionComponent,
-    ModalSearchRemisionComponent
+    ModalSearchRemisionComponent,
+    ArqueoComponent
   ],
   imports: [
     CommonModule,
