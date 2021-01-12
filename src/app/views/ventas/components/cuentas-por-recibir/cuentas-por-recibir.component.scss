@@ -1,0 +1,17 @@
+.table-container {
+  position: relative;
+  max-height: 400px !important;
+  overflow: auto;
+}
+
+table {
+  width: 100%;
+}
+
+th.mat-sort-header-sorted {
+  color: black;
+}
+
+.center-table{
+  text-align: center !important;
+}

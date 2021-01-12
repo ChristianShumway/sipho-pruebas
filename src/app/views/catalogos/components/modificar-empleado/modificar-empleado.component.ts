@@ -9,6 +9,8 @@ import { DatePipe } from '@angular/common';
 import { PerfilesService } from 'app/shared/services/perfiles.service';
 import { Perfil } from 'app/shared/models/perfil';
 import { MatButton } from '@angular/material';
+import { environment } from './../../../../../environments/environment';
+import { NavigationService } from 'app/shared/services/navigation.service';
 
 @Component({
   selector: 'app-modificar-empleado',
@@ -26,6 +28,9 @@ export class ModificarEmpleadoComponent implements OnInit {
   perfiles: Perfil[] = [];
   fechaIngreso;
   @ViewChild(MatButton, {static: false}) submitButton: MatButton;
+  perfil;
+  nombrePermiso = 'crud-empleados';
+  permisosEspecialesPermitidos: any[] = []; //array donde se agrega el nombre de las opciones a las cuales el usuario si tiene permiso
 
   constructor(
     private router: Router,
@@ -34,13 +39,16 @@ export class ModificarEmpleadoComponent implements OnInit {
     private autenticacionService: AutenticacionService,
     private perfilesService: PerfilesService,
     private activatedRoute: ActivatedRoute,
+    private navigationService: NavigationService
   ) { }
 
   ngOnInit() {
+    this.idUsuarioLogeado = this.autenticacionService.currentUserValue;
+    this.perfil = this.autenticacionService.currentProfileValue;
     this.getValidations();
     this.getEmpleado();
     this.getCatalogs();
-    this.idUsuarioLogeado = this.autenticacionService.currentUserValue;
+    this.getPermisosEspeciales();
   }
 
   getEmpleado() {
@@ -115,6 +123,25 @@ export class ModificarEmpleadoComponent implements OnInit {
 
   public onFechaIngreso(event): void {
     this.fechaIngreso = event.value;
+  }
+
+  getPermisosEspeciales() {
+    const permisos = environment.permisosEspeciales.filter( permiso => permiso.activo === 1);
+    // console.log(permisos);
+    const permisosEspecialesComponente = permisos.filter( permiso => permiso.nombre === this.nombrePermiso);
+    // console.log(permisosEspecialesComponente);
+    permisosEspecialesComponente.map( permisoExistente => {
+      this.navigationService.validatePermissions(this.perfil.idPerfil, permisoExistente.idOpcion).subscribe(
+        (result:any) => {
+          console.log(result);
+          if(result.estatus === '05'){
+            this.permisosEspecialesPermitidos.push(permisoExistente.tooltip);
+          }
+        },
+        error => console.log(error)
+      );
+    });
+    console.log(this.permisosEspecialesPermitidos);
   }
 
 

@@ -8,12 +8,13 @@
   padding: 0 !important;
 }
 
+
 .cont-btns{
   text-align: right;
-}
-
-.cont-btns button:first-child{
-  margin-right: 10px;
+  #accion-articulos {
+    display: inline;
+    margin-right: 10px;
+  }
 }
 
 

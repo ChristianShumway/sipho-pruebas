@@ -10,8 +10,8 @@
 
 .cont-btns{
   text-align: right;
-}
-
-.cont-btns button:first-child{
-  margin-right: 10px;
+  #accion-empleados {
+    display: inline;
+    margin-right: 10px;
+  }
 }

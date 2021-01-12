@@ -17,6 +17,7 @@ import { VentasRoutingModule } from './ventas-routing.module';
 import { RemisionComponent } from './components/remision/remision.component';
 import { ModalSearchRemisionComponent } from './components/modal-search-remision/modal-search-remision.component';
 import { ArqueoComponent } from './components/arqueo/arqueo.component';
+import { CuentasPorRecibirComponent } from './components/cuentas-por-recibir/cuentas-por-recibir.component';
 
 export let options: Partial<IConfig> | (() => Partial<IConfig>);
 
@@ -24,7 +25,8 @@ export let options: Partial<IConfig> | (() => Partial<IConfig>);
   declarations: [
     RemisionComponent,
     ModalSearchRemisionComponent,
-    ArqueoComponent
+    ArqueoComponent,
+    CuentasPorRecibirComponent
   ],
   imports: [
     CommonModule,

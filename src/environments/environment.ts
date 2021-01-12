@@ -16,5 +16,17 @@ export const environment = {
       tooltip: 'accion-clientes',
       activo: 1
     },
+    {
+      idOpcion: 29,
+      nombre: 'crud-empleados',
+      tooltip: 'accion-empleados',
+      activo: 1
+    },
+    {
+      idOpcion: 30,
+      nombre: 'crud-articulos',
+      tooltip: 'accion-articulos',
+      activo: 1
+    },
   ]
 };

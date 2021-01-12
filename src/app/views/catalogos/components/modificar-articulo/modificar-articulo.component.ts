@@ -13,6 +13,7 @@ import { ModalEliminarComponent } from '../../../../shared/components/modal-elim
 import { switchMap } from 'rxjs/operators';
 import { FileUploader } from 'ng2-file-upload';
 import { ViewChild } from '@angular/core';
+import { NavigationService } from 'app/shared/services/navigation.service';
 
 @Component({
   selector: 'app-modificar-articulo',
@@ -37,6 +38,10 @@ export class ModificarArticuloComponent implements OnInit {
   rutaServer: string;
   loadingFile = false;
 
+  perfil;
+  nombrePermiso = 'crud-articulos';
+  permisosEspecialesPermitidos: any[] = []; //array donde se agrega el nombre de las opciones a las cuales el usuario si tiene permiso
+
   constructor(
     private router: Router,
     private snackBar: MatSnackBar,
@@ -44,15 +49,18 @@ export class ModificarArticuloComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private articuloService: ArticuloService,
     private familiaService: FamiliaService,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    private navigationService: NavigationService
   ) { }
 
   ngOnInit() {
+    this.idUsuarioLogeado = this.autenticacionService.currentUserValue;
+    this.perfil = this.autenticacionService.currentProfileValue;
     this.getValidations();
     this.getArticulo();
     this.getCatalogs();
-    this.idUsuarioLogeado = this.autenticacionService.currentUserValue;
     this.initUploadCatalogo();
+    this.getPermisosEspeciales();
   }
 
   getArticulo() {
@@ -122,6 +130,25 @@ export class ModificarArticuloComponent implements OnInit {
   public onValChange(val) {
     this.selectedVal = val;
     console.log(val);
+  }
+
+  getPermisosEspeciales() {
+    const permisos = environment.permisosEspeciales.filter( permiso => permiso.activo === 1);
+    // console.log(permisos);
+    const permisosEspecialesComponente = permisos.filter( permiso => permiso.nombre === this.nombrePermiso);
+    // console.log(permisosEspecialesComponente);
+    permisosEspecialesComponente.map( permisoExistente => {
+      this.navigationService.validatePermissions(this.perfil.idPerfil, permisoExistente.idOpcion).subscribe(
+        (result:any) => {
+          console.log(result);
+          if(result.estatus === '05'){
+            this.permisosEspecialesPermitidos.push(permisoExistente.tooltip);
+          }
+        },
+        error => console.log(error)
+      );
+    });
+    console.log(this.permisosEspecialesPermitidos);
   }
 
   updateArticle() {

@@ -10,6 +10,8 @@ import { PerfilesService } from 'app/shared/services/perfiles.service';
 import { Perfil } from 'app/shared/models/perfil';
 import { MatButton } from '@angular/material';
 import { ViewChild } from '@angular/core';
+import { environment } from './../../../../../environments/environment';
+import { NavigationService } from 'app/shared/services/navigation.service';
 
 @Component({
   selector: 'app-crear-empleado',
@@ -26,21 +28,27 @@ export class CrearEmpleadoComponent implements OnInit {
   perfiles: Perfil[] = [];
   fechaIngreso;
   @ViewChild(MatButton, {static: false}) submitButton: MatButton;
+  perfil;
+  nombrePermiso = 'crud-empleados';
+  permisosEspecialesPermitidos: any[] = []; //array donde se agrega el nombre de las opciones a las cuales el usuario si tiene permiso
 
   constructor(
     private router: Router,
     private snackBar: MatSnackBar,
     private empleadoService: EmpleadoService,
     private autenticacionService: AutenticacionService,
-    private perfilesService: PerfilesService
+    private perfilesService: PerfilesService,
+    private navigationService: NavigationService
   ) { }
 
   ngOnInit() {
     this.getValidations();
     this.getCatalogs();
     this.idUsuarioLogeado = this.autenticacionService.currentUserValue;
+    this.perfil = this.autenticacionService.currentProfileValue;
     this.fechaIngreso = new Date(this.empleadoForm.controls['fechaIngreso'].value);
     this.fechaIngreso.setDate(this.fechaIngreso.getDate());
+    this.getPermisosEspeciales();
   }
 
   getCatalogs() {
@@ -96,6 +104,25 @@ export class CrearEmpleadoComponent implements OnInit {
 
   public onFechaIngreso(event): void {
     this.fechaIngreso = event.value;
+  }
+
+  getPermisosEspeciales() {
+    const permisos = environment.permisosEspeciales.filter( permiso => permiso.activo === 1);
+    // console.log(permisos);
+    const permisosEspecialesComponente = permisos.filter( permiso => permiso.nombre === this.nombrePermiso);
+    // console.log(permisosEspecialesComponente);
+    permisosEspecialesComponente.map( permisoExistente => {
+      this.navigationService.validatePermissions(this.perfil.idPerfil, permisoExistente.idOpcion).subscribe(
+        (result:any) => {
+          console.log(result);
+          if(result.estatus === '05'){
+            this.permisosEspecialesPermitidos.push(permisoExistente.tooltip);
+          }
+        },
+        error => console.log(error)
+      );
+    });
+    console.log(this.permisosEspecialesPermitidos);
   }
 
   createEmploye() {

@@ -8,6 +8,8 @@ import { AutenticacionService } from 'app/shared/services/autenticacion.service'
 import { FamiliaService } from 'app/shared/services/familia.service';
 import { Familia } from 'app/shared/models/familia';
 import { MatButton } from '@angular/material';
+import { environment } from './../../../../../environments/environment';
+import { NavigationService } from 'app/shared/services/navigation.service';
 
 @Component({
   selector: 'app-crear-articulo',
@@ -21,19 +23,25 @@ export class CrearArticuloComponent implements OnInit {
   familias: Familia[] = [];
   catalogEstatus: EstatusArticulo[] = [];
   @ViewChild(MatButton, {static: false}) submitButton: MatButton;
+  perfil;
+  nombrePermiso = 'crud-articulos';
+  permisosEspecialesPermitidos: any[] = []; //array donde se agrega el nombre de las opciones a las cuales el usuario si tiene permiso
 
   constructor(
     private router: Router,
     private snackBar: MatSnackBar,
     private articuloService: ArticuloService,
     private autenticacionService: AutenticacionService,
-    private familiaService: FamiliaService
+    private familiaService: FamiliaService,
+    private navigationService: NavigationService
   ) { }
 
   ngOnInit() {
+    this.idUsuarioLogeado = this.autenticacionService.currentUserValue;
+    this.perfil = this.autenticacionService.currentProfileValue;
     this.getValidations();
     this.getCatalogs();
-    this.idUsuarioLogeado = this.autenticacionService.currentUserValue;
+    this.getPermisosEspeciales();
   }
 
   getCatalogs() {
@@ -75,6 +83,25 @@ export class CrearArticuloComponent implements OnInit {
         Validators.required,
       ])
     })
+  }
+
+  getPermisosEspeciales() {
+    const permisos = environment.permisosEspeciales.filter( permiso => permiso.activo === 1);
+    // console.log(permisos);
+    const permisosEspecialesComponente = permisos.filter( permiso => permiso.nombre === this.nombrePermiso);
+    // console.log(permisosEspecialesComponente);
+    permisosEspecialesComponente.map( permisoExistente => {
+      this.navigationService.validatePermissions(this.perfil.idPerfil, permisoExistente.idOpcion).subscribe(
+        (result:any) => {
+          console.log(result);
+          if(result.estatus === '05'){
+            this.permisosEspecialesPermitidos.push(permisoExistente.tooltip);
+          }
+        },
+        error => console.log(error)
+      );
+    });
+    console.log(this.permisosEspecialesPermitidos);
   }
 
   createArticle() {

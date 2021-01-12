@@ -130,6 +130,16 @@
           </div>
           <div class="pb-1">
             <mat-form-field class="full-width">
+              <input matInput name="precio" formControlName="precio" placeholder="Precio al Cliente">
+            </mat-form-field>
+            <div class="validaciones">
+              <small *ngIf="clienteForm.controls['precio'].hasError('required') && clienteForm.controls['precio'].touched" class="form-error-msg">
+                Precio es un campo requerido
+              </small>
+            </div>
+          </div>
+          <div class="pb-1">
+            <mat-form-field class="full-width">
               <mat-label>Ruta</mat-label>
               <mat-select formControlName="vistaRuta" required>
                 <mat-option *ngFor="let ruta of rutas" [value]="ruta.idRuta">

@@ -95,7 +95,10 @@
       </div>
 
       <div class="cont-btns">
-        <button mat-raised-button color="primary" [disabled]="articuloForm.invalid" #submitButton type="submit">Agregar</button>
+        <div id="accion-articulos" #myIdButton>
+          <button mat-raised-button color="primary" [disabled]="articuloForm.invalid" type="submit"  *ngIf= "permisosEspecialesPermitidos.includes(myIdButton?.id)">Agregar</button>
+        </div>
+        <!-- <button mat-raised-button color="primary" [disabled]="articuloForm.invalid" #submitButton type="submit">Agregar</button> -->
         <button mat-raised-button [routerLink]="'/catalogos/articulos'">Cancelar</button>
       </div>
     </form>

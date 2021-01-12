@@ -93,8 +93,10 @@ export class CrearClienteComponent implements OnInit {
       ]),
       vistaRuta: new FormControl('', [
         Validators.required
+      ]),
+      precio: new FormControl('', [
+        Validators.required
       ])
-
     })
   }
 
@@ -131,6 +133,7 @@ export class CrearClienteComponent implements OnInit {
         idCliente: 0,
         idEmpleadoModificacion: this.idUsuarioLogeado,
         ...this.clienteForm.value,
+        precio: parseInt(this.clienteForm.value.precio)
       };
 
       console.log(cliente);

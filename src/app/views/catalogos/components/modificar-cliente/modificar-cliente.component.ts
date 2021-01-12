@@ -138,6 +138,9 @@ export class ModificarClienteComponent implements OnInit {
       vistaRuta: new FormControl('', [
         Validators.required,
       ]),
+      precio: new FormControl('', [
+        Validators.required
+      ])
     });
   }
 
@@ -150,7 +153,8 @@ export class ModificarClienteComponent implements OnInit {
         idCliente: parseInt(this.idCliente),
         idEmpleadoModificacion: this.idUsuarioLogeado,
         ...this.clienteForm.value,
-        vistaRuta: newRuta
+        vistaRuta: newRuta,
+        precio: parseInt(this.clienteForm.value.precio)
       };
       console.log(cliente);
       this.clienteService.updateCliente(cliente).subscribe(

@@ -33,12 +33,11 @@
 
 .cont-btns{
   text-align: right;
+  #accion-articulos {
+    display: inline;
+    margin-right: 10px;
+  }
 }
-
-.cont-btns button:first-child{
-  margin-right: 10px;
-}
-
 
 .container {
   margin: 20px 0;

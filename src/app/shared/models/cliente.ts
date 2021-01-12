@@ -18,6 +18,7 @@ export interface Cliente {
   idEmpleadoModificacion?: number;
   qr?: string;
   vistaRuta: Ruta;
+  precio: number;
 }
 
 export interface ClienteContent {
