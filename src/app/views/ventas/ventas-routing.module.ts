@@ -16,9 +16,9 @@ const routes: Routes = [
     data: { title: 'Arqueo', breadcrumb: 'Arqueo'},
   },
   {
-    path:'cuentas-por-recibir',
+    path:'cuentas-por-cobrar',
     component: CuentasPorRecibirComponent,
-    data: { title: 'Cuentas por Recibir', breadcrumb: 'Cuentas por Recibir'},
+    data: { title: 'Cuentas por Cobrar', breadcrumb: 'Cuentas por Cobrar'},
   }
 ];
 
