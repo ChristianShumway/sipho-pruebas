@@ -1,0 +1,77 @@
+<mat-card>
+  <div *ngIf="noData">
+    <div class="wrap-loading-catalog">
+      <mat-spinner [diameter]="60"></mat-spinner>
+    </div>
+  </div>
+  <form [formGroup]="cutsForm" *ngIf="!noData">
+    <div fxFlex="100" fxFlex.gt-md="100" fxFlex.gt-sm="100" class="container-order">
+      <div class="pb-1">
+        <mat-form-field class="full-width">
+          <mat-label>Cortes Pendientes</mat-label>
+          <mat-select formControlName="idCorte" required (selectionChange)="getSelectedCut($event.value)">
+            <mat-option *ngFor="let corte of cortesPendientes" [value]="corte">{{corte.empleado}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <div class="validaciones">
+          <small *ngIf="cutsForm.controls['idCorte'].hasError('required') && cutsForm.controls['idCorte'].touched"
+            class="form-error-msg">
+            El corte es un campo requerido
+          </small>
+        </div>
+      </div>
+    </div>
+  </form>
+</mat-card>
+
+<mat-card *ngIf="corteSeleccionado" class="datacut-container">
+  <div>Empleado: <span>{{corteSeleccionado.empleado}}</span> </div>
+  <div>Fecha de corte: <span>{{corteSeleccionado.fecha | date}}</span> </div>
+  <div>Total entregado: <span>{{corteSeleccionado.total | transformCurrency}}</span> </div>
+</mat-card>
+
+<mat-card *ngIf="corteSeleccionado" class="totals-container">
+  <div>Cantidad de monedas y/o billetes Seleccionados: <span [ngStyle]="{'color': totalValor < corteSeleccionado.total ? 'green' : 'red'}">{{totalSeleccionados}}</span> </div>
+  <div>Total de efectivo registrado: <span [ngStyle]="{'color': totalValor < corteSeleccionado.total ? 'green' : 'red'}">{{totalValor | transformCurrency}}</span> </div>
+  <div> <button #register mat-raised-button color="primary" (click)="realizarCorte()">Realizar Corte</button> </div>
+</mat-card>
+
+<mat-card>
+  <div *ngIf="noData">
+    <div class="wrap-loading-catalog">
+      <mat-spinner [diameter]="60"></mat-spinner>
+    </div>
+  </div>
+
+  <div class="container-money" *ngIf="!noData && tipoMonedas.length">
+    <div class="wrap-money">
+      <div class="row-info title">
+        <div class="col-info">Descripción</div>
+        <div class="col-info">Cantidad</div>
+        <div class="col-info">Total</div>
+      </div>
+      <div class="row-info data" *ngFor="let moneda of tipoMonedas">
+        <div class="col-info name">{{moneda.descripcion}}</div>
+        <div class="col-info count">
+          <div *ngIf="!cutSelected">0</div>
+          <div *ngIf="cutSelected">
+            <mat-form-field class="example-full-width">
+              <mat-label>{{moneda.valor | transformCurrency}}</mat-label>
+              <input 
+              matInput 
+              type="number"
+              [(ngModel)]="moneda.cantidadSeleccionada" 
+              (input) = "getMontosTotales()" 
+              min = 0
+              placeholder="Cantidad" />
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="col-info">
+          <div *ngIf="!cutSelected">$0.00</div>
+          <div *ngIf="cutSelected">{{moneda.valor * moneda.cantidadSeleccionada | transformCurrency}}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</mat-card>

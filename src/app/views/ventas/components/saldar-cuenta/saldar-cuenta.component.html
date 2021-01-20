@@ -1,0 +1,41 @@
+<mat-card>
+  <div *ngIf="searching">
+    <div class="wrap-loading-catalog">
+      <mat-spinner [diameter]="60"></mat-spinner>
+    </div>
+  </div>
+
+  <div class="no-data" *ngIf="noData">
+      <img src="assets/images/not-found.jpg" alt="no">
+  </div>
+
+  <div class="wrap-button" *ngIf="cuentasPorSaldar.length">
+    <button mat-raised-button color="primary" (click)="saldarCuentas()">Saldar</button>
+  </div>
+  <div class="container-counts" *ngIf="cuentasPorSaldar.length">
+    <div class="wrap-counts">
+      <div class="row-info title">
+        <div class="col-info">Seleccionar</div>
+        <div class="col-info">Descripción</div>
+        <div class="col-info">Fecha</div>
+        <div class="col-info">Plazo</div>
+        <div class="col-info">Vencimiento</div>
+        <div class="col-info">Ultimo Pago</div>
+        <div class="col-info">Monto</div>
+        <div class="col-info">Saldo</div>
+      </div>
+      <div class="row-info data" *ngFor="let cuenta of cuentasPorSaldar">
+        <div class="col-info name">
+          <mat-checkbox  class="example-margin" [checked]="cuenta.selected"  (change)="onChange(cuenta.idCuentaPorCobrar, $event)"></mat-checkbox>
+        </div>
+        <div class="col-info">{{cuenta.descripcion}}</div>
+        <div class="col-info">{{cuenta.fechaCreacion | date}}</div>
+        <div class="col-info">{{cuenta.plazo}}</div>
+        <div class="col-info">{{cuenta.vencimiento | date}}</div>
+        <div class="col-info">{{cuenta.fechaUltimoPago | date}}</div>
+        <div class="col-info">{{cuenta.monto | transformCurrency}}</div>
+        <div class="col-info">{{cuenta.saldo | transformCurrency}}</div>
+      </div>
+    </div>
+  </div>
+</mat-card>

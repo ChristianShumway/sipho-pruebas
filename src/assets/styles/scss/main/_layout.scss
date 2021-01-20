@@ -301,6 +301,15 @@ p.p-info-catalogss {
   align-items: center;
 }
 
+
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+  -webkit-appearance: none; 
+  margin: 0; 
+}
+
+input[type=number] { -moz-appearance:textfield; }
+
 @media (max-width: 959px) {
   .app-admin-container.sidebar-full {
     .main-content-wrap {

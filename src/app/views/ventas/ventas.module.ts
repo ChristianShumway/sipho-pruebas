@@ -18,6 +18,8 @@ import { RemisionComponent } from './components/remision/remision.component';
 import { ModalSearchRemisionComponent } from './components/modal-search-remision/modal-search-remision.component';
 import { ArqueoComponent } from './components/arqueo/arqueo.component';
 import { CuentasPorRecibirComponent } from './components/cuentas-por-recibir/cuentas-por-recibir.component';
+import { CortesPendientesComponent } from './components/cortes-pendientes/cortes-pendientes.component';
+import { SaldarCuentaComponent } from './components/saldar-cuenta/saldar-cuenta.component';
 
 export let options: Partial<IConfig> | (() => Partial<IConfig>);
 
@@ -26,7 +28,9 @@ export let options: Partial<IConfig> | (() => Partial<IConfig>);
     RemisionComponent,
     ModalSearchRemisionComponent,
     ArqueoComponent,
-    CuentasPorRecibirComponent
+    CuentasPorRecibirComponent,
+    CortesPendientesComponent,
+    SaldarCuentaComponent
   ],
   imports: [
     CommonModule,

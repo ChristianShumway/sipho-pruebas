@@ -43,30 +43,33 @@ export class RemisionComponent implements OnInit {
 
     sheet.afterDismissed().subscribe(
       data => {
+        console.log(data);
         this.activeSearch = true;
-        this.dataSearching = true;
-        this.dataRemision = null;
-        this.totalVenta = 0;
-        if(data) {
-        //  console.log(data)
-         this.remisionService.getRemision(data.transaccion, data.idCaja).subscribe(
-           response => {
-             this.dataSearching = false;
-             if(response.idVenta !== 0) {
-              this.dataRemision = response;
-              this.dataRemision.viewDetVenta.map( article => {
-                this.totalVenta += article.total;
-              });
-              // console.log(this.totalVenta);
-
-             } else {
-              //  this.dataRemision = null;
-               this.useAlerts('No se encontro remisión con esa transacción', ' ', 'error-dialog');
-             }
-             console.log(this.dataRemision);
-           },
-           error => console.error(error)
-         );
+        if (data) {
+          this.dataSearching = true;
+          this.dataRemision = null;
+          this.totalVenta = 0;
+          if(data) {
+          //  console.log(data)
+           this.remisionService.getRemision(data.transaccion, data.idCaja).subscribe(
+             response => {
+               this.dataSearching = false;
+               if(response.idVenta !== 0) {
+                this.dataRemision = response;
+                this.dataRemision.viewDetVenta.map( article => {
+                  this.totalVenta += article.total;
+                });
+                // console.log(this.totalVenta);
+  
+               } else {
+                //  this.dataRemision = null;
+                 this.useAlerts('No se encontro remisión con esa transacción', ' ', 'error-dialog');
+               }
+               console.log(this.dataRemision);
+             },
+             error => console.error(error)
+           );
+          }
         }
       }
     )
