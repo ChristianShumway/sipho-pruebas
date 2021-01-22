@@ -10,7 +10,7 @@
         <mat-form-field class="full-width">
           <mat-label>Cortes Pendientes</mat-label>
           <mat-select formControlName="idCorte" required (selectionChange)="getSelectedCut($event.value)">
-            <mat-option *ngFor="let corte of cortesPendientes" [value]="corte">{{corte.empleado}}</mat-option>
+            <mat-option *ngFor="let corte of cortesPendientes" [value]="corte">{{corte.empleado}} - {{corte.idCorte}}</mat-option>
           </mat-select>
         </mat-form-field>
         <div class="validaciones">
@@ -31,8 +31,8 @@
 </mat-card>
 
 <mat-card *ngIf="corteSeleccionado" class="totals-container">
-  <div>Cantidad de monedas y/o billetes Seleccionados: <span [ngStyle]="{'color': totalValor < corteSeleccionado.total ? 'green' : 'red'}">{{totalSeleccionados}}</span> </div>
-  <div>Total de efectivo registrado: <span [ngStyle]="{'color': totalValor < corteSeleccionado.total ? 'green' : 'red'}">{{totalValor | transformCurrency}}</span> </div>
+  <div>Cantidad de monedas y/o billetes Seleccionados: <span [ngStyle]="{'color': totalValor <= corteSeleccionado.total ? 'green' : 'red'}">{{totalSeleccionados}}</span> </div>
+  <div>Total de efectivo registrado: <span [ngStyle]="{'color': totalValor <= corteSeleccionado.total ? 'green' : 'red'}">{{totalValor | transformCurrency}}</span> </div>
   <div> <button #register mat-raised-button color="primary" (click)="realizarCorte()">Realizar Corte</button> </div>
 </mat-card>
 
@@ -60,7 +60,7 @@
               <input 
               matInput 
               type="number"
-              [(ngModel)]="moneda.cantidadSeleccionada" 
+              [(ngModel)]="moneda.cantidad" 
               (input) = "getMontosTotales()" 
               min = 0
               placeholder="Cantidad" />
@@ -69,7 +69,7 @@
         </div>
         <div class="col-info">
           <div *ngIf="!cutSelected">$0.00</div>
-          <div *ngIf="cutSelected">{{moneda.valor * moneda.cantidadSeleccionada | transformCurrency}}</div>
+          <div *ngIf="cutSelected">{{moneda.valor * moneda.cantidad | transformCurrency}}</div>
         </div>
       </div>
     </div>

@@ -10,7 +10,7 @@
   </div>
 
   <div class="wrap-button" *ngIf="cuentasPorSaldar.length">
-    <button mat-raised-button color="primary" (click)="saldarCuentas()">Saldar</button>
+    <button #saldar  mat-raised-button color="primary" (click)="saldarCuentas()">Saldar</button>
   </div>
   <div class="container-counts" *ngIf="cuentasPorSaldar.length">
     <div class="wrap-counts">
@@ -24,18 +24,37 @@
         <div class="col-info">Monto</div>
         <div class="col-info">Saldo</div>
       </div>
-      <div class="row-info data" *ngFor="let cuenta of cuentasPorSaldar">
-        <div class="col-info name">
-          <mat-checkbox  class="example-margin" [checked]="cuenta.selected"  (change)="onChange(cuenta.idCuentaPorCobrar, $event)"></mat-checkbox>
-        </div>
-        <div class="col-info">{{cuenta.descripcion}}</div>
-        <div class="col-info">{{cuenta.fechaCreacion | date}}</div>
-        <div class="col-info">{{cuenta.plazo}}</div>
-        <div class="col-info">{{cuenta.vencimiento | date}}</div>
-        <div class="col-info">{{cuenta.fechaUltimoPago | date}}</div>
-        <div class="col-info">{{cuenta.monto | transformCurrency}}</div>
-        <div class="col-info">{{cuenta.saldo | transformCurrency}}</div>
-      </div>
+      <mat-accordion>
+          <!-- #disabledPanel style="pointer-events: none;" -->
+        <mat-expansion-panel hideToggle  *ngFor="let cuenta of cuentasPorSaldar" [disabled]="true"  [expanded]="cuenta.expanded" ngDefaultControl>
+          <mat-expansion-panel-header class="row-infos data">
+            <div class="col-info name">
+              <button   class="button-expanded"  (click)="expandPannel(cuenta.expanded, cuenta.idCuentaPorCobrar)" [disableRipple]="true" mat-icon-button>
+                <mat-icon *ngIf="!cuenta.expanded">remove_circle_outline</mat-icon>
+                <mat-icon *ngIf="cuenta.expanded">clear</mat-icon>
+              </button>
+              <mat-checkbox  class="check-count" [checked]="cuenta.selected"  (change)="onChange(cuenta.idCuentaPorCobrar, $event)"></mat-checkbox>
+            </div>
+            <div class="col-info" style="pointer-events: none;">{{cuenta.descripcion}}</div>
+            <div class="col-info">{{cuenta.fechaCreacion | date}}</div>
+            <div class="col-info">{{cuenta.plazo}}</div>
+            <div class="col-info">{{cuenta.vencimiento | date}}</div>
+            <div class="col-info">{{cuenta.fechaUltimoPago | date}}</div>
+            <div class="col-info">{{cuenta.monto | transformCurrency}}</div>
+            <div class="col-info">{{cuenta.saldo | transformCurrency}}</div>
+          </mat-expansion-panel-header>
+          <div class="wrap-button-check">
+            <!-- <mat-checkbox  class="check-count" [checked]="cuenta.selected"  (change)="onChange(cuenta.idCuentaPorCobrar, $event)">Seleccionar cuenta por cobrar</mat-checkbox> -->
+          </div>
+        </mat-expansion-panel>
+
+      </mat-accordion>
+
     </div>
   </div>
+</mat-card>
+
+<mat-card *ngIf="cuentasPorSaldar.length" class="container-totals">
+  <div>Monto total cuentas seleccionadas: <b [ngStyle] = "{'color': montoTotal > 0 ? 'green' : 'black'}">{{montoTotal | transformCurrency}}</b> </div>
+  <div>Saldo total cuentas seleccionadas: <b [ngStyle] = "{'color': saldoTotal > 0 ? 'green' : 'black'}">{{saldoTotal | transformCurrency}}</b> </div>
 </mat-card>

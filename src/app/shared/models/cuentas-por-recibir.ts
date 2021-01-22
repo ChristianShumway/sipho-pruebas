@@ -24,4 +24,13 @@ export interface CuentaPorSaldar {
   saldo: number;
   fechaUltimoPago: string;
   selected?: boolean;
+  expanded?: boolean;
+}
+
+export interface DatosPagoCuentas {
+  idCliente: number;
+  idEmpleado: number;
+  idPago: number;
+  abono: number;
+  cuentas: CuentaPorSaldar[];
 }

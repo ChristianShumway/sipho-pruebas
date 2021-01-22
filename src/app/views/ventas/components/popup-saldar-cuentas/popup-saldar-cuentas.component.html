@@ -1,0 +1,25 @@
+<div class="container-popup">
+  <div class="wrap-image">
+    <img src="assets/images/logo-panaderia.png" alt="el horno">
+  </div>
+  <div class="wrap-payments">
+    <mat-form-field class="full-width">
+      <mat-label>Tipo de Pago</mat-label>
+      <mat-select [(ngModel)]="tipoPago" required>
+        <mat-option *ngFor="let tipo of tiposPago" [value]="tipo">{{tipo.descripcion}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+  <div class="wrap-money">
+    <mat-form-field class="full-width">
+      <mat-label>Monto a Saldar</mat-label>
+      <input matInput placeholder="Cantidad" [(ngModel)]="saldoACobrar"  mask="separator.2" thousandSeparator=",">
+    </mat-form-field>
+  </div>
+  <div class="wrap-button">
+    <button #save mat-raised-button color="primary" (click)="saveData()">Registrar</button>
+  </div>
+
+
+</div>
+<!-- <button mat-raised-button [color]="'cancel'" (click)="onNoClick()">Cancelar</button> -->

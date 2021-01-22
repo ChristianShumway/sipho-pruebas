@@ -3,7 +3,8 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { BehaviorSubject } from 'rxjs';
 import { retry } from 'rxjs/operators';
-import { CuentasPorRecibir, DataCuentasPorRecibir, CuentaPorSaldar } from '../models/cuentas-por-recibir';
+import { CuentasPorRecibir, DataCuentasPorRecibir, CuentaPorSaldar, DatosPagoCuentas } from '../models/cuentas-por-recibir';
+import { TipoPagos } from './../models/tipo-pagos';
 import { environment } from './../../../environments/environment';
 
 @Injectable({
@@ -27,5 +28,17 @@ export class CuentasPorRecibirService {
     .pipe(
       retry(3)
     ); 
+  }
+
+  getCatalogoTipoPago(): Observable<TipoPagos[]>  {
+    return this.http.get<TipoPagos[]>(`${environment.apiURL}/catalog/getPayments`)
+    .pipe(
+      retry(3)
+    ); 
+  }
+
+  savePay(dataPay: DatosPagoCuentas): Observable<any>{
+    const headerss = new HttpHeaders({'Content-Type': 'application/json'});
+    return this.http.post<any>(`${environment.apiURL}/sale/accountForReciver/pay`, JSON.stringify(dataPay), { headers: headerss});
   }
 }

@@ -27,4 +27,11 @@ export class CortesPendientesService {
     ); ;
   }
 
+  SaveCut(data: TipoMonedas[]): Observable<any>{
+    const headerss = new HttpHeaders({'Content-Type': 'application/json'});
+    return this.http.post<any>(`${environment.apiURL}/sale/cuts/associateCut`, JSON.stringify(data), { headers: headerss}).pipe(
+      retry(3)
+    );
+  }
+
 }

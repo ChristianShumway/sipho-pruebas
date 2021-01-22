@@ -10,5 +10,8 @@ export interface TipoMonedas {
   descripcion: string;
   valor: number;
   orden: number;
-  cantidadSeleccionada?: number;
+  cantidad: number;
+  monto: number;
+  idFolioCorte: number;
+  idEmpleado: number;
 }

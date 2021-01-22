@@ -20,6 +20,7 @@ import { ArqueoComponent } from './components/arqueo/arqueo.component';
 import { CuentasPorRecibirComponent } from './components/cuentas-por-recibir/cuentas-por-recibir.component';
 import { CortesPendientesComponent } from './components/cortes-pendientes/cortes-pendientes.component';
 import { SaldarCuentaComponent } from './components/saldar-cuenta/saldar-cuenta.component';
+import { PopupSaldarCuentasComponent } from './components/popup-saldar-cuentas/popup-saldar-cuentas.component';
 
 export let options: Partial<IConfig> | (() => Partial<IConfig>);
 
@@ -30,7 +31,8 @@ export let options: Partial<IConfig> | (() => Partial<IConfig>);
     ArqueoComponent,
     CuentasPorRecibirComponent,
     CortesPendientesComponent,
-    SaldarCuentaComponent
+    SaldarCuentaComponent,
+    PopupSaldarCuentasComponent
   ],
   imports: [
     CommonModule,
@@ -45,10 +47,11 @@ export let options: Partial<IConfig> | (() => Partial<IConfig>);
     FileUploadModule,
     SharedModule,
     QuillModule,
-    NgxMaskModule
+    NgxMaskModule.forRoot(options)
   ],
   entryComponents: [
-    ModalSearchRemisionComponent
+    ModalSearchRemisionComponent,
+    PopupSaldarCuentasComponent
   ]
 })
 export class VentasModule { }
