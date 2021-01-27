@@ -1,4 +1,52 @@
 <mat-card>
+  <form [formGroup]="searchForm" (submit)="buscarCuentas()">
+    
+    <div>
+      <div class="pb-1">
+        <mat-form-field class="full-width">
+          <input matInput [matDatepicker]="fechaInicio" formControlName="fechaInicio" name="date" placeholder="Fecha Captura"
+            (dateChange)="onFechaInicio($event)">
+          <mat-datepicker-toggle matSuffix [for]="fechaInicio"></mat-datepicker-toggle>
+          <mat-datepicker #fechaInicio (selectedChange)="onFechaInicio($event)"></mat-datepicker>
+        </mat-form-field>
+        <div class="validaciones">
+          <small *ngIf="searchForm.controls['fechaInicio'].hasError('required') && searchForm.controls['fechaInicio'].touched"
+            class="form-error-msg">
+            Fecha inicial es un campo requerido
+          </small>
+        </div>
+        <div class="validaciones">
+          <small *ngIf="error.isError" class="form-error-msg">
+            {{ error.errorMessage }}
+          </small>
+        </div>
+      </div>
+
+      <div class="pb-1">
+        <mat-form-field class="full-width">
+          <input matInput [matDatepicker]="fechaFin" formControlName="fechaFin" name="date" placeholder="Fecha Fin" (dateChange)="onFechaFin($event)">
+          <mat-datepicker-toggle matSuffix [for]="fechaFin"></mat-datepicker-toggle>
+          <mat-datepicker #fechaFin (selectedChange)="onFechaFin($event)"></mat-datepicker>
+        </mat-form-field>
+        <div class="validaciones">
+          <small *ngIf="searchForm.controls['fechaFin'].hasError('required') && searchForm.controls['fechaFin'].touched"
+            class="form-error-msg">
+            Fecha Final es un campo requerido
+          </small>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="wrap-button">
+      <button class="cancel" mat-raised-button type="button" (click)="getData()">Cancelar</button>
+      <button mat-raised-button color="primary" [disabled]="searchForm.invalid" type="submit" class="btn-accept" >Buscar</button>
+    </div>
+  </form>
+    
+</mat-card>
+
+<mat-card>
   <div *ngIf="searching">
     <div class="wrap-loading-catalog">
       <mat-spinner [diameter]="60"></mat-spinner>
@@ -33,7 +81,8 @@
                 <mat-icon *ngIf="!cuenta.expanded">remove_circle_outline</mat-icon>
                 <mat-icon *ngIf="cuenta.expanded">clear</mat-icon>
               </button>
-              <mat-checkbox  class="check-count" [checked]="cuenta.selected"  (change)="onChange(cuenta.idCuentaPorCobrar, $event)"></mat-checkbox>
+              <mat-checkbox  class="check-count" [checked]="cuenta.selected" *ngIf="cuenta.saldo > 0"  (change)="onChange(cuenta.idCuentaPorCobrar, $event)"></mat-checkbox>
+              <mat-checkbox  class="check-count" [checked]="cuenta.selected" disabled *ngIf="cuenta.saldo === 0"  (change)="onChange(cuenta.idCuentaPorCobrar, $event)"></mat-checkbox>
             </div>
             <div class="col-info" style="pointer-events: none;">{{cuenta.descripcion}}</div>
             <div class="col-info">{{cuenta.fechaCreacion | date}}</div>
@@ -43,11 +92,35 @@
             <div class="col-info">{{cuenta.monto | transformCurrency}}</div>
             <div class="col-info">{{cuenta.saldo | transformCurrency}}</div>
           </mat-expansion-panel-header>
-          <div class="wrap-button-check">
-            <!-- <mat-checkbox  class="check-count" [checked]="cuenta.selected"  (change)="onChange(cuenta.idCuentaPorCobrar, $event)">Seleccionar cuenta por cobrar</mat-checkbox> -->
+          <div class="container-data-search">
+            <div *ngIf="searchingDetailsCount">
+              <div class="wrap-loading-catalog">
+                <mat-spinner [diameter]="60"></mat-spinner>
+              </div>
+            </div>
+            
+            <div class="data-details" *ngIf="detalleCuentasPorPagar.length">
+              <div class="wrap-details">
+                <div class="row-info title">
+                  <div class="col-info">Tipo de Pago</div>
+                  <div class="col-info">Monto</div>
+                  <div class="col-info">Fecha de Pago</div>
+                  <div class="col-info">Estatus</div>
+                </div>
+                <div class="row-info data" *ngFor="let detalle of detalleCuentasPorPagar">
+                  <div class="col-info">{{detalle.pago.descripcion || "-"}}</div>
+                  <div class="col-info">{{detalle.monto | transformCurrency}}</div>
+                  <div class="col-info">{{detalle.fechaPago | date}}</div>
+                  <div class="col-info">{{detalle.estatus}}</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="no-data-details" *ngIf="noFoundDetails">
+                <img src="assets/images/not-found.jpg" alt="no">
+            </div>
           </div>
         </mat-expansion-panel>
-
       </mat-accordion>
 
     </div>

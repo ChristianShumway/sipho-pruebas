@@ -7,6 +7,9 @@ import { MatExpansionPanel, MatDialog, MatSnackBar, MatButton } from '@angular/m
 import { PopupSaldarCuentasComponent } from '../popup-saldar-cuentas/popup-saldar-cuentas.component';
 import { TipoPagos } from 'app/shared/models/tipo-pagos';
 import { AutenticacionService } from 'app/shared/services/autenticacion.service';
+import { DetallesCuentaPorPagar } from 'app/shared/models/detalles-cuenta-por-pagar';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-saldar-cuenta',
@@ -25,6 +28,15 @@ export class SaldarCuentaComponent implements OnInit {
   public montoTotal: number;
   public saldoTotal: number;
   @ViewChild('saldar', {static: false}) btnSaldar: MatButton;
+  public detalleCuentasPorPagar: DetallesCuentaPorPagar[] = [];
+  public searchingDetailsCount: boolean = false;
+  public noFoundDetails: boolean = false;
+  
+  fechaInicio;
+  fechaFin;
+  pipe = new DatePipe('en-US');
+  searchForm: FormGroup;
+  error:any={isError:false,errorMessage:''};
 
   constructor(
     private cuentasPorRecibirService: CuentasPorRecibirService,
@@ -37,36 +49,105 @@ export class SaldarCuentaComponent implements OnInit {
 
   ngOnInit() {
     this.idUsuarioLogeado = this.autenticacionService.currentUserValue;
+    this.getValidations();
     this.getData();
     this.getCatalogoTipoCuentas();
+    this.fechaInicio = new Date(this.searchForm.controls['fechaInicio'].value);
+    this.fechaInicio.setDate(this.fechaInicio.getDate());
+    this.fechaFin = new Date(this.searchForm.controls['fechaFin'].value);
+    this.fechaFin.setDate(this.fechaFin.getDate());
+  }
+
+  getValidations(){
+    this.searchForm = new FormGroup({
+      fechaInicio: new FormControl(new Date(), Validators.required),
+      fechaFin: new FormControl(new Date(), Validators.required)
+    })
+  }
+
+  public onFechaInicio(event): void {
+    this.fechaInicio = event.value;
+    this.compareTwoDates();
+  }
+
+  public onFechaFin(event): void {
+    this.fechaFin = event.value;
+    this.compareTwoDates();
+  }
+
+  compareTwoDates(){
+    const controlFechaInicio = new Date(this.searchForm.controls['fechaInicio'].value);
+    const controlFechaFin = new Date(this.searchForm.controls['fechaFin'].value);
+
+    if( controlFechaFin < controlFechaInicio){
+      this.error={isError:true,errorMessage:'Fecha inicial de la busqueda no puede ser mayor a la fecha final del mismo'};
+      this.searchForm.controls['fechaInicio'].setValue(new Date(this.searchForm.controls['fechaFin'].value));
+      this.fechaInicio =  new Date(this.searchForm.controls['fechaInicio'].value);
+      const controlFechaInicio = new Date(this.searchForm.controls['fechaInicio'].value);
+      const controlFechaFin = new Date(this.searchForm.controls['fechaFin'].value);
+    } else {
+      this.error={isError:false};
+    }
   }
 
   getData() {
+    this.accionesRepetidas();
+    this.activatedRoute.params.pipe(
+      switchMap( (data: Params) => this.cuentasPorRecibirService.getCuentasPorSaldar(data.idCliente))
+    ).subscribe(
+      result => {
+        this.accionesResult(result);
+      },
+      error => {
+        console.log(error);
+        this.useAlerts(error.message, ' ', 'error-dialog');
+      }
+    );
+  }
+
+  buscarCuentas() {
+    if(this.searchForm.valid) {
+      const format = 'yyyy-MM-dd';
+      const nuevaFechaInicio = this.pipe.transform(this.fechaInicio, format);
+      const nuevaFechaFin = this.pipe.transform(this.fechaFin, format);
+      this.accionesRepetidas();
+
+      this.cuentasPorRecibirService.getCuentasPorSaldarPorPeriodo(nuevaFechaInicio, nuevaFechaFin, this.idCliente).subscribe(
+        result => {
+          // console.log(result);
+          this.accionesResult(result);
+        },
+        error => {
+          console.log(error);
+          this.useAlerts(error.message, ' ', 'error-dialog');
+        }
+      );
+    }
+  }
+
+  accionesRepetidas() {
     this.cuentasPorSaldar = [];
     this.noData = false;
     this.searching = true;
     this.montoTotal = 0;
     this.saldoTotal = 0;
-    this.activatedRoute.params.pipe(
-      switchMap( (data: Params) => this.cuentasPorRecibirService.getCuentasPorSaldar(data.idCliente))
-    ).subscribe(
-      result => {
-        this.searching = false;
-        if(!result.length) {
-          this.noData = true;
-          this.cuentasPorSaldar = [];
-        } else {
-          // console.log(result);
-          this.noData = false;
-          this.idCliente = result[0].idCliente;
-          result.map( cuenta => {
-            this.cuentasPorSaldar = [...this.cuentasPorSaldar, {...cuenta, selected: false, expanded: false}];
-          })
-          console.log(this.cuentasPorSaldar);
-        }
-      },
-      error => console.log(error)
-    );
+  }
+
+  accionesResult(result) {
+    this.searching = false;
+    if(!result.length) {
+      this.noData = true;
+      this.cuentasPorSaldar = [];
+      this.useAlerts('No se encontraron cuentas por mostrar', ' ', 'error-dialog');
+    } else {
+      // console.log(result);
+      this.noData = false;
+      this.idCliente = result[0].idCliente;
+      result.map( cuenta => {
+        this.cuentasPorSaldar = [...this.cuentasPorSaldar, {...cuenta, selected: false, expanded: false}];
+      })
+      console.log(this.cuentasPorSaldar);
+    }
   }
 
   onChange(idCuenta, event) {
@@ -85,8 +166,6 @@ export class SaldarCuentaComponent implements OnInit {
 
   expandPannel(expanded, idCuenta) {
     expanded = !expanded;
-    // console.log(expanded);
-    // console.log(idCuenta);
     this.cuentasPorSaldar.map( cuenta => {
       if(cuenta.idCuentaPorCobrar === idCuenta) {
         cuenta.expanded = expanded;
@@ -100,15 +179,31 @@ export class SaldarCuentaComponent implements OnInit {
   }
 
   searchHistory(idCuenta) {
-    console.log(idCuenta)
+    this.detalleCuentasPorPagar = [];
+    this.searchingDetailsCount = true;
+    this.noFoundDetails = false;
+    this.cuentasPorRecibirService.getDetallesCuentaPorCobrar(idCuenta).subscribe(
+      result => {
+        // console.log(result);
+        this.searchingDetailsCount = false;
+        this.detalleCuentasPorPagar = result;
+        if(result.length) { 
+          this.noFoundDetails = false;
+        } else {
+          this.noFoundDetails = true;
+          this.useAlerts('No se encontraron detalles de esta cuenta por mostrar', ' ', 'error-dialog');
+        } 
+      },
+      error => {
+        console.error(error);
+        this.useAlerts(error.message, ' ', 'error-dialog');
+      }
+    );
   }
 
   getCatalogoTipoCuentas() {
     this.cuentasPorRecibirService.getCatalogoTipoPago().subscribe(
-      tipoPago => {
-        // console.log(tipoPago);
-        this.tipoPagos = tipoPago;
-      },
+      tipoPago => this.tipoPagos = tipoPago,
       error => console.log(error)
     );
   }
