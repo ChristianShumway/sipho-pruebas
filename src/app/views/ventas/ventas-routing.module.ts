@@ -5,6 +5,7 @@ import { ArqueoComponent } from './components/arqueo/arqueo.component';
 import { CuentasPorRecibirComponent } from './components/cuentas-por-recibir/cuentas-por-recibir.component';
 import { CortesPendientesComponent } from './components/cortes-pendientes/cortes-pendientes.component';
 import { SaldarCuentaComponent } from './components/saldar-cuenta/saldar-cuenta.component';
+import { VerCortesComponent } from './components/ver-cortes/ver-cortes.component';
 
 const routes: Routes = [
   {
@@ -31,6 +32,11 @@ const routes: Routes = [
     path:'saldar-cuenta/:idCliente',
     component: SaldarCuentaComponent,
     data: { title: 'Saldar Cuenta', breadcrumb: 'Saldar Cuenta'},
+  },
+  {
+    path:'ver-cortes',
+    component: VerCortesComponent,
+    data: { title: 'Cortes Realizados', breadcrumb: 'Cortes Realizados'},
   }
 ];
 

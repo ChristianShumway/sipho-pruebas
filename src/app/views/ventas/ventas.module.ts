@@ -21,6 +21,7 @@ import { CuentasPorRecibirComponent } from './components/cuentas-por-recibir/cue
 import { CortesPendientesComponent } from './components/cortes-pendientes/cortes-pendientes.component';
 import { SaldarCuentaComponent } from './components/saldar-cuenta/saldar-cuenta.component';
 import { PopupSaldarCuentasComponent } from './components/popup-saldar-cuentas/popup-saldar-cuentas.component';
+import { VerCortesComponent } from './components/ver-cortes/ver-cortes.component';
 
 export let options: Partial<IConfig> | (() => Partial<IConfig>);
 
@@ -32,7 +33,8 @@ export let options: Partial<IConfig> | (() => Partial<IConfig>);
     CuentasPorRecibirComponent,
     CortesPendientesComponent,
     SaldarCuentaComponent,
-    PopupSaldarCuentasComponent
+    PopupSaldarCuentasComponent,
+    VerCortesComponent
   ],
   imports: [
     CommonModule,
