@@ -2,20 +2,17 @@ import { Component, OnInit, ViewChild, ChangeDetectorRef, AfterViewInit } from '
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { DatePipe } from '@angular/common';
 import { MatExpansionPanel, MatDialog, MatSnackBar, MatButton } from '@angular/material';
-import {animate, state, style, transition, trigger} from '@angular/animations';
-import { CortesService } from 'app/shared/services/cortes.service';
-import { Cortes } from 'app/shared/models/cortes';
+import {animate, state, style, transition, trigger} from '@angular/animations'
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { DesgloseMoneda, DetalleCorte } from 'app/shared/models/detalles-corte';
+import { ValeService } from 'app/shared/services/vale.service';
 import { Vale } from 'app/shared/models/vale';
 
-
 @Component({
-  selector: 'app-ver-cortes',
-  templateUrl: './ver-cortes.component.html',
-  styleUrls: ['./ver-cortes.component.scss'],
+  selector: 'app-ver-vales-caja',
+  templateUrl: './ver-vales-caja.component.html',
+  styleUrls: ['./ver-vales-caja.component.scss'],
   animations: [
     trigger('detailExpand', [
       state('collapsed', style({height: '0px', minHeight: '0'})),
@@ -24,7 +21,7 @@ import { Vale } from 'app/shared/models/vale';
     ]),
   ]
 })
-export class VerCortesComponent implements OnInit, AfterViewInit {
+export class VerValesCajaComponent implements OnInit, AfterViewInit {
 
   @ViewChild('buscar', {static:false}) btnBuscar: MatButton;
   public fechaInicio;
@@ -33,26 +30,18 @@ export class VerCortesComponent implements OnInit, AfterViewInit {
   public searchForm: FormGroup;
   public error:any={isError:false,errorMessage:''};
   public paginaActual: number = 0;
-  public cortesEncontrados: Cortes[] =[];
-  public searchCuts: boolean = false;
-  public noCuts: boolean = false;
-  public dataSource: MatTableDataSource<Cortes>;
+  public valesCajaEncontrados: Vale[] =[];
+  public searchVale: boolean = false;
+  public noVales: boolean = false;
+  public dataSource: MatTableDataSource<Vale>;
   @ViewChild(MatPaginator, {static: false}) paginator: MatPaginator;
   @ViewChild(MatSort, {static: false}) sort: MatSort;
-  columnsToDisplay =   ['idCorte','empleado','fecha','ruta','caja'];
+  columnsToDisplay =   ['no','motivo', 'monto', 'registro','ruta','caja'];
   public expandedElement: any | null;
   public totalItemsNow;
 
-  public detalleCorte: DetalleCorte;
-  public vales: Vale[] = [];
-  public desgloseMoneda: DesgloseMoneda[] = [];
-  public searchDetailsCut: boolean = false;
-  public dataDet: boolean = false;
-  panelOpenState = false;
-
   constructor(
-    private cortesService: CortesService,
-    private dialog: MatDialog,
+    private valeService: ValeService,
     private snackBar: MatSnackBar,
     private changeDetectorRef: ChangeDetectorRef,
   ) { }
@@ -67,7 +56,7 @@ export class VerCortesComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.dataSource = new MatTableDataSource(this.cortesEncontrados);
+    this.dataSource = new MatTableDataSource(this.valesCajaEncontrados);
     this.dataSource.paginator = this.paginator;
     this.modifPaginator();
   }
@@ -105,34 +94,33 @@ export class VerCortesComponent implements OnInit, AfterViewInit {
   }
 
   resetFlags() {
-    this.searchCuts = true;
-    this.noCuts = false;
-    this.cortesEncontrados = [];
+    this.searchVale = true;
+    this.noVales = false;
+    this.valesCajaEncontrados = [];
   }
-
-  buscarCuentas() {
+  
+  buscarVales() {
     if(this.searchForm.valid) {
       this.btnBuscar.disabled = true;
       const format = 'yyyy-MM-dd';
       const nuevaFechaInicio = this.pipe.transform(this.fechaInicio, format);
       const nuevaFechaFin = this.pipe.transform(this.fechaFin, format);
       this.resetFlags();
-
-      this.cortesService.getCortesPorPeriodo(nuevaFechaInicio, nuevaFechaFin, this.paginaActual).subscribe(
+      
+      this.valeService.getValesCajaPorPeriodo(nuevaFechaInicio, nuevaFechaFin, this.paginaActual).subscribe(
         result => {
-          // console.log(result);
+          console.log(result);
           this.btnBuscar.disabled = false;
-          this.searchCuts = false;
-          this.cortesEncontrados = result.content;
+          this.searchVale = false;
+          this.valesCajaEncontrados = result.content;
           
-          
-          if(this.cortesEncontrados.length) {
+          if(this.valesCajaEncontrados.length) {
             this.paginator.length = result.totalItems;
             this.totalItemsNow = this.paginator.length;
-            this.dataSource = new MatTableDataSource(this.cortesEncontrados);
-            // console.log(this.cortesEncontrados);
+            this.dataSource = new MatTableDataSource(this.valesCajaEncontrados);
+            console.log(this.valesCajaEncontrados);
           } else {
-            this.noCuts = true;
+            this.noVales = true;
             this.useAlerts('No se encontraron cortes en este rango de fechas', '', 'error-dialog');
           }
         }, 
@@ -142,14 +130,13 @@ export class VerCortesComponent implements OnInit, AfterViewInit {
           this.btnBuscar.disabled = false;
         }
       );
-      
     }
   }
 
   public pageEvent(event?:PageEvent){
     console.log(event.pageIndex);
     this.paginaActual = event.pageIndex;
-    this.buscarCuentas();
+    this.buscarVales();
   }
 
   modifPaginator() {
@@ -160,33 +147,6 @@ export class VerCortesComponent implements OnInit, AfterViewInit {
       const end = (page + 1) * pageSize;
       return `${start} - ${end} de ${length}`;
     };
-  }
-
-  verDetallesCorte(corte: Cortes, element) {
-    if(corte !== element) {
-      this.desgloseMoneda = [];
-      this.detalleCorte = null;
-      this.vales = [];
-      this.searchDetailsCut = true;
-      this.dataDet = false;
-
-      this.cortesService.getDetallesCorte(corte.idCorte, corte.idCaja).subscribe(
-        result => {
-          this.dataDet = true;
-          this.searchDetailsCut = false;
-          this.desgloseMoneda = result.desgloseMoneda;
-          this.detalleCorte = result.corte;
-          this.vales = result.vales;
-          console.log(this.desgloseMoneda);
-          console.log(this.detalleCorte);
-          console.log(this.vales);
-        }, 
-        error => {
-          console.error(error);
-          this.searchDetailsCut = false;
-        }
-      );
-    }
   }
 
   useAlerts(message, action, className){

@@ -1,0 +1,240 @@
+<mat-card>
+  <form [formGroup]="searchForm" (submit)="buscarVales()">
+
+    <div class="wrap-form">
+      <div class="pb-1">
+        <mat-form-field class="full-width">
+          <input matInput [matDatepicker]="fechaInicio" formControlName="fechaInicio" name="date" placeholder="Fecha Inicio" (dateChange)="onFechaInicio($event)">
+          <mat-datepicker-toggle matSuffix [for]="fechaInicio"></mat-datepicker-toggle>
+          <mat-datepicker #fechaInicio (selectedChange)="onFechaInicio($event)"></mat-datepicker>
+        </mat-form-field>
+        <div class="validaciones">
+          <small *ngIf="searchForm.controls['fechaInicio'].hasError('required') && searchForm.controls['fechaInicio'].touched" class="form-error-msg">
+            Fecha inicial es un campo requerido
+          </small>
+        </div>
+        <div class="validaciones">
+          <small *ngIf="error.isError" class="form-error-msg">
+            {{ error.errorMessage }}
+          </small>
+        </div>
+      </div>
+      <div class="pb-1">
+        <mat-form-field class="full-width">
+          <input matInput [matDatepicker]="fechaFin" formControlName="fechaFin" name="date" placeholder="Fecha Fin" (dateChange)="onFechaFin($event)">
+          <mat-datepicker-toggle matSuffix [for]="fechaFin"></mat-datepicker-toggle>
+          <mat-datepicker #fechaFin (selectedChange)="onFechaFin($event)"></mat-datepicker>
+        </mat-form-field>
+        <div class="validaciones">
+          <small *ngIf="searchForm.controls['fechaFin'].hasError('required') && searchForm.controls['fechaFin'].touched" class="form-error-msg">
+            Fecha Final es un campo requerido
+          </small>
+        </div>
+      </div>
+    </div>
+
+    <div class="wrap-button">
+      <!-- <button class="cancel" mat-raised-button type="button" (click)="getData()">Cancelar</button> -->
+      <button mat-raised-button #buscar color="primary" [disabled]="searchForm.invalid" type="submit" class="btn-accept">Buscar</button>
+    </div>
+  </form>
+</mat-card>
+
+<mat-card [ngStyle]="{'visibility': searchVale || noVales || valesCajaEncontrados.length ? 'visible' : 'hidden' }">
+  <div *ngIf="searchVale">
+    <div class="wrap-loading-catalog">
+      <mat-spinner [diameter]="60"></mat-spinner>
+    </div>
+  </div>
+  <div class="no-data" *ngIf="noVales">
+    <img src="assets/images/not-found.jpg" alt="no">
+  </div>
+
+  <div class="cuts-container mat-elevation-z8" *ngIf="valesCajaEncontrados.length">
+    <table mat-table [dataSource]="dataSource" multiTemplateDataRows class="mat-elevation-z8">
+      <ng-container matColumnDef="no">
+        <mat-header-cell *matHeaderCellDef class="center-table"> No. Vale </mat-header-cell>
+        <mat-cell *matCellDef="let vale; let i = index" class="center-table">
+          <span class="mobile-label">No. Vale:</span>
+          <!-- {{dataSource.filteredData.indexOf(vale) + 1}} -->
+          {{vale.idValeCaja}}
+        </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="motivo">
+        <mat-header-cell *matHeaderCellDef class="center-table"> Motivo </mat-header-cell>
+        <mat-cell *matCellDef="let vale" class="center-table">
+          <span class="mobile-label">Motivo:</span>
+          {{vale.motivo}}
+        </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="monto">
+        <mat-header-cell *matHeaderCellDef class="center-table"> Monto </mat-header-cell>
+        <mat-cell *matCellDef="let vale" class="center-table">
+          <span class="mobile-label">Monto:</span>
+          {{vale.monto | transformCurrency}}
+        </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="registro">
+        <mat-header-cell *matHeaderCellDef class="center-table"> Fecha registro </mat-header-cell>
+        <mat-cell *matCellDef="let vale" class="center-table">
+          <span class="mobile-label">Fecha registro:</span>
+          {{vale.registro | date}}
+        </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="ruta">
+        <mat-header-cell *matHeaderCellDef class="center-table"> Ruta </mat-header-cell>
+        <mat-cell *matCellDef="let vale" class="center-table">
+          <span class="mobile-label">Ruta:</span>
+          {{vale.caja.ruta.descripcion}}
+        </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="caja">
+        <mat-header-cell *matHeaderCellDef class="center-table"> Caja </mat-header-cell>
+        <mat-cell *matCellDef="let vale" class="center-table">
+          <span class="mobile-label">Caja:</span>
+          {{vale.caja.idCaja}}
+        </mat-cell>
+      </ng-container>
+
+
+
+      <ng-container matColumnDef="expandedDetail" class="show-button">
+        <mat-cell *matCellDef="let vale" [attr.colspan]="columnsToDisplay.length">
+          <div class="cut-element-detail" [@detailExpand]="vale == expandedElement ? 'expanded' : 'collapsed'">
+            <!-- <div class="cut-element-description">
+              <div *ngIf="searchDetailsCut">
+                <div class="wrap-loading-catalog">
+                  <mat-spinner [diameter]="60"></mat-spinner>
+                </div>
+              </div>
+              <mat-accordion *ngIf="dataDet" class="container-accordion">
+                <mat-expansion-panel>
+                  <mat-expansion-panel-header>
+                    <mat-panel-title>
+                      <span class="titulo-panel">Desglose de Moneda</span>
+                    </mat-panel-title>
+                    <mat-panel-description>
+                    </mat-panel-description>
+                  </mat-expansion-panel-header>
+                  <div class="scroll-info" *ngIf="desgloseMoneda.length">
+                    <div class="wrap-info">
+                      <div class="row-info header">
+                        <div class="col-info">Descripción</div>
+                        <div class="col-info">Cantidad</div>
+                        <div class="col-info">Total</div>
+                      </div>
+                      <div class="row-info body" *ngFor="let moneda of desgloseMoneda">
+                        <div class="col-info">{{moneda.descripcion}}</div>
+                        <div class="col-info">{{moneda.cantidad}}</div>
+                        <div class="col-info">{{moneda.total | transformCurrency}}</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="no-data" *ngIf="!desgloseMoneda.length">
+                    <img src="assets/images/not-found.jpg" alt="no">
+                  </div>
+                </mat-expansion-panel>
+
+                <mat-expansion-panel>
+                  <mat-expansion-panel-header>
+                    <mat-panel-title>
+                      <span class="titulo-panel">Datos de Corte</span>
+                    </mat-panel-title>
+                    <mat-panel-description>
+                    </mat-panel-description>
+                  </mat-expansion-panel-header>
+                  <div class="scroll-info" *ngIf="detalleCorte">
+                    <div class="wrap-date">
+                      <b>Fecha de Creación:</b> {{detalleCorte.fechaCreacion | date}}
+                    </div>
+                    <div class="wrap-info-cut">
+                      <div class="item">
+                        <b>Importe:</b> {{detalleCorte.importe | transformCurrency}}</div>
+                      <div class="item">
+                        <b>Transacción:</b> {{detalleCorte.transaccion | transformCurrency}}</div>
+                      <div class="item">
+                        <b>Retiro:</b> {{detalleCorte.retiro | transformCurrency}}</div>
+                      <div class="item">
+                        <b>Incremento:</b> {{detalleCorte.incremento | transformCurrency}}</div>
+                      <div class="item">
+                        <b>Devolución:</b>
+                        <span>{{detalleCorte.devolucion | transformCurrency}}</span>
+                      </div>
+                      <div class="item">
+                        <b>Excento:</b> {{detalleCorte.excento | transformCurrency}}</div>
+                      <div class="item">
+                        <b>Grabado:</b> {{detalleCorte.grabado | transformCurrency}}</div>
+                      <div class="item">
+                        <b>Descuento:</b>
+                        <span>{{detalleCorte.descuento | transformCurrency}}</span>
+                      </div>
+                      <div class="item">
+                        <b>Abono Credito:</b> {{detalleCorte.abonoCredito | transformCurrency}}</div>
+                      <div class="item">
+                        <b>Vale de Caja:</b>
+                        <span>{{detalleCorte.valeCaja | transformCurrency}}</span>
+                      </div>
+                      <div class="item">
+                        <b>Pagos Personales:</b>
+                        <span>{{detalleCorte.pagosPersonales | transformCurrency}}</span>
+                      </div>
+                      <div class="item">
+                        <b>Promociones:</b> {{detalleCorte.promociones | transformCurrency}}</div>
+                    </div>
+                    <div class="wrap-total">
+                      <b>Total:</b> {{detalleCorte.total | transformCurrency}}
+                    </div>
+                  </div>
+                  <div class="no-data" *ngIf="!detalleCorte">
+                    <img src="assets/images/not-found.jpg" alt="no">
+                  </div>
+                </mat-expansion-panel>
+
+                <mat-expansion-panel>
+                  <mat-expansion-panel-header>
+                    <mat-panel-title>
+                      <span class="titulo-panel">Datos de Vales</span>
+                    </mat-panel-title>
+                    <mat-panel-description>
+                    </mat-panel-description>
+                  </mat-expansion-panel-header>
+                  <div class="scroll-info" *ngIf="vales.length">
+                    <div class="wrap-info">
+                      <div class="row-info header">
+                        <div class="col-info">Monto</div>
+                        <div class="col-info">Motivo</div>
+                        <div class="col-info">Registro</div>
+                      </div>
+                      <div class="row-info body" *ngFor="let vale of vales">
+                        <div class="col-info">{{vale.monto | transformCurrency}}</div>
+                        <div class="col-info">{{vale.motivo}}</div>
+                        <div class="col-info">{{vale.registro | date}}</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="no-data" *ngIf="!vales.length">
+                    <img src="assets/images/not-found.jpg" alt="no">
+                  </div>
+                </mat-expansion-panel>
+
+              </mat-accordion>
+            </div> -->
+          </div>
+        </mat-cell>
+      </ng-container>
+
+      <mat-header-row *matHeaderRowDef="columnsToDisplay; sticky: true"></mat-header-row>
+      <mat-row *matRowDef="let vale; columns: columnsToDisplay;" class="cut-element-row" [class.order-expanded-row]="expandedElement === vale"
+        (click)="expandedElement = expandedElement === vale ? null : vale.idValeCaja">
+      </mat-row>
+      <mat-row *matRowDef="let row; columns: ['expandedDetail']" class="cut-detail-row show-row"></mat-row>
+      <!-- <mat-paginator [length]="20" [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator> -->
+    </table>
+  </div>
+  <mat-paginator [pageSizeOptions]="[10]" (page)="pageEvent($event)" [ngStyle]="{'visibility': valesCajaEncontrados.length ? 'visible' : 'hidden' }"></mat-paginator>
+</mat-card>

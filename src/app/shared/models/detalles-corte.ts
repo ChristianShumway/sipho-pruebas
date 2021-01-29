@@ -1,10 +1,9 @@
-import { Empleado } from './empleado';
-import { Ruta } from './ruta';
+import { Vale } from "./vale";
 
 export interface DetallesCorte {
   desgloseMoneda: DesgloseMoneda[];
   corte: DetalleCorte;
-  vales: DetallesVale[];
+  vales: Vale[];
 }
 
 export interface DesgloseMoneda {
@@ -34,22 +33,4 @@ export interface DetalleCorte {
   fechaCreacion: string;
   idEmpleado: number;
   estatus: number;
-}
-
-export interface DetallesVale {
-  idValeCaja: number;
-  empleado: Empleado;
-  caja: Caja;
-  monto: number;
-  motivo: string;
-  registro: string;
-  idFolioCorte: number;
-}
-
-export interface Caja {
-  idCaja: number;
-  ruta: Ruta;
-  nombre: string;
-  fechaCreacion: string;
-  limiteEfectivo: number;
 }

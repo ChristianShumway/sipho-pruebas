@@ -6,6 +6,7 @@ import { CuentasPorRecibirComponent } from './components/cuentas-por-recibir/cue
 import { CortesPendientesComponent } from './components/cortes-pendientes/cortes-pendientes.component';
 import { SaldarCuentaComponent } from './components/saldar-cuenta/saldar-cuenta.component';
 import { VerCortesComponent } from './components/ver-cortes/ver-cortes.component';
+import { VerValesCajaComponent } from './components/ver-vales-caja/ver-vales-caja.component';
 
 const routes: Routes = [
   {
@@ -37,6 +38,11 @@ const routes: Routes = [
     path:'ver-cortes',
     component: VerCortesComponent,
     data: { title: 'Cortes Realizados', breadcrumb: 'Cortes Realizados'},
+  },
+  {
+    path:'ver-vales-caja',
+    component: VerValesCajaComponent,
+    data: { title: 'Vales Caja', breadcrumb: 'Vales Caja'},
   }
 ];
 
