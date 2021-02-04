@@ -1,13 +1,15 @@
 import { Component, OnInit, ViewChild, OnDestroy, ChangeDetectorRef } from '@angular/core';
-import { Cliente, ClienteContent } from '../../../../shared/models/cliente'
+import { Cliente, ClienteContent } from 'app/shared/models/cliente'
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource, MatPaginator, PageEvent } from '@angular/material';
-import { Observable } from 'rxjs';
+import { Observable, forkJoin } from 'rxjs';
 import { Router } from '@angular/router'
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ClienteService } from 'app/shared/services/cliente.service';
-import { AutenticacionService } from './../../../../shared/services/autenticacion.service';
-import { ModalEliminarComponent } from '../../../../shared/components/modal-eliminar/modal-eliminar.component';
+import { AutenticacionService } from 'app/shared/services/autenticacion.service';
+import { RutaService } from 'app/shared/services/ruta.service';
+import { ModalEliminarComponent } from 'app/shared/components/modal-eliminar/modal-eliminar.component';
+import { Ruta } from 'app/shared/models/ruta';
 
 @Component({
   selector: 'app-clientes',
@@ -18,10 +20,13 @@ export class ClientesComponent implements OnInit {
 
   clientes: Cliente[] = [];
   clientesTemp: Cliente[] = [];
+  rutas: Ruta[] = [];
   idUsuarioLogeado;
   paginaActual = 0;
   estatusData = 1;
   dataSerach;
+  idRuta;
+  textSearch:string = '';
 
   @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
   obs$: Observable<any>;
@@ -33,15 +38,16 @@ export class ClientesComponent implements OnInit {
     private router: Router,
     private snackBar: MatSnackBar,
     private clienteService: ClienteService,
-    private autenticacionService: AutenticacionService
+    private autenticacionService: AutenticacionService,
+    private rutaService: RutaService
   ) { }
 
   ngOnInit() {
+    this.idUsuarioLogeado = this.autenticacionService.currentUserValue;
     this.getClientes(this.paginaActual);
     this.changeDetectorRef.detectChanges();
     // this.dataSource.paginator = this.paginator;
     this.obs$ = this.dataSource.connect();
-    this.idUsuarioLogeado = this.autenticacionService.currentUserValue;
     this.modifPaginator();
   }
 
@@ -51,8 +57,15 @@ export class ClientesComponent implements OnInit {
   }
 
   getClientes(idPaginator) {
-    this.clienteService.getClientes(idPaginator).subscribe(
-      ((clientes: ClienteContent) => {
+    this.clientes = [];
+    this.rutas = [];
+    forkJoin(
+      {
+        clientes: this.clienteService.getClientes(idPaginator),
+        rutas: this.rutaService.getSelectRutaByEmploye(this.idUsuarioLogeado)
+      }
+    ).subscribe(
+      ( {clientes, rutas}) => {
         this.clientes = clientes.content;
         console.log(this.clientes);
         
@@ -60,22 +73,35 @@ export class ClientesComponent implements OnInit {
         this.clientesTemp = this.clientes;
         this.dataSource.data = this.clientes;
         this.estatusData = 1;
-      }),
-      error => console.log(error)
+
+        // console.log(rutas);
+        this.rutas = rutas;
+      }
     );
+    // this.clienteService.getClientes(idPaginator).subscribe(
+    //   ((clientes: ClienteContent) => {
+    //     this.clientes = clientes.content;
+    //     console.log(this.clientes);
+        
+    //     this.paginator.length = clientes.totalItems;
+    //     this.clientesTemp = this.clientes;
+    //     this.dataSource.data = this.clientes;
+    //     this.estatusData = 1;
+    //   }),
+    //   error => console.log(error)
+    // );
   }
 
-  ngOnDestroy() {
-    if (this.dataSource) {
-      this.dataSource.disconnect();
-    }
-  }
-
-  updateFilter(event) {
-    const val = event.target.value.toLowerCase();
-    this.dataSerach = val;
-    if(val) {
-      this.clienteService.getClientesFiltro(val, 0).subscribe(
+  search() {
+    if(!this.idRuta && !this.textSearch){
+      console.log('no traigo nada de busqueda');
+      this.getClientes(this.paginaActual);
+    } else {
+      let text = !this.textSearch ? '&nbsp' : this.textSearch;
+      let ruta = !this.idRuta ? 0 : this.idRuta;
+      console.log(ruta);
+      console.log(text);
+      this.clienteService.getClientesFiltro(text, ruta).subscribe(
         result => {
           if(result.length > 0) {
             console.log(result);
@@ -91,9 +117,39 @@ export class ClientesComponent implements OnInit {
         },
         error => console.log(error)
       );
-    } else {
-      this.getClientes(this.paginaActual);
     }
+  }
+
+  ngOnDestroy() {
+    if (this.dataSource) {
+      this.dataSource.disconnect();
+    }
+  }
+
+  updateFilter(event) {
+    this.search();
+    // const val = event.target.value.toLowerCase();
+    // this.dataSerach = val;
+    // if(val) {
+    //   this.clienteService.getClientesFiltro(val, 0).subscribe(
+    //     result => {
+    //       if(result.length > 0) {
+    //         console.log(result);
+    //         this.dataSource.data = result;
+    //         this.paginator.length = result.length;
+    //         this.estatusData = 1;
+    //       } else {
+    //         this.dataSource.data = [];
+    //         this.paginator.length = 0;
+    //         this.estatusData = 0;
+    //         console.log('no se encontro');
+    //       }
+    //     },
+    //     error => console.log(error)
+    //   );
+    // } else {
+    //   this.getClientes(this.paginaActual);
+    // }
     // const val = event.target.value.toLowerCase();
     // var columns = Object.keys(this.clientesTemp[0]);
     // columns.splice(columns.length - 1);

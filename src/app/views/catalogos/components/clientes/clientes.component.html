@@ -3,8 +3,34 @@
 </div>
 
 <mat-form-field class="margin-333" style="width: 98%">
-  <input matInput placeholder="Filtrar Clientes" value="" (keyup)='updateFilter($event)'>
+  <input matInput placeholder="Filtrar Clientes" value="" [(ngModel)] = "textSearch" (keyup)='updateFilter($event)'>
 </mat-form-field>
+
+<div class="wrap-search">
+  <mat-accordion>
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          Filtros
+        </mat-panel-title>
+        <mat-panel-description>
+          agregar filtros para una busqueda mas especifica
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+      <div class="pb-1">
+        <mat-form-field class="full-width">
+          <mat-label>Rutas</mat-label>
+          <mat-select   [(ngModel)] = "idRuta" (ngModelChange)="search()">
+            <mat-option value=""></mat-option>
+            <mat-option *ngFor="let ruta of rutas" [value]="ruta.idRuta">
+              {{ruta.descripcion}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </mat-expansion-panel> 
+  </mat-accordion>
+</div>
 
 
 <div fxLayout="row wrap" *ngIf="obs$ | async as clientes; else noClientes">
@@ -78,9 +104,7 @@
 
 <div *ngIf="estatusData === 0">
   <div class="wrap-loading-catalog">
-    <h2>No se encontró información referente a
-      <b style="color:red">{{dataSerach}}</b>
-    </h2>
+    <h2>No se encontró información</h2>
   </div>
 </div>
 
