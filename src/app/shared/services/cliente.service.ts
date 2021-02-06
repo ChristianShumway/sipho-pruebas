@@ -46,4 +46,8 @@ export class ClienteService {
     return this.http.post<any>(`${environment.apiURL}/catalog/deleteCustomer`, JSON.stringify(cliente), { headers: headerss});
   }
 
+  // getClientesFiltro(texto: string, idFamilia: number, materiaPrima: number): Observable<Articulo[]>  {
+  //   return this.http.get<Articulo[]>(`${environment.apiURL}/catalog/getArticleByFilter/${texto}/${idFamilia}/${materiaPrima}`); 
+  // }
+
 }

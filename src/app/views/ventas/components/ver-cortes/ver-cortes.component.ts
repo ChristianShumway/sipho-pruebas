@@ -27,6 +27,7 @@ import { Vale } from 'app/shared/models/vale';
 export class VerCortesComponent implements OnInit, AfterViewInit {
 
   @ViewChild('buscar', {static:false}) btnBuscar: MatButton;
+  @ViewChild('print', {static:false}) print: MatButton;
   public fechaInicio;
   public fechaFin;
   public pipe = new DatePipe('en-US');
@@ -49,6 +50,8 @@ export class VerCortesComponent implements OnInit, AfterViewInit {
   public searchDetailsCut: boolean = false;
   public dataDet: boolean = false;
   panelOpenState = false;
+  public corte: Cortes;
+  public isDownload: boolean = false;
 
   constructor(
     private cortesService: CortesService,
@@ -163,6 +166,7 @@ export class VerCortesComponent implements OnInit, AfterViewInit {
   }
 
   verDetallesCorte(corte: Cortes, element) {
+    this.corte = corte;
     if(corte !== element) {
       this.desgloseMoneda = [];
       this.detalleCorte = null;
@@ -187,6 +191,40 @@ export class VerCortesComponent implements OnInit, AfterViewInit {
         }
       );
     }
+  }
+
+  imprimirReporte() {
+    console.log(this.corte);
+    this.print.disabled = true;
+    this.isDownload = true;
+    this.cortesService.generateReportCut(this.corte.idCorte, this.corte.idCaja).subscribe(
+      response => {
+        this.print.disabled = false;
+        // this.searchNowRoute = false;
+        var blob = new Blob([response], {type: 'application/pdf'});
+        var link=document.createElement('a');
+      
+        var obj_url = window.URL.createObjectURL(blob);		    
+        var link = document.createElement("a");
+        link.setAttribute("target", "_blank");
+        link.setAttribute("href", obj_url);
+        link.setAttribute("download",`reporte-corte.pdf`);
+          
+        link.style.visibility = "hidden";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        this.useAlerts('Descargando Reporte', ' ', 'success-dialog');
+        this.isDownload = false;
+      },
+      error => {
+        console.log(error);
+        this.print.disabled = false;
+        // this.searchNowRoute = false;
+        this.useAlerts(error.message, ' ', 'error-dialog');
+        this.isDownload = false;
+      }
+    );
   }
 
   useAlerts(message, action, className){

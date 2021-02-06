@@ -30,4 +30,9 @@ export class CortesService {
     ); 
   }
 
+  generateReportCut(idCorte: number, idCaja: number,): Observable<any>  {
+    const headerss = new HttpHeaders({'Content-Type': '"application/x-www-form-urlencoded'});
+    return this.http.get(`${environment.apiURL}/sale/tpv/printCut/${idCorte}/${idCaja}`, {headers: headerss, responseType: 'blob',}); 
+  }
+
 }

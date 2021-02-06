@@ -105,6 +105,14 @@
                   <mat-spinner [diameter]="60"></mat-spinner>
                 </div>
               </div>
+              <div class="container-load-general" *ngIf="isDownload"> 
+                <div class="wrap-loading-catalog">
+                  <mat-spinner [diameter]="60"></mat-spinner>
+                </div>
+              </div>
+              <div *ngIf="dataDet" class="wrap-button-print">
+                <button #print mat-raised-button color="primary" class="btn-accept" (click)="imprimirReporte()">Reporte</button>
+              </div>
               <mat-accordion *ngIf="dataDet" class="container-accordion">
                 <mat-expansion-panel>
                   <mat-expansion-panel-header>
