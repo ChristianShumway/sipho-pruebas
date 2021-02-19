@@ -24,6 +24,7 @@ import { ModalCerrarPedidoComponent } from './components/modal-cerrar-pedido/mod
 import { DevolucionPedidoComponent } from './components/devolucion-pedido/devolucion-pedido.component';
 import { FormDevolucionPedidoComponent } from './components/form-devolucion-pedido/form-devolucion-pedido.component';
 import { GenerarReporteComponent } from './components/generar-reporte/generar-reporte.component';
+import { SubirPedidoComponent } from './components/subir-pedido/subir-pedido.component';
 
 export let options: Partial<IConfig> | (() => Partial<IConfig>);
 
@@ -38,6 +39,7 @@ export let options: Partial<IConfig> | (() => Partial<IConfig>);
     DevolucionPedidoComponent,
     FormDevolucionPedidoComponent,
     GenerarReporteComponent,
+    SubirPedidoComponent,
   ],
   imports: [
     CommonModule,

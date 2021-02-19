@@ -1,0 +1,29 @@
+.container-pedido  {
+  height: 50vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  .wrap-title img{
+    max-width: 200px;
+  }
+  
+  .fileupload-drop-zone-logo{
+    width: 100%;
+  }
+  
+  .text {
+    margin: 0;
+    font-weight: 500;
+    font-size: 16px;
+  }
+    
+  .fileupload-drop-zone-logo-div{
+    text-align: center;
+    padding: 5%;
+    // padding-left: 5%;
+    // padding-right: 5%;
+    border: 1px dashed rgba(0, 0, 0, .15);
+    margin: 10px;
+    cursor: pointer;
+  }
+}
